@@ -43,8 +43,8 @@ planes del problema. \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019}
 
 Ahora bien, si se instancian las acciones necesarias para confeccionar por lo
 menos un plan, entonces el proceso de búsqueda encontraría alguna de tales
-soluciones \textcolor{red}{TODO CITAR}. Por ende, surge la siguiente pregunta ¿cómo
-determinamos que acciones son relevantes para algún plan de tal manera que
+soluciones \textcolor{red}{TODO CITAR}. Por ende, surge la siguiente pregunta
+¿cómo determinamos que acciones son relevantes para algún plan de tal manera que
 puedan ser incluidas en el proceso de \emph{grounding}? Más formalmente, ¿existe
 alguna función $F$ que dada una acción $A$ y un problema $P$, determine que tan
 relevante es $A$ para hallar un plan en $P$?
@@ -58,21 +58,21 @@ problemas equivalentes para construir el material de entrenamiento no es una
 posibilidad, ya que no podríamos computar algún plan de la tarea ni determinar
 que acciones son relevantes para anotarlas. Aún en los casos en que esto sea
 posible, hacerlo es realmente costoso en términos computacionales y de tiempo
-necesario \textcolor{red}{TODO CITAR}. Estas son algunas de las dificultades que nos llevó a
-utilizar una aproximación del plan real, conocida como \emph{relaxed plan} o
-plan relajado, y PDDL's de problemas más sencillos de resolver que permitan
-guiar el proceso de \emph{grounding} en otros más complejos.
+necesario \textcolor{red}{TODO CITAR}. Estas son algunas de las dificultades que
+nos llevó a utilizar una aproximación del plan real, conocida como \emph{relaxed
+plan} o plan relajado, y PDDL's de problemas más sencillos de resolver que
+permitan guiar el proceso de \emph{grounding} en otros más complejos.
 
 Por otro lado, los modelos de \emph{machine learning} dependen fuertemente de
 como se representan los datos que uno tiene disponible \citep{Heaton-2016-AnEA}.
 Para obtener un modelo de aprendizaje supervisado se necesita construir un
 vector de \emph{features} que permita codificar nuestros datos, en particular,
-un plan relajado y una acción. \textcolor{blue}{WIP (No hablar de Word Embeddings solo de la
-codificación custom)} \textcolor{red}{Una posibilidad es utilizar el concepto de \emph{word
-embeddings} proveniente del procesamiento del lenguaje natural. Estos tienen
-como objetivo proyectar palabras y oraciones a un espacio $N$ dimensional que
-preserve la semántica de las palabras, es decir, expresiones con un significado
-similar, son dispuestas cerca en el espacio.
+un plan relajado y una acción. \textcolor{blue}{WIP (No hablar de Word
+Embeddings solo de la codificación custom)} \textcolor{red}{Una posibilidad es
+utilizar el concepto de \emph{word embeddings} proveniente del procesamiento del
+lenguaje natural. Estos tienen como objetivo proyectar palabras y oraciones a un
+espacio $N$ dimensional que preserve la semántica de las palabras, es decir,
+expresiones con un significado similar, son dispuestas cerca en el espacio.
 \citep{Mikolov-Ilya-Kai-Greg-Jeffrey-2013,
 Pennington-Jeffrey-Socher-Richard-Manning-Christopher-2014,
 Bojanowski-Grave-Joulin-Mikolov-2016}. La intuición principal es obtener un
@@ -80,7 +80,7 @@ modelo de lenguaje, pensando un plan como una oración, que caracterice el
 lenguaje generado por los planes relajados y las acciones instanciadas.}
 
 En resumen, la hipótesis inicial de este trabajo es investigar distintas
-codificaciones \textcolor{red}{a partir de \emph{word embeddings}} que permitan al modelo de
-\emph{machine learning} reconocer la relación entre los planes relajados,
-acciones instanciadas, y los planes reales, de tal manera que guíen el proceso
-de \emph{grounding}.
+codificaciones \textcolor{red}{a partir de \emph{word embeddings}} que permitan
+al modelo de \emph{machine learning} reconocer la relación entre los planes
+relajados, acciones instanciadas, y los planes reales, de tal manera que guíen
+el proceso de \emph{grounding}.

@@ -1,14 +1,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%                                                                           %%
 %%   Dr Varun Ojha                                                           %%
-%%   Lecturer, Department of Computer Science                                %% 
+%%   Lecturer, Department of Computer Science                                %%
 %%   University of Reading, UK                                               %%
 %%                                                                           %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%     SETTING STARTS - DO NOT CHANGE Unless your TeX setting require so   %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%----------------------------------------------------------------------------------
-% DO NOT Change this. It is the required setting A4 page, 11pt, onside print, book style
+% DO NOT Change this. It is the required setting A4 page, 11pt, onside print,
+% book style
 %%----------------------------------------------------------------------------------
 \documentclass[a4paper,11pt,oneside]{book}
 
@@ -20,7 +21,8 @@
 %%-------------------------------------
 %% Font settings - % CM San or Ariel (recommended)
 %%-------------------------------------
-% Switch the following two line off: to revert back to default LaTex font (NOT recommended)
+% Switch the following two line off: to revert back to default LaTex font (NOT
+% recommended)
 \usepackage{amsfonts}
 \renewcommand*\familydefault{\sfdefault}
 
@@ -34,8 +36,8 @@
 \newtheorem{mytherm}{Theorem}
 
 %%-------------------------------------
-%% Algorithms/Code Listing environment settings  - 
-%% Please do not change these settings
+%% Algorithms/Code Listing environment settings  - % Please do not change these
+%settings
 %%-------------------------------------
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -51,25 +53,18 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{1.0,1.0,1.0}
 
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{codeblue},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
+\lstdefinestyle{mystyle}{backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen}, keywordstyle=\color{codeblue},
+    numberstyle=\tiny\color{codegray}, stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize, breakatwhitespace=false,         
     breaklines=true,                 
     captionpos=b,                        
     keepspaces=true,                 
     numbers=left,                    
     numbersep=5pt,                  
     showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=2,
-    frame=none
-}
+    showstringspaces=false, showtabs=false,                  
+    tabsize=2, frame=none}
 \lstset{style=mystyle}
 
 %%-------------------------------------
@@ -108,142 +103,60 @@
 %%-------------------------------------
 \usepackage[toc]{appendix}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%                     SETTING ENDS                                            %%%%%%
+%%%%                     SETTING ENDS
+%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-    \captionsetup[figure]{margin=1.5cm,font=small,name={Figure},labelsep=colon}
-    \captionsetup[table]{margin=1.5cm,font=small,name={Table},labelsep=colon}
-    \setlipsumdefault{1}
-    
-    \frontmatter
-    
-    \begin{titlepage}      
-        \begin{center}
-			%{\color{blue} \rule{\textwidth}{1pt}}
-			
-			% -------------------------------
-			% You need to edit some details here
-			% -------------------------------  
-			{\huge
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                %TODO: 2 YOUR NAME
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%             
-                % chnage the following line
-    			Universidad Nacional de Córdoba
-    			
-    			\vspace{0.8cm}
-    			
-    			Facultad de Matemática, Astronomía, Física, y Computación
-                % change end 
-            }\\[1cm]
-            \includegraphics[width=0.4\textwidth]{logo_unc.png}
-            
-			\vspace*{1cm}
-			
-			\begin{tabular}{@{}p{\textwidth}@{}}
-            \toprule[2pt]
-            \midrule
-            \vspace{0.2cm}
-            \begin{center}
-            \Huge{\textbf{
-            Uso de Word Embeddings en Planning Clásico% insert your title here
-            }}
-            \end{center}
-            \vspace{0.2cm}\\
-            \midrule
-            \toprule[2pt]
-            \end{tabular}
-            
-            \linespread{1}~\\[1cm]
-			%{\color{blue} \rule{\textwidth}{1pt}}
-            {\Large
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                %TODO: 2 YOUR NAME
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%             
-                % chnage the following line
-                \emph{Autor:} Nicolás Benjamín Ocampo
-                % change end             
-            }\\[1cm]
-            {\Large
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                %TODO: 3 YOUR NAME Supervisor's name(s)
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%             
-                \emph{Directores:} Dr. Carlos Areces y Dr. Martín Dominguez
-                % change the following line                
-                }\\[1cm] % if applicable
-            
-            \vfill
-    		% PLEASE DO NOT CHANGE THIS TEXT %
-            \Large \emph{Trabajo de tesis presentado para obtener el título de Licenciado en Ciencias de la Computación}\\[0.3cm] 
-            
-            \vspace{0.8cm}
-            
-            
-            \vspace{0.8cm}
-            
-            \today % Please update this date you can use \date{April 2020} for fixed date
-        \end{center}
-    \end{titlepage}
+    \input{frontpage}
     
     \newpage
     
+    
+    % To my family
+
     %\begin{center}
-    %    \hspace{0pt}
-    %    \vfill
-    %    \emph{Dedicado a mi familia, \\
+    %   \hspace{0pt}
+    %   \vfill
+    %   \emph{Dedicado a mi familia, \\
     %    por siempre estar conmigo durante esta hermosa etapa de mi vida \\
     %    ...Mil gracias por todo...}
-    %    \vfill
-    %    \hspace{0pt}
+    %   \vfill
+    %   \hspace{0pt}
     %\end{center}
      
     % -------------------------------------------------------------------
     % Abstract and Acknowledgement
     % -------------------------------------------------------------------
     
-    \input{chapters/abstract.tex}
+    \input{chapters/abstract}
     % -------------------------------------------------------------------
 	% Acknowledgement
 	% -------------------------------------------------------------------
    
-    %\input{chapters/acknowledgments.tex}   
+    %\input{chapters/acknowledgments}   
     
     % -------------------------------------------------------------------
     % Contents, list of figures, list of tables
     % -------------------------------------------------------------------
     
     \tableofcontents
-    \listoffigures
-    \listoftables
-    \input{glossaries} %  Enter your list of Abbreviation and Symbols in this file
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%                                                                    %%  
-    %%  Main chapters and sections of your project                        %%  
-    %%  Everything from here on needs updates in your own words and works %%
-    %%                                                                    %%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     \mainmatter
-    % Read for preparation of document in LaTex 
-    % Lamport, L. (1986), LATEX: A Document Preparation System, Addison-Wesley.
     
-    \input{chapters/introduction.tex}
-    \input{chapters/literature.tex}% https://guides.library.bloomu.edu/litreview
-    \input{chapters/methodology.tex}
-    \input{chapters/results.tex}
-    \input{chapters/discussion.tex}
-    \input{chapters/conclusions.tex}
-    \input{chapters/reflection.tex}
-    
-
+    \input{chapters/introduction}
+    \input{chapters/literature}
+    \input{chapters/methodology}
+    \input{chapters/results}
+    \input{chapters/conclusions}
+    \input{chapters/reflection}
     
     % -------------------------------------------------------------------
-    % Bibliography/References  -  Harvard Style was used in this report
+    % Bibliography/References
     % -------------------------------------------------------------------
-    \bibliographystyle{agsm} % Harvard Style 
+    \bibliographystyle{agsm}
     
-    \bibliography{references}  %  Patashnik, O. (1988), BibTEXing. Documentation for general BibTEX users.
+    \bibliography{references}
     
     % -------------------------------------------------------------------
     % Appendices
@@ -251,7 +164,6 @@
     
     \begin{appendices}
         \input{chapters/appendix_A.tex}
-        \input{chapters/appendix_B.tex}
     \end{appendices}
     
 \end{document}

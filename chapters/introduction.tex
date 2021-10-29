@@ -10,9 +10,9 @@ de crisis \citep{Bienkowki-1995}, generación de textos narrativos
 El objetivo es definir un modelo que se asemeje a una tarea o problema de
 nuestro entorno por medio de una especificación donde se describan todos los
 detalles en que esta consiste. Estas son el estado inicial, la meta, y un
-conjunto de acciones. El estado inicial describe las propiedades válidas
-iniciales dentro del entorno. La meta o estado final representa cuales son las
-propiedades deseables en él. Y el conjunto de acciones está compuesto de
+conjunto de acciones. El estado inicial describe las propiedades válidas con las
+que se parte dentro del entorno. La meta o estado final representa cuales son
+las propiedades deseables en él. Y el conjunto de acciones está compuesto de
 transformadores de estados que permiten alterar estas propiedades. Si se obtiene
 una secuencia de acciones que sea aplicable en el estado inicial, y que luego de
 su ejecución conlleve a la meta, entonces dicha secuencia es considerada un plan
@@ -38,8 +38,9 @@ acción y predicados, llegando a obtener una cantidad inmensurable de instancias
 cuando el número de parámetros definidos es alto. Esto puede llevar a la falla
 por parte del \emph{planner} para resolver la tarea sin antes haber tenido la
 posibilidad de realizar la búsqueda en el espacio de instancias, incluso cuando
-en la práctica solo una pequeña fracción de estas instancias ocurren en los
-planes del problema. \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019}
+en la práctica solo una pequeña fracción de ellas ocurren en los planes del
+problema.
+\citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019}
 
 Ahora bien, si se instancian las acciones necesarias para confeccionar por lo
 menos un plan, entonces el proceso de búsqueda encontraría alguna de tales
@@ -53,7 +54,7 @@ Esta pregunta es las que nos llevó a considerar el uso de técnicas de
 \emph{machine learning}. La idea principal fue lograr encontrar un modelo que
 prediga la probabilidad de que una acción sea relevante a partir de planes de
 varios problemas y acciones etiquetadas. No obstante, dado que las tareas que
-nos interesa resolver son aquellas que no pueden ser instanciadas. Utilizar
+nos interesan resolver son aquellas que no pueden ser instanciadas. Utilizar
 problemas equivalentes para construir el material de entrenamiento no es una
 posibilidad, ya que no podríamos computar algún plan de la tarea ni determinar
 que acciones son relevantes para anotarlas. Aún en los casos en que esto sea
@@ -71,8 +72,8 @@ un plan relajado y una acción. \textcolor{blue}{WIP (No hablar de Word
 Embeddings solo de la codificación custom)} \textcolor{red}{Una posibilidad es
 utilizar el concepto de \emph{word embeddings} proveniente del procesamiento del
 lenguaje natural. Estos tienen como objetivo proyectar palabras y oraciones a un
-espacio $N$ dimensional que preserve la semántica de las palabras, es decir,
-expresiones con un significado similar, son dispuestas cerca en el espacio.
+espacio $N$ dimensional que preserve su semántica, es decir, expresiones con un
+significado similar, son dispuestas cerca en el espacio.
 \citep{Mikolov-Ilya-Kai-Greg-Jeffrey-2013,
 Pennington-Jeffrey-Socher-Richard-Manning-Christopher-2014,
 Bojanowski-Grave-Joulin-Mikolov-2016}. La intuición principal es obtener un

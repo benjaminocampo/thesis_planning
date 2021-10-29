@@ -4,9 +4,9 @@
 En esta sección se detallaran una serie de definiciones teóricas, necesarias
 para comprender el enfoque de esta tesis. Partiendo desde el área de
 \emph{planning}, detallando más concretamente que son los estados y acciones, el
-lenguaje PDDL, representación STRIPS de un problema, la complejidad de encontrar
-un plan que resuelva la tarea, y porque es necesario utilizar la aproximación de
-planes relajados.
+lenguaje PDDL, representación STRIPS de un problema, el proceso de
+\emph{grounding}, la complejidad de encontrar un plan que resuelva la tarea, y
+porque es necesario utilizar la aproximación de planes relajados.
 
 Posteriormente, se profundizará en el área de \emph{machine learning} abarcando
 \textcolor{red}{la representación de palabras y oraciones dadas por \emph{word
@@ -17,4 +17,62 @@ Además, se irán introduciendo de manera progresiva de que manera estas dos ár
 se complementan para lograr nuestro objetivo de guiar el proceso de
 \emph{grounding}.
 
-\section{} 
+\section{Planning}
+
+\subsection{Intuición de Planning Clásico}
+
+Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
+anticipando el resultado de nuestras decisiones, aún si no estamos completamente
+conciente de ello, o explícitamente planeando que hacer antes de realizar una
+acción. No obstante, una tarea que abarque objetivos nuevos y complejos requiere
+deliberación al consistir de acciones que uno no esta acostumbrado, tareas de
+alto riesgo, o cooperación con alguien más.
+\citep{Nau-Ghallab-Malik-Traverso-2004}
+
+\emph{Automated Planning} es el area de la inteligencia artificial que estudia
+la deliberación de los procesos computacionales. Su objetivo es facilitar la
+tarea de planificación por medio del razonamiento sobre representaciones
+abstractas y formales del dominio, configuración inicial, combinación de
+acciones, y objetivos a ser satisfacidos. El modelo conceptual del dominio en el
+cual las acciones son ejecutadas es llamado \emph{planning domain}, y los
+requerimientos inicial y final son denominados \emph{init} y \emph{goal}. Estas
+3 componentes definen un \emph{planning problem} cuyo objetivo es encontrar
+alguna combinación de acciones que determinen un \emph{plan}.
+
+Algunos ejemplos de esto son la navegación de un robot, donde una acción altera
+su posición siendo necesarias aquellas que lo lleven de una habitación a otra;
+en el caso de un micro-procesador, una instrucción puede pensarse como una
+acción que cambia el valor de sus registros y se busca que instrucciones son
+necesarias para ejecutar un programa; un servicio web de vuelos de avion que
+reciba un mensaje de reservación por un vuelo, siendo una acción que cambia su
+estado, siempre y cuando no se sobrepase el número de reservaciones máximo a
+partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
+
+\subsection{Representación de acciones y estados}
+
+Una tarea de \emph{planning} puede ser descripta en términos de un \emph{init},
+\emph{goal}, y acciones que un agente puede llevar a cabo.
+
+\paragraph{Representación de estados.} Cada estado posible de una tarea de
+\emph{planning} se representa en términos de conjuntos de átomos o símbolos
+proposicionales como $p, q, r$. Estos símbolos modela una situación dentro del
+entorno. Por ejemplo, el símbolo $p$ podría representar "El satelite $s_{10}$
+apunta al planeta $tierra$"
+
+
+Dado que \emph{planning} es un proceso complejo y costoso, es solo requerida
+cuando es estrictamente necesaria, o cuando el \emph{trade-off} costo beneficio
+es realmente a favor. Además, debido a esta dificultad solo se necesitan planes
+que sean factibles y relativamente buenos en lugar de planes óptimos.
+
+\emph{Planning} como disciplina emerge de la investigación en áreas tales como
+búsuqeda en un espacio de estados, demostración de teoremas, teoría de control,
+y bajo las necesidades prácticas en robótica, control de misiones espaciales,
+entre otros.
+
+Alguno de los motivos de planificación automática es el diseño de herramientas
+que den lugar a eficiente y asequibles recursos para la toma de decisiones. Un
+ejemplo de ello es una operación de rescate luego de un desastre natural tal
+como un terremoto o inundación. Dicha tarea necesita de una excelente
+comunicación por parte de los rescatistas siendo indispensable la necesidad de
+distintos planes.

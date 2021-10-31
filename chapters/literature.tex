@@ -19,7 +19,7 @@ se complementan para lograr nuestro objetivo de guiar el proceso de
 
 \section{Planning}
 
-\subsection{Intuición de Planning Clásico}
+\subsection{Intuición de planning clásico}
 
 Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
 anticipando el resultado de nuestras decisiones, aún si no estamos completamente
@@ -48,17 +48,129 @@ reciba un mensaje de reservación por un vuelo, siendo una acción que cambia su
 estado, siempre y cuando no se sobrepase el número de reservaciones máximo a
 partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
 
-\subsection{Representación de acciones y estados}
+\subsection{Estados y acciones}
 
-Una tarea de \emph{planning} puede ser descripta en términos de un \emph{init},
-\emph{goal}, y acciones que un agente puede llevar a cabo.
+Un mundo o estado  posible de una tarea de \emph{planning} se representa a
+partir de un conjunto de símbolos proposicionales que modelan un aspecto del
+entorno. Por ejemplo, el símbolo proposicional $p$ puede modelar la situación
+``el agente $A_1$ se encuentra en la habitación $R_1$``. Además, aquellos
+símbolos  que no están mencionados en un estado, se asumen como no válidos en
+dicho mundo. De esta manera, si se tienen los símbolos proposicionales $p,q,r$,
+$\{p, q\}$ representa el estado en el que vale $p$ y $q$ pero no $r$.
 
-\paragraph{Representación de estados.} Cada estado posible de una tarea de
-\emph{planning} se representa en términos de conjuntos de átomos o símbolos
-proposicionales como $p, q, r$. Estos símbolos modela una situación dentro del
-entorno. Por ejemplo, el símbolo $p$ podría representar "El satelite $s_{10}$
-apunta al planeta $tierra$"
+Las acciones son representadas en términos de una precondición y un efecto. La
+precondición es una fórmula proposicional que representa la condición necesaria
+para que la acción pueda ser llevada a cabo. Mientras que el efecto es una
+fórmula que determina los cambios que produce la ejecución de la acción sobre el
+entorno. Por ejemplo, consideremos la siguiente acción $A$:
+\begin{align*}
+    & Action : A \\
+    & pre : p \\
+    & eff : \neg p \land q
+\end{align*}
 
+$A$ no es aplicable en el estado $\{q, r\}$, ya que, no se cumple su
+precondición, pero si en el estado $\{p, r\}$ transformandolo en el estado $\{q,
+r\}$. Se puede interpretar las acciones como operadores de transformación de
+estados en el que su ejecución genera que ciertos símbolos proposicionales
+empiecen a valer o no según si estos ocurren positivamente o negativamente en el
+efecto de la acción.
+
+El tipo de fórmula que se permite en la precondición y en el efecto de las
+acciones, así como también el usado para describir la meta, determina el tipo de
+la tarea de \emph{planning}. En particular, se utilizaron tareas de
+\emph{planning} STRIPS durante el desarrolo de esta tesis.
+
+\subsection{Tareas de planning STRIPS}
+
+El tipo de una tarea de \emph{planning} está dada por la lógica de las formulas
+que ocurren en las acciones y en la meta. En STRIPS, las fórmulas que ocurren
+son conjunciones de literales, es decir, es de la forma $\bigwedge_i l_i$ con
+$l_i$ un símbolo proposicional o su negación.
+
+\begin{mydef}
+    Una fórmula STRIPS es una fórmula $\phi$ tal que $\phi$ está en forma 1-CNF.
+    Una acción a es del tipo STRIPS si su precondición y su efecto son fórmulas
+    STRIPS. Una meta g es del tipo STRIPS si g es una fórmula STRIPS.
+\end{mydef}
+
+Una forma más conveniente de trabajar sobre esta representación es utilizando
+únicamente conjuntos de símbolos proposicionales. \textcolor{blue}{TODO: Que
+pasa con la precondición y la meta?} Una formula $l_1 \land ... \land l_n$ se
+puede representar a través de dos conjuntos, uno con los símbolos
+proposicionales positivos y otro con los negativos. Por ejemplo, la acción $A$
+que describimos anteriormente puede verse de la siguiente forma:
+\begin{align*}
+    & Action : A \\
+    & pre : p \\
+    & add : q \\
+    & del : p
+\end{align*}
+
+La interpretación de $A$ es similar a la que se dió anteriormente, la
+precondición contiene los símbolos proposicionales necesarios para que $A$ sea
+aplicable en un mundo. Mientras que $add$ y $del$ son los conjuntos de símbolos
+proposicionales que agrega y elimina la acción producto de su ejecución.
+
+Esta nueva representación permite abstraer fórmulas y operadores
+proposicionales, lo cual ayudará para introducir de manera más natural algunas
+técnicas del área.
+
+\begin{mydef}
+    Una tarea de planning STRIPS es una 4-upla $\Pi = (F, A, I, G)$ donde $F$ es
+    un conjunto finito de símbolos proposicionales denominados facts, $A$ es un
+    conjunto finito de acciones STRIPS, $I \subseteq F$ el estado inicial, $G
+    \subseteq F$ el estado final.
+
+    Un estado $s \subseteq F$ es un conjunto de facts. Diremos que un símbolo
+    proposicional $p \in F$ vale en un estado $s$ sii $p \in s$. Una acción
+    STRIPS es una 3-upla $a = (pre, del, add)$, tal que, pre, del, add, son
+    subconjuntos de F, y los denotaremos como pre(a), del(a), y add(a)
+    respectivamente.
+
+    Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq s$, en tal
+    caso, el estado resultante es $s' = (s \ del(a)) \cup add(a)$. Escribimos $s
+    \rightarrow^a s'$ para la transición de $s$ a $s'$ vía $a$. Para una
+    secuencia de acciones $\vec{a}$, escribimos $s \rightarrow^{\vec{a}} t$ si
+    estos pueden ser iterativamente aplicados a $s$, resultando en $t$.
+
+    Un plan para una tarea de planning STRIPS $\Pi$ es una secuencia $\vec{a}$
+    con $I \rightarrow^{\vec{a}} s_G$ si $G \subseteq s_G$.
+
+    Una tarea $\Pi$ es satisfacible si un plan existe. El plan es denominado
+    óptimo si es el que tiene longitud más corta de entre todos los planes para
+    $\Pi$.
+\end{mydef}
+
+Para ejemplificar las definiciones anteriores, consideremos el ...
+\textcolor{blue}{TODO: Ver un ejemplo para este caso}
+
+
+Un \emph{input} necesario para cualquier algoritmo de planificación es una
+descripción del problema a ser resuelto. En la práctica, es usualmente imposible
+incluir una explicita enumeración de todos los posibles estados y transciciones
+que se pueden realizar en el dominio. Por lo tanto, es necesario una
+representación que permita computarlas dinámicamente.
+
+\begin{mydef}
+    Una representación de un dominio de planning es una 3-upla $(\mathcal{P},
+    \mathcal{A}, \Sigma^{C})$ donde $\mathcal{P}$ es un conjunto de
+    proposiciones atómicas, $\mathcal{A}$ es un conjunto de esquemas de acción,
+    y $\Sigma^{C}$ es un conjunto de constantes.
+\end{mydef}
+
+\begin{mydef}
+    Una representación de un problema de planning es una 3-upla $(\Sigma^{O}, I,
+    G)$ donde $\Sigma^{O}$ es un conjunto de objetos no constantes, I es el estado
+    inicial, y G es la meta.
+\end{mydef}
+
+
+
+
+
+
+\textcolor{blue}{TODO: Lo que está de acá en adelante capaz puede ir en algún lado?}
 
 Dado que \emph{planning} es un proceso complejo y costoso, es solo requerida
 cuando es estrictamente necesaria, o cuando el \emph{trade-off} costo beneficio

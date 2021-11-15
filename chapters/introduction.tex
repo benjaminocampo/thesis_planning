@@ -26,7 +26,7 @@ especifican las propiedades del entorno en términos de predicados, y las
 transformaciones por medio de esquemas de acción. Estas consisten en expresiones
 parametrizadas que pueden ser instanciadas por un conjunto de objetos. El
 \emph{planner} por medio de la especificación, define un espacio de búsqueda
-cuya dificultad de encontrar un plan aumenta con su complejidad.
+sobre el cual encontrar un plan.
 \citep{Georgievski-et-al-2016}
 
 Sin embargo, la mayoría de los \emph{planners} trabajan sobre una representación
@@ -44,11 +44,11 @@ problema.
 
 Ahora bien, si se instancian las acciones necesarias para confeccionar por lo
 menos un plan, entonces el proceso de búsqueda encontraría alguna de tales
-soluciones \textcolor{red}{TODO CITAR}. Por ende, surge la siguiente pregunta
-¿cómo determinamos que acciones son relevantes para algún plan de tal manera que
-puedan ser incluidas en el proceso de \emph{grounding}? Más formalmente, ¿existe
-alguna función $F$ que dada una acción $A$ y un problema $P$, determine que tan
-relevante es $A$ para hallar un plan en $P$?
+soluciones. Por ende, surge la siguiente pregunta ¿cómo determinamos que
+acciones son relevantes para algún plan de tal manera que puedan ser incluidas
+en el proceso de \emph{grounding}? Más formalmente, ¿existe alguna función $F$
+que dada una acción $A$ y un problema $P$, determine que tan relevante es $A$
+para hallar un plan en $P$?
 
 Esta pregunta es las que nos llevó a considerar el uso de técnicas de
 \emph{machine learning}. La idea principal fue lograr encontrar un modelo que
@@ -59,10 +59,10 @@ problemas equivalentes para construir el material de entrenamiento no es una
 posibilidad, ya que no podríamos computar algún plan de la tarea ni determinar
 que acciones son relevantes para anotarlas. Aún en los casos en que esto sea
 posible, hacerlo es realmente costoso en términos computacionales y de tiempo
-necesario \textcolor{red}{TODO CITAR}. Estas son algunas de las dificultades que
-nos llevó a utilizar una aproximación del plan real, conocida como \emph{relaxed
-plan} o plan relajado, y PDDL's de problemas más sencillos de resolver que
-permitan guiar el proceso de \emph{grounding} en otros más complejos.
+necesario. Estas son algunas de las dificultades que nos llevó a utilizar una
+aproximación del plan real, conocida como \emph{relaxed plan} o plan relajado, y
+PDDL's de problemas más sencillos de resolver que permitan guiar el proceso de
+\emph{grounding} en otros más complejos.
 
 Por otro lado, los modelos de \emph{machine learning} dependen fuertemente de
 como se representan los datos que uno tiene disponible \citep{Heaton-2016-AnEA}.

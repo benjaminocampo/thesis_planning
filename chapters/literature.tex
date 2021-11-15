@@ -13,7 +13,7 @@ Posteriormente, se profundizará en el área de \emph{machine learning} abarcand
 embeddings}}, conceptos de aprendizaje supervisado, modelos de clasificación, y
 métricas.
 
-Además, se irán introduciendo de manera progresiva de que manera estas dos áreas
+Además, se irán introduciendo progresivamente de que manera estas dos áreas
 se complementan para lograr nuestro objetivo de guiar el proceso de
 \emph{grounding}.
 
@@ -65,13 +65,12 @@ fórmula que determina los cambios que produce la ejecución de la acción sobre
 entorno. Por ejemplo, consideremos la siguiente acción $A$:
 \begin{align*}
     & Action : A \\
-    & pre : p \\
+    & pre : p \land \neg r \\
     & eff : \neg p \land q
 \end{align*}
 
-$A$ no es aplicable en el estado $\{q, r\}$, ya que, no se cumple su
-precondición, pero si en el estado $\{p, r\}$ transformandolo en el estado $\{q,
-r\}$. Se puede interpretar las acciones como operadores de transformación de
+$A$ no es aplicable en el estado $\{p, r\}$, ya que, no se cumple su
+precondición, pero si en el estado $\{p\}$ transformandolo en el estado $\{q\}$. Se puede interpretar las acciones como operadores de transformación de
 estados en el que su ejecución genera que ciertos símbolos proposicionales
 empiecen a valer o no según si estos ocurren positivamente o negativamente en el
 efecto de la acción.
@@ -81,12 +80,12 @@ acciones, así como también el usado para describir la meta, determina el tipo 
 la tarea de \emph{planning}. En particular, se utilizaron tareas de
 \emph{planning} STRIPS durante el desarrolo de esta tesis.
 
-\subsection{Tareas de planning STRIPS}
+\subsection{Tareas STRIPS}
 
 El tipo de una tarea de \emph{planning} está dada por la lógica de las formulas
-que ocurren en las acciones y en la meta. En STRIPS, las fórmulas que ocurren
-son conjunciones de literales, es decir, es de la forma $\bigwedge_i l_i$ con
-$l_i$ un símbolo proposicional o su negación.
+que ocurren en las acciones y en la meta. En STRIPS, las fórmulas son
+conjunciones de literales, es decir, de la forma $\bigwedge_i l_i$ con $l_i$
+un símbolo proposicional o su negación.
 
 \begin{mydef}
     Una fórmula STRIPS es una fórmula $\phi$ tal que $\phi$ está en forma 1-CNF.
@@ -95,16 +94,19 @@ $l_i$ un símbolo proposicional o su negación.
 \end{mydef}
 
 Una forma más conveniente de trabajar sobre esta representación es utilizando
-únicamente conjuntos de símbolos proposicionales. \textcolor{blue}{TODO: Que
-pasa con la precondición y la meta?} Una formula $l_1 \land ... \land l_n$ se
-puede representar a través de dos conjuntos, uno con los símbolos
-proposicionales positivos y otro con los negativos. Por ejemplo, la acción $A$
-que describimos anteriormente puede verse de la siguiente forma:
+únicamente conjuntos de símbolos proposicionales. Vimos que en el caso de los
+estados, solo se mantienen aquellos que son válidos en el mundo, es decir, los
+literales positivos. De manera similar, ocurre con la precondición de una
+acción. Sin embargo, en el caso de su efecto se mantienen dos conjuntos, uno
+con los símbolos proposicionales positivos, y otro con los negativos.
+
+Por ejemplo, la acción $A$ que describimos anteriormente puede verse
+de la siguiente forma:
 \begin{align*}
     & Action : A \\
-    & pre : p \\
-    & add : q \\
-    & del : p
+    & pre : \{ p \}\\
+    & add : \{ q \}\\
+    & del : \{ p \}
 \end{align*}
 
 La interpretación de $A$ es similar a la que se dió anteriormente, la
@@ -121,52 +123,93 @@ técnicas del área.
     un conjunto finito de símbolos proposicionales denominados facts, $A$ es un
     conjunto finito de acciones STRIPS, $I \subseteq F$ el estado inicial, $G
     \subseteq F$ el estado final.
+\end{mydef}
 
-    Un estado $s \subseteq F$ es un conjunto de facts. Diremos que un símbolo
-    proposicional $p \in F$ vale en un estado $s$ sii $p \in s$. Una acción
-    STRIPS es una 3-upla $a = (pre, del, add)$, tal que, pre, del, add, son
-    subconjuntos de F, y los denotaremos como pre(a), del(a), y add(a)
-    respectivamente.
+\begin{mydef}
+    Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.
+    
+    \begin{itemize}
+        \item Un estado $s \subseteq F$ es un conjunto de facts. Diremos que un
+        símbolo proposicional $p \in F$ vale en un estado $s$ sii $p \in s$.
+        
+        \item Una acción STRIPS es una 3-upla $a = (pre, add, del)$, tal que,
+        pre, add, del, son subconjuntos de F, y los denotaremos como pre(a),
+        del(a), y add(a) respectivamente.
 
-    Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq s$, en tal
-    caso, el estado resultante es $s' = (s \ del(a)) \cup add(a)$. Escribimos $s
-    \rightarrow^a s'$ para la transición de $s$ a $s'$ vía $a$. Para una
-    secuencia de acciones $\vec{a}$, escribimos $s \rightarrow^{\vec{a}} t$ si
-    estos pueden ser iterativamente aplicados a $s$, resultando en $t$.
+        \item Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq
+        s$, en tal caso, el estado resultante es $s' = (s \rvert del(a)) \cup
+        add(a)$. Escribimos $s \rightarrow^a s'$ para la transición de $s$ a
+        $s'$ vía $a$. Para una secuencia de acciones $\vec{a}$, escribimos $s
+        \rightarrow^{\vec{a}} t$ si estos pueden ser iterativamente aplicados a
+        $s$, resultando en $t$.
 
-    Un plan para una tarea de planning STRIPS $\Pi$ es una secuencia $\vec{a}$
-    con $I \rightarrow^{\vec{a}} s_G$ si $G \subseteq s_G$.
-
-    Una tarea $\Pi$ es satisfacible si un plan existe. El plan es denominado
-    óptimo si es el que tiene longitud más corta de entre todos los planes para
-    $\Pi$.
+        \item Un plan para $\Pi$ es una secuencia $\vec{a}$ con $I
+        \rightarrow^{\vec{a}} s_G$ si $G \subseteq s_G$.
+        
+        \item Una tarea $\Pi$ es satisfacible si un plan para $\Pi$ existe. El
+        plan es denominado óptimo si es el que tiene longitud más corta de entre
+        todos los planes para $\Pi$.
+    \end{itemize}
 \end{mydef}
 
 Para ejemplificar las definiciones anteriores, consideremos el ...
 \textcolor{blue}{TODO: Ver un ejemplo para este caso}
 
+\subsection{Representaciones STRIPS}
 
-Un \emph{input} necesario para cualquier algoritmo de planificación es una
+Un dato de entrada necesario para cualquier algoritmo de planificación es una
 descripción del problema a ser resuelto. En la práctica, es usualmente imposible
-incluir una explicita enumeración de todos los posibles estados y transciciones
-que se pueden realizar en el dominio. Por lo tanto, es necesario una
-representación que permita computarlas dinámicamente.
+incluir una explicita enumeración de todos los posibles estados y transiciones
+que se pueden realizar en el dominio a partir de una tarea STRIPS. Por lo tanto,
+es necesario una representación que permita computarlas dinámicamente.
+
+Supongamos que queremos modelar la ubicación de un agente $A_1$ y nuestro mundo
+tiene $n$ ubicaciones. Entonces vamos a necesitar $n$ símbolos proposicionales
+$p_i$ tal que representen la acción ``El agente $A_1$ está en la ubicación
+$i$``. Si en lugar de un solo agente hubiesen una cantidad $m$ de ellos. Se
+necesitarian $n \times m$ símbolos para modelar esta caracteristica de la tarea.
+Una forma más compacta de representar esta propiedad es por medio de un
+predicado de la forma $at(x, y)$ donde $x$ denota a un agente, e $y$ su
+ubicación, siendo mucho más flexible debido a su naturaleza esquematica.
+
+De manera similar, si se quisiera modelar una acción de cambio de posición, haría falta describir una por cada agente y par de ubicaciones
+obteniendo un total de $m \times n \times n$ instancias. Una mejor alternativa
+es representar esta transformación por medio de un esquema de acción de la forma
+$move(x, s, d)$ donde $x$ representa al agente, $s$ la ubicación actual, y $d$
+la ubicación a la cual moverse.
+
+En síntesis resulta más adecuado para la especificación utilizar predicados y
+esquemas de acción en lugar de símbolos proposicionales. Esto lleva a las
+siguientes definiciones:
 
 \begin{mydef}
-    Una representación de un dominio de planning es una 3-upla $(\mathcal{P},
-    \mathcal{A}, \Sigma^{C})$ donde $\mathcal{P}$ es un conjunto de
-    proposiciones atómicas, $\mathcal{A}$ es un conjunto de esquemas de acción,
-    y $\Sigma^{C}$ es un conjunto de constantes.
+    Una especificación de una tarea STRIPS es una 6-upla $(\mathcal{P},
+    \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$  donde $\mathcal{P}$ es un
+    conjunto de predicados, $\mathcal{A}$ es un conjunto de esquemas
+    de acción, $\Sigma^{C}$ es un conjunto de constantes, $\Sigma^{O}$ es un
+    conjunto de objetos no constantes, I es el estado inicial, y G es la meta.
 \end{mydef}
 
 \begin{mydef}
-    Una representación de un problema de planning es una 3-upla $(\Sigma^{O}, I,
-    G)$ donde $\Sigma^{O}$ es un conjunto de objetos no constantes, I es el estado
-    inicial, y G es la meta.
+    Sea $(\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ una
+    especificación de una tarea STRIPS.
+
+    \begin{itemize}
+        \item Un esquema de acción es una 3-upla $a[X] = (pre(a), add(a),
+        del(a))$ donde cada elemento es subconjunto de $\mathcal{P}$, y $X$ es el
+        conjunto de variables que aparecen en $pre(a) \cup add(a) \cup del(a)$ y
+        que son parte de $\Sigma^{O}$.
+        \item Un predicado es un símbolo atómico de $\mathcal{P}$ de la forma
+        $p[X]$ con $X$ un conjunto de variables que aparecen en su interfaz y
+        que son parte de $\Sigma^{O}$.
+    \end{itemize}
 \end{mydef}
 
+\textcolor{blue}{TODO: ver otro ejemplo}
 
+\subsection{Relajación por deletes}
 
+\subsection{Proceso de grounding}
 
 
 

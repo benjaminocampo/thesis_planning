@@ -172,11 +172,12 @@ Una forma más compacta de representar esta propiedad es por medio de un
 predicado de la forma $at(x, y)$ donde $x$ denota a un agente, e $y$ su
 ubicación, siendo mucho más flexible debido a su naturaleza esquematica.
 
-De manera similar, si se quisiera modelar una acción de cambio de posición, haría falta describir una por cada agente y par de ubicaciones
-obteniendo un total de $m \times n \times n$ instancias. Una mejor alternativa
-es representar esta transformación por medio de un esquema de acción de la forma
-$move(x, s, d)$ donde $x$ representa al agente, $s$ la ubicación actual, y $d$
-la ubicación a la cual moverse.
+De manera similar, si se quisiera modelar una acción de cambio de posición,
+haría falta describir una por cada agente y par de ubicaciones obteniendo un
+total de $m \times n \times n$ instancias. Una mejor alternativa es representar
+esta transformación por medio de un esquema de acción de la forma $move(x, s,
+d)$ donde $x$ representa al agente, $s$ la ubicación actual, y $d$ la ubicación
+a la cual moverse.
 
 En síntesis resulta más adecuado para la especificación utilizar predicados y
 esquemas de acción en lugar de símbolos proposicionales. Esto lleva a las
@@ -197,10 +198,10 @@ siguientes definiciones:
     \begin{itemize}
         \item Un esquema de acción es una 3-upla $a[X] = (pre(a), add(a),
         del(a))$ donde cada elemento es subconjunto de $\mathcal{P}$, y $X$ es el
-        conjunto de variables que aparecen en $pre(a) \cup add(a) \cup del(a)$ y
+        conjunto de variables que ocurren en $pre(a) \cup add(a) \cup del(a)$ y
         que son parte de $\Sigma^{O}$.
         \item Un predicado es un símbolo atómico de $\mathcal{P}$ de la forma
-        $p[X]$ con $X$ un conjunto de variables que aparecen en su interfaz y
+        $p[X]$ con $X$ un conjunto de variables que ocurren en su interfaz y
         que son parte de $\Sigma^{O}$.
     \end{itemize}
 \end{mydef}
@@ -209,8 +210,58 @@ siguientes definiciones:
 
 \subsection{Relajación por deletes}
 
+El problema de decidir si una tarea de planning STRIPS tiene un plan es
+PSPACE-completo, lo cual lo hace intratable para problemas complejos
+\citep{Nau-Ghallab-Malik-Traverso-2004}. Sin embargo, en ocasiones se suelen
+realizar simplificaciones para obtener uno nuevo, a priori más sencillo de
+resolver, que aporte información para resolver el original. En particular, la
+\emph{delete-relaxation} es una relajación de la tarea que consiste en eliminar
+las precondiciones y poscondiciones negativas de las acciones. Esta relajación
+es ampliamente utilizada en planning y su importancia subyace en la siguiente
+propiedad: en la \emph{delete-relaxation} si un \emph{fact} se vuelve válido,
+entonces permanecerá válido para siempre.
+
+\begin{mydef}
+    Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.
+    \begin{itemize}
+        \item Sea $a \in A$, definimos a la acción relajada por delete $a^{+}$
+        dada por $pre(a^{+}) = pre(a)$, $add(a^{+}) = add(a)$, y $del(a^{+}) =
+        \emptyset$.
+
+        \item Denotaremos con $A^{+} = \{a^{+} : a \in A\}$ al conjunto de
+        acciones relajadas por delete.
+
+        \item Para una secuencia de acciónes $\vec{a}$ denotaremos con
+        $\vec{a}^{+}$ a la secuencia de acciones relajadas por delete.
+
+        \item Denotaremos con $\Pi^{+} = (F, A^{+}, I, G)$ a la tarea STRIPS
+        relajada por deletes.
+
+        \item Un plan relajado para $\Pi$ es un plan para $\Pi^{+}$.
+    \end{itemize}
+\end{mydef}
+
+Algo a destacar de esta simplificación es que aligera las restricciones que una
+acción puede tener. Por ejemplo, en el problema del agente, si este se desplazo
+por varias ubicaciones, tendriamos que se encuentra en más de un lugar al mismo
+tiempo ya que la proposición que indicaba su ubicación anterior no puede ser
+borrada.
+
 \subsection{Proceso de grounding}
 
+Dada una especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
+\Sigma^{C}, \Sigma^{O}, I, G)$ se puede obtener su correspondiente tarea $\Pi =
+(F, A, I, G)$ recolectando todas las instancias posibles de predicados en
+$\mathcal{P}$ y esquemas de acción de $\mathcal{A}$ con objetos de $\Sigma^{C}$.
+Es decir, $F$ contiene un \emph{fact} por cada posible asignación de objetos a
+los argumentos de cada predicado $P[X] \in \mathcal{P}$, y $A$ contiene una
+acción por cada posible asignación de objetos a los argumentos de cada esquema
+de acción $a[X] \in \mathcal{A}$. Más formalmente,
+
+
+
+En la sección 2.1.3 se hizo mención a que es una tarea STRIPS para luego
+detallar como se especifan en la sección 2.1.4. 
 
 
 \textcolor{blue}{TODO: Lo que está de acá en adelante capaz puede ir en algún lado?}

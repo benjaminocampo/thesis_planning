@@ -206,6 +206,8 @@ siguientes definiciones:
     \end{itemize}
 \end{mydef}
 
+\textcolor{blue}{TODO: Mencionar que I y G ahora guardan predicados}
+
 \textcolor{blue}{TODO: ver otro ejemplo}
 
 \subsection{Relajación por deletes}
@@ -215,11 +217,18 @@ PSPACE-completo, lo cual lo hace intratable para problemas complejos
 \citep{Nau-Ghallab-Malik-Traverso-2004}. Sin embargo, en ocasiones se suelen
 realizar simplificaciones para obtener uno nuevo, a priori más sencillo de
 resolver, que aporte información para resolver el original. En particular, la
-\emph{delete-relaxation} es una relajación de la tarea que consiste en eliminar
-las precondiciones y poscondiciones negativas de las acciones. Esta relajación
-es ampliamente utilizada en planning y su importancia subyace en la siguiente
-propiedad: en la \emph{delete-relaxation} si un \emph{fact} se vuelve válido,
-entonces permanecerá válido para siempre.
+\emph{delete-relaxation} es una simplificación de la tarea que consiste en
+eliminar los efectos negativos de una acción, es decir, su lista $del$. Esta
+relajación es ampliamente utilizada en planning y su importancia subyace en la
+siguiente propiedad: en la \emph{delete-relaxation} si un \emph{fact} se vuelve
+válido, entonces permanecerá válido para siempre. Por ejemplo, en el problema del agente, si este se desplazo por
+varias ubicaciones, tendriamos que se encuentra en más de un lugar al mismo
+tiempo ya que la proposición que indicaba su ubicación anterior no puede ser
+borrada.
+
+Claramente es una modelización no realista, no obstante encontrar un plan en una
+tarea relajada puede ser computada en tiempo polinomial, y en la práctica
+resulta ser una buena aproximación a un plan del problema inicial.
 
 \begin{mydef}
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.
@@ -241,12 +250,6 @@ entonces permanecerá válido para siempre.
     \end{itemize}
 \end{mydef}
 
-Algo a destacar de esta simplificación es que aligera las restricciones que una
-acción puede tener. Por ejemplo, en el problema del agente, si este se desplazo
-por varias ubicaciones, tendriamos que se encuentra en más de un lugar al mismo
-tiempo ya que la proposición que indicaba su ubicación anterior no puede ser
-borrada.
-
 \subsection{Proceso de grounding}
 
 Dada una especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
@@ -256,29 +259,66 @@ $\mathcal{P}$ y esquemas de acción de $\mathcal{A}$ con objetos de $\Sigma^{C}$
 Es decir, $F$ contiene un \emph{fact} por cada posible asignación de objetos a
 los argumentos de cada predicado $P[X] \in \mathcal{P}$, y $A$ contiene una
 acción por cada posible asignación de objetos a los argumentos de cada esquema
-de acción $a[X] \in \mathcal{A}$. Más formalmente,
+de acción $a[X] \in \mathcal{A}$.
+
+No obstante, en la práctica los planificadores no enumeran todos las posibles
+acciones y proposiciones, si no aquellas que son alcanzables relajadamente desde
+el estado inicial. Esto viene de la premisa que un plan de una tarea también es
+solución de su contraparte relajada, garantizando de esta manera que cualquier
+plan de la tarea se puede formar con aquellas instanceas groundeadas
+relajadamente. Sin embargo, el reciproco no se cumple, por lo tanto aún
+podrían haber acciones y hechos no relevantes para encontrar una solución.
+
+Este proceso de grounding es el implementado por el planificador \emph{Fast
+Downward} \citep{Helmert-2011} y es sobre el cual se adaptará para utilizar
+técnicas de Machine Learning.
+
+\begin{mydef}
+    Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.    
+    \begin{itemize}
+        \item Un estado $s \subseteq F$ es alcanzable en $\Pi$ si existe una
+        secuencia $\vec{a}$ de acciones tal que $I \rightarrow^{\vec{a}} s$.
+    
+        \item Un proposición $p \in F$ es alcanzable en $\Pi$ si existe un estado
+        $s$ alcanzable en $\Pi$ tal que $p \in s$.
+
+        \item Una acción $a \in A$ es alcanzable en $\Pi$ si existe una estado $s$
+        alcanzable en $\Pi$ tal que $a$ es aplicable en $s$.
+
+        \item Un proposición $p \in F$ es alcanzable relajadamente en $\Pi$ si
+        $p$ es alcanzable en $\Pi^{+}$.
+
+        \item Una acción $a \in A$ es alcanzable relajadamente en $\Pi$ si
+        $a$ es alcanzable en $\Pi^{+}$.
+    \end{itemize}
+\end{mydef}
 
 
+\begin{algorithm}
+    \caption{Grounding por alcanzabilidad relajada}\label{alg:cap}
+    \begin{algorithmic}
+    \Require Una especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
+    \Sigma^{C}, \Sigma^{O}, I, G)$
+    \Ensure Una tarea STRIPS $(F, A, I, G)$ 
+    \State $q \gets I$
+    \State $F \gets \emptyset$
+    \State $A \gets \emptyset$
+    \While{$ \lnot (q.empty() \lor G \subseteq F)$}
+    \If{$q.head()$ is fact}
+        \State $f \gets q.pop()$
+        \State $F \gets F \cup \{f\}$
+        \For{$a \notin A \land pre(a) \subseteq F$}
+            \State $q.insert(a)$
+        \EndFor
+    \Else
+        \State $a \gets q.pop()$
+        \State $A \gets A \cup {a}$
+        \For{$f \notin F \land f \in add(a)$}
+            \State $q.insert(f)$
+        \EndFor
+    \EndIf
+    \EndWhile
+    \State \Return (F, A, I, G)
+    \end{algorithmic}
+\end{algorithm}
 
-En la sección 2.1.3 se hizo mención a que es una tarea STRIPS para luego
-detallar como se especifan en la sección 2.1.4. 
-
-
-\textcolor{blue}{TODO: Lo que está de acá en adelante capaz puede ir en algún lado?}
-
-Dado que \emph{planning} es un proceso complejo y costoso, es solo requerida
-cuando es estrictamente necesaria, o cuando el \emph{trade-off} costo beneficio
-es realmente a favor. Además, debido a esta dificultad solo se necesitan planes
-que sean factibles y relativamente buenos en lugar de planes óptimos.
-
-\emph{Planning} como disciplina emerge de la investigación en áreas tales como
-búsuqeda en un espacio de estados, demostración de teoremas, teoría de control,
-y bajo las necesidades prácticas en robótica, control de misiones espaciales,
-entre otros.
-
-Alguno de los motivos de planificación automática es el diseño de herramientas
-que den lugar a eficiente y asequibles recursos para la toma de decisiones. Un
-ejemplo de ello es una operación de rescate luego de un desastre natural tal
-como un terremoto o inundación. Dicha tarea necesita de una excelente
-comunicación por parte de los rescatistas siendo indispensable la necesidad de
-distintos planes.

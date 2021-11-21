@@ -56,7 +56,7 @@ entorno. Por ejemplo, el símbolo proposicional $p$ puede modelar la situación
 ``el agente $A_1$ se encuentra en la habitación $R_1$``. Además, aquellos
 símbolos  que no están mencionados en un estado, se asumen como no válidos en
 dicho mundo. De esta manera, si se tienen los símbolos proposicionales $p,q,r$,
-$\{p, q\}$ representa el estado en el que vale $p$ y $q$ pero no $r$.
+$\{p, q\}$ representa el estado en el que vale $p$ y $q$ pero no $r$. 
 
 Las acciones son representadas en términos de una precondición y un efecto. La
 precondición es una fórmula proposicional que representa la condición necesaria
@@ -76,9 +76,8 @@ empiecen a valer o no según si estos ocurren positivamente o negativamente en e
 efecto de la acción.
 
 El tipo de fórmula que se permite en la precondición y en el efecto de las
-acciones, así como también el usado para describir la meta, determina el tipo de
-la tarea de \emph{planning}. En particular, se utilizaron tareas de
-\emph{planning} STRIPS durante el desarrolo de esta tesis.
+acciones determina el tipo de la tarea de \emph{planning}. En particular, se
+utilizaron tareas de \emph{planning} STRIPS durante el desarrolo de esta tesis.
 
 \subsection{Tareas STRIPS}
 
@@ -90,7 +89,7 @@ un símbolo proposicional o su negación.
 \begin{mydef}
     Una fórmula STRIPS es una fórmula $\phi$ tal que $\phi$ está en forma 1-CNF.
     Una acción a es del tipo STRIPS si su precondición y su efecto son fórmulas
-    STRIPS. Una meta g es del tipo STRIPS si g es una fórmula STRIPS.
+    STRIPS.
 \end{mydef}
 
 Una forma más conveniente de trabajar sobre esta representación es utilizando
@@ -133,18 +132,18 @@ técnicas del área.
         símbolo proposicional $p \in F$ vale en un estado $s$ sii $p \in s$.
         
         \item Una acción STRIPS es una 3-upla $a = (pre, add, del)$, tal que,
-        pre, add, del, son subconjuntos de F, y los denotaremos como pre(a),
-        del(a), y add(a) respectivamente.
+        pre, add, del, son subconjuntos de F, y los denotaremos como $pre(a)$,
+        $add(a)$, y $del(a)$ respectivamente.
 
         \item Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq
-        s$, en tal caso, el estado resultante es $s' = (s \rvert del(a)) \cup
-        add(a)$. Escribimos $s \rightarrow^a s'$ para la transición de $s$ a
+        s$, en tal caso, el estado resultante es $s' = (s - del(a)) \cup
+        add(a)$. Escribimos $s \xrightarrow{a} s'$ para la transición de $s$ a
         $s'$ vía $a$. Para una secuencia de acciones $\vec{a}$, escribimos $s
-        \rightarrow^{\vec{a}} t$ si estos pueden ser iterativamente aplicados a
+        \xrightarrow{\vec{a}} t$ si estos pueden ser iterativamente aplicados a
         $s$, resultando en $t$.
 
         \item Un plan para $\Pi$ es una secuencia $\vec{a}$ con $I
-        \rightarrow^{\vec{a}} s_G$ si $G \subseteq s_G$.
+        \xrightarrow{\vec{a}} s_G$ si $G \subseteq s_G$.
         
         \item Una tarea $\Pi$ es satisfacible si un plan para $\Pi$ existe. El
         plan es denominado óptimo si es el que tiene longitud más corta de entre
@@ -226,7 +225,7 @@ varias ubicaciones, tendriamos que se encuentra en más de un lugar al mismo
 tiempo ya que la proposición que indicaba su ubicación anterior no puede ser
 borrada.
 
-Claramente es una modelización no realista, no obstante encontrar un plan en una
+Claramente es una modelización no realista, no obstante, encontrar un plan en una
 tarea relajada puede ser computada en tiempo polinomial, y en la práctica
 resulta ser una buena aproximación a un plan del problema inicial.
 
@@ -259,15 +258,15 @@ $\mathcal{P}$ y esquemas de acción de $\mathcal{A}$ con objetos de $\Sigma^{C}$
 Es decir, $F$ contiene un \emph{fact} por cada posible asignación de objetos a
 los argumentos de cada predicado $P[X] \in \mathcal{P}$, y $A$ contiene una
 acción por cada posible asignación de objetos a los argumentos de cada esquema
-de acción $a[X] \in \mathcal{A}$.
+de acción $a[X] \in \mathcal{A}$. Este proceso se conoce como \emph{Grounding
+Cartesiano}.
 
 No obstante, en la práctica los planificadores no enumeran todos las posibles
 acciones y proposiciones, si no aquellas que son alcanzables relajadamente desde
-el estado inicial. Esto viene de la premisa que un plan de una tarea también es
-solución de su contraparte relajada, garantizando de esta manera que cualquier
-plan de la tarea se puede formar con aquellas instanceas groundeadas
-relajadamente. Sin embargo, el reciproco no se cumple, por lo tanto aún
-podrían haber acciones y hechos no relevantes para encontrar una solución.
+el estado inicial. Esto viene de la premisa de que un plan de una tarea también
+es solución de su contraparte relajada, garantizando de esta manera que
+cualquier otra solución se puede formar con aquellas instanceas groundeadas
+relajadamente.
 
 Este proceso de grounding es el implementado por el planificador \emph{Fast
 Downward} \citep{Helmert-2011} y es sobre el cual se adaptará para utilizar
@@ -277,7 +276,7 @@ técnicas de Machine Learning.
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.    
     \begin{itemize}
         \item Un estado $s \subseteq F$ es alcanzable en $\Pi$ si existe una
-        secuencia $\vec{a}$ de acciones tal que $I \rightarrow^{\vec{a}} s$.
+        secuencia $\vec{a}$ de acciones tal que $I \xrightarrow{\vec{a}} s$.
     
         \item Un proposición $p \in F$ es alcanzable en $\Pi$ si existe un estado
         $s$ alcanzable en $\Pi$ tal que $p \in s$.
@@ -289,7 +288,7 @@ técnicas de Machine Learning.
         $p$ es alcanzable en $\Pi^{+}$.
 
         \item Una acción $a \in A$ es alcanzable relajadamente en $\Pi$ si
-        $a$ es alcanzable en $\Pi^{+}$.
+        $a^{+}$ es alcanzable en $\Pi^{+}$.
     \end{itemize}
 \end{mydef}
 
@@ -297,28 +296,123 @@ técnicas de Machine Learning.
 \begin{algorithm}
     \caption{Grounding por alcanzabilidad relajada}\label{alg:cap}
     \begin{algorithmic}
-    \Require Una especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
+    \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
     \Sigma^{C}, \Sigma^{O}, I, G)$
-    \Ensure Una tarea STRIPS $(F, A, I, G)$ 
+    \Ensure Tarea STRIPS $(F, A, I, G)$ 
     \State $q \gets I$
     \State $F \gets \emptyset$
     \State $A \gets \emptyset$
     \While{$ \lnot (q.empty() \lor G \subseteq F)$}
-    \If{$q.head()$ is fact}
-        \State $f \gets q.pop()$
+    \State $e \gets q.pop()$
+    \If{e is fact}
+        \State $F \gets F \cup \{e\}$
+        \For{$a \notin A \land pre(a) \subseteq F$}
+            \State $q.insert(a)$
+        \EndFor
+    \Else
+        \State $A \gets A \cup \{e\}$
+        \For{$f \notin F \land f \in add(e)$}
+            \State $q.insert(f)$
+        \EndFor
+    \EndIf
+    \EndWhile
+    \State \Return $(F, A, I, G)$
+    \end{algorithmic}
+\end{algorithm}
+
+El algoritmo implementado por Fast Downward parte de una cola $q$ que almacena
+todos los símbolos proposicionales del estado inicial. A partir de allí, se
+remueve elemento a elemento de $q$ consultando si es un hecho o una acción.
+
+En el caso de encontrarse con un hecho, se lo instancia y se agregan a $q$ todas
+las acciones aplicables (aún no procesadas) a partir de las proposiciones
+groundeadas hasta el momento. Caso contrario, se obtiene una acción que también
+se instancia y se agregan a $q$ todas las proposiciones (aún no procesadas) que
+ocurren positivamente en su efecto, es decir, su lista $add$.
+
+Este procedimiento se repite hasta que la cola se encuentre vacía o hasta que la
+tarea STRIPS resultante sea satisfacible relajadamente a partir de las
+instancias hasta el momento, esto es, si $G \subseteq F$. Un detalle a notar
+es que si la cola se encuentra vacía, entonces se obtiene el resultado de
+Grounding Cartesiano.
+
+\subsection{Grounding Heurístico}
+
+Mencionamos que un plan de una tarea es también un plan relajado de la misma.
+Sin embargo, el reciproco no se cumple. Es más, un hecho o una acción que es
+relajadamente alcanzable, puede no serlo en la tarea original o ser irrelevante
+al no pertenecer a ningun plan que la resuelva. Es justamente esta pérdida de
+información la que origina que computar en el mundo relajado sea polinomial. Es
+aquí donde surge el foco de este trabajo donde se intentará predecir cual de estos
+hechos y acciones son verdaderamente relevantes para alcanzar la meta, priorizando
+su instanciación por sobre el resto.
+
+El algoritmo de grounding heurístico que presentaremos es el mismo que se
+desarrolló en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} y está basado
+en el que se mostró en la sección anterior. Las principales diferencias son el
+criterio de parada, donde se procesan no más de $N$ acciones, y el orden en que
+lo hacen, según su nivel de relevancia. Debido a que el algoritmo puede
+terminar antes de que la cola se vacíe, se está obligado a procesar la totalidad
+de los facts existentes antes de considerar una siguiente acción. Esto garantiza
+que todos los facts que se encuentran en los efectos de las acciones ya
+procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
+
+\begin{mydef}
+    Sean $F$ y $A$ el conjunto de facts y acciones retornados por un algoritmo
+    de grounding. Decimos que este es fact consistente si para todo $a \in A$ se
+    cumple que, si $p \in pre(a) \cup add(a) \cup del(a)$ entonces $p \in F$.
+\end{mydef}
+
+\begin{algorithm}
+    \caption{Grounding por alcanzabilidad relajada}\label{alg:cap}
+    \begin{algorithmic}
+    \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
+    \Sigma^{C}, \Sigma^{O}, I, G)$
+    \Ensure Tarea STRIPS $(F, A, I, G)$ 
+    \State $q \gets I$
+    \State $F \gets \emptyset$
+    \State $A \gets \emptyset$
+    \While{$ \lnot (q.empty() \lor G \subseteq F) \land |A| \leq N$}    
+    \If{q.containsFact()}
+        \State $f \gets q.popFact()$
         \State $F \gets F \cup \{f\}$
         \For{$a \notin A \land pre(a) \subseteq F$}
             \State $q.insert(a)$
         \EndFor
     \Else
-        \State $a \gets q.pop()$
-        \State $A \gets A \cup {a}$
+        \State $a \gets q.popHighPriorityAction()$
+        \State $A \gets A \cup \{a\}$
         \For{$f \notin F \land f \in add(a)$}
             \State $q.insert(f)$
         \EndFor
     \EndIf
     \EndWhile
-    \State \Return (F, A, I, G)
+    \State \Return $(F, A, I, G)$
     \end{algorithmic}
 \end{algorithm}
 
+En grounding heurístico, el algoritmo puede detenerse mucho antes según el
+parámetro $N$ que indica la cantidad de instancias que puede realizar el proceso
+sin que los recursos de tiempo y memoria se vean comprometidos. Por lo general,
+muchas de los problemas de planning requieren planes cortos del orden de a lo
+sumo cientos de acciones en comparación a posiblemente millones de operadores
+groundeados.
+
+Es importante mencionar que este algoritmo es \emph{correcto}, si hallamos un
+plan de la tarea obtenida por grounding parcial, entonces ese mismo plan lo es
+para la tarea obtenida por grounding total. No obstante, no es \emph{completo},
+una tarea obtenida por grounding heurístico tiene solución si y sólo si las
+acciones correspondientes de al menos un plan (de la tarea obtenida por
+grounding total) fueron procesadas.
+
+Por último, algo a considerar es el remplazo de la cola del Algoritmo 1, por una
+cola de prioridades que asigna a las acciones un nivel de relevancia por la cual
+son ordenadas. La relevancia de una acción está directamente relacionada con la
+probabilidad de que esta pertenezca a un plan de la tarea. Notar que una
+estimación ideal sería una probabilidad de 1 para las acciones que ocurren en
+algún plan de la tarea y 0 para las restantes. Pero computar esto es a la vez
+tan difı́cil como obtener una solución y sabemos que es PSPACE-completo. Es por
+eso que para estimar la relevancia se utilizaron técnicas de machine learning y
+serán el foco de la siguiente sección.
+
+\section{Machine Learning}

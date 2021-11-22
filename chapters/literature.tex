@@ -3,15 +3,14 @@
 
 En esta sección se detallaran una serie de definiciones teóricas, necesarias
 para comprender el enfoque de esta tesis. Partiendo desde el área de
-\emph{planning}, detallando más concretamente que son los estados y acciones, el
-lenguaje PDDL, representación STRIPS de un problema, el proceso de
+\emph{planning}, detallando más concretamente que son los estados y acciones,
+representación STRIPS de un problema, el lenguaje PDDL, el proceso de
 \emph{grounding}, la complejidad de encontrar un plan que resuelva la tarea, y
-porque es necesario utilizar la aproximación de planes relajados.
+la necesidad de tomar ventaja de planes relajados.
 
-Posteriormente, se profundizará en el área de \emph{machine learning} abarcando
-\textcolor{red}{la representación de palabras y oraciones dadas por \emph{word
-embeddings}}, conceptos de aprendizaje supervisado, modelos de clasificación, y
-métricas.
+Posteriormente, se profundizará en el área de \emph{aprendizaje automático} abarcando
+la representación de palabras y oraciones dadas por word embeddings, conceptos
+de aprendizaje supervisado, modelos de clasificación, y métricas.
 
 Además, se irán introduciendo progresivamente de que manera estas dos áreas
 se complementan para lograr nuestro objetivo de guiar el proceso de
@@ -27,17 +26,17 @@ conciente de ello, o explícitamente planeando que hacer antes de realizar una
 acción. No obstante, una tarea que abarque objetivos nuevos y complejos requiere
 deliberación al consistir de acciones que uno no esta acostumbrado, tareas de
 alto riesgo, o cooperación con alguien más.
-\citep{Nau-Ghallab-Malik-Traverso-2004}
 
 \emph{Automated Planning} es el area de la inteligencia artificial que estudia
 la deliberación de los procesos computacionales. Su objetivo es facilitar la
 tarea de planificación por medio del razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
 acciones, y objetivos a ser satisfacidos. El modelo conceptual del dominio en el
-cual las acciones son ejecutadas es llamado \emph{planning domain}, y los
-requerimientos inicial y final son denominados \emph{init} y \emph{goal}. Estas
-3 componentes definen un \emph{planning problem} cuyo objetivo es encontrar
-alguna combinación de acciones que determinen un \emph{plan}.
+cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los
+requerimientos inicial y final son denominados \emph{estado inicial} y
+\emph{meta}. Estas 3 componentes definen un \emph{tarea de planning} cuyo
+objetivo es encontrar alguna combinación de acciones que determinen un
+\emph{plan}.
 
 Algunos ejemplos de esto son la navegación de un robot, donde una acción altera
 su posición siendo necesarias aquellas que lo lleven de una habitación a otra;
@@ -53,10 +52,10 @@ partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
 Un mundo o estado  posible de una tarea de \emph{planning} se representa a
 partir de un conjunto de símbolos proposicionales que modelan un aspecto del
 entorno. Por ejemplo, el símbolo proposicional $p$ puede modelar la situación
-``el agente $A_1$ se encuentra en la habitación $R_1$``. Además, aquellos
-símbolos  que no están mencionados en un estado, se asumen como no válidos en
-dicho mundo. De esta manera, si se tienen los símbolos proposicionales $p,q,r$,
-$\{p, q\}$ representa el estado en el que vale $p$ y $q$ pero no $r$. 
+``el agente $a_1$ se encuentra en la ubicación $l_1$``. Aquellos símbolos  que
+no están mencionados en un estado, se asumen como no válidos en dicho mundo. De
+esta manera, si se tienen los símbolos proposicionales $p,q,r$, $\{p, q\}$
+representa el estado en el que vale $p$ y $q$ pero no $r$.
 
 Las acciones son representadas en términos de una precondición y un efecto. La
 precondición es una fórmula proposicional que representa la condición necesaria
@@ -88,7 +87,7 @@ un símbolo proposicional o su negación.
 
 \begin{mydef}
     Una fórmula STRIPS es una fórmula $\phi$ tal que $\phi$ está en forma 1-CNF.
-    Una acción a es del tipo STRIPS si su precondición y su efecto son fórmulas
+    Una acción $a$ es del tipo STRIPS si su precondición y su efecto son fórmulas
     STRIPS.
 \end{mydef}
 
@@ -132,7 +131,7 @@ técnicas del área.
         símbolo proposicional $p \in F$ vale en un estado $s$ sii $p \in s$.
         
         \item Una acción STRIPS es una 3-upla $a = (pre, add, del)$, tal que,
-        pre, add, del, son subconjuntos de F, y los denotaremos como $pre(a)$,
+        $pre, add,$ y $del$ son subconjuntos de F, y los denotaremos como $pre(a)$,
         $add(a)$, y $del(a)$ respectivamente.
 
         \item Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq
@@ -151,43 +150,67 @@ técnicas del área.
     \end{itemize}
 \end{mydef}
 
-Para ejemplificar las definiciones anteriores, consideremos el ...
-\textcolor{blue}{TODO: Ver un ejemplo para este caso}
+Para ejemplificar estas definiciones consideremos el problema de la figura 2.1.
+Tenemos único agente $a_1$ que se encuentra inicialmente en la posición $l_1$
+marcada en azúl y desea ir hacia la ubicación $l_4$ en rojo. Los enlaces de la
+figura indican los posibles movimientos dentro del mapa. La tarea STRIPS en este
+caso estaría dada por:
+
+\begin{align*}
+    F = \{&at(a_1, l_1), at(a_1, l_2), at(a_1, l_3), at(a_1, l_4)\} \\
+    A = \{&move(a_1, l_1, l_2), move(a_1, l_2, l_1), \\
+    & move(a_1, l_1, l_3), move(a_1, l_3, l_1),\\
+    & move(a_1, l_3, l_4), move(a_1, l_4, l_3)\} \\
+    I = \{&at(a_1, l_1)\} \\
+    G = \{&at(a_1, l_4)\}
+\end{align*}
+
+Para cada agente $x$ y ubicaciones $l, l'$ se tiene que $move(x, l, l') =
+({at(a, l)}, {at(a, l')}, {at(a, l)})$. Un posible plan de la tarea podría ser
+la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{figures/agent_example.png}
+    \caption{Ejemplo del problema del agente. Su posición inicial es la ubicación
+             $l1$ en azúl queriendo llegar a la posición $l4$ marcada con rojo.}
+\end{figure}
+
 
 \subsection{Representaciones STRIPS}
 
 Un dato de entrada necesario para cualquier algoritmo de planificación es una
 descripción del problema a ser resuelto. En la práctica, es usualmente imposible
-incluir una explicita enumeración de todos los posibles estados y transiciones
-que se pueden realizar en el dominio a partir de una tarea STRIPS. Por lo tanto,
-es necesario una representación que permita computarlas dinámicamente.
+incluir una explicita enumeración de todos los estados y transiciones que se
+pueden realizar en el dominio a partir de una tarea STRIPS. Por lo tanto, es
+necesario una representación que permita computarlas dinámicamente.
 
-Supongamos que queremos modelar la ubicación de un agente $A_1$ y nuestro mundo
-tiene $n$ ubicaciones. Entonces vamos a necesitar $n$ símbolos proposicionales
-$p_i$ tal que representen la acción ``El agente $A_1$ está en la ubicación
-$i$``. Si en lugar de un solo agente hubiesen una cantidad $m$ de ellos. Se
-necesitarian $n \times m$ símbolos para modelar esta caracteristica de la tarea.
-Una forma más compacta de representar esta propiedad es por medio de un
-predicado de la forma $at(x, y)$ donde $x$ denota a un agente, e $y$ su
+Consideremos el problema del ejemplo anterior donde se tiene el agente $a_1$
+pero esta vez $n$ ubicaciones. Para este caso, se va a necesitar $n$ símbolos
+proposicionales $p_i$ tal que representen la acción ``El agente $a_1$ está en la
+ubicación $i$``. Si en lugar de un solo agente hubiesen una cantidad $m$ de
+ellos. Se necesitarian $n \times m$ símbolos para modelar esta caracteristica de
+la tarea. Una forma más compacta de representar esta propiedad es por medio de
+un predicado de la forma $at(x, l)$ donde $x$ denota a un agente, y $l$ su
 ubicación, siendo mucho más flexible debido a su naturaleza esquematica.
 
 De manera similar, si se quisiera modelar una acción de cambio de posición,
 haría falta describir una por cada agente y par de ubicaciones obteniendo un
 total de $m \times n \times n$ instancias. Una mejor alternativa es representar
-esta transformación por medio de un esquema de acción de la forma $move(x, s,
-d)$ donde $x$ representa al agente, $s$ la ubicación actual, y $d$ la ubicación
+esta transformación por medio de un esquema de acción de la forma $move(x, l,
+l')$ donde $x$ representa al agente, $l$ la ubicación actual, y $l'$ la ubicación
 a la cual moverse.
 
-En síntesis resulta más adecuado para la especificación utilizar predicados y
+De esta forma resulta más adecuado para la especificación utilizar predicados y
 esquemas de acción en lugar de símbolos proposicionales. Esto lleva a las
 siguientes definiciones:
 
 \begin{mydef}
     Una especificación de una tarea STRIPS es una 6-upla $(\mathcal{P},
     \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$  donde $\mathcal{P}$ es un
-    conjunto de predicados, $\mathcal{A}$ es un conjunto de esquemas
-    de acción, $\Sigma^{C}$ es un conjunto de constantes, $\Sigma^{O}$ es un
-    conjunto de objetos no constantes, I es el estado inicial, y G es la meta.
+    conjunto de predicados, $\mathcal{A}$ es un conjunto de esquemas de acción,
+    $\Sigma^{C}$ es un conjunto de constantes, $\Sigma^{O}$ es un conjunto de
+    objetos no constantes, $I$ es el estado inicial, y $G$ es la meta.
 \end{mydef}
 
 \begin{mydef}
@@ -205,9 +228,87 @@ siguientes definiciones:
     \end{itemize}
 \end{mydef}
 
-\textcolor{blue}{TODO: Mencionar que I y G ahora guardan predicados}
+Para la tarea STRIPS del problema del agente se tiene que su especificación está
+dada por
 
-\textcolor{blue}{TODO: ver otro ejemplo}
+\begin{align*}
+    \mathcal{P} = \{&at(x, l)\} \\
+    \mathcal{A} = \{&move(x, l, l')\} \\
+    \Sigma^{C} = \{&a_1, l_1, l_2, l_3, l_4\} \\
+    \Sigma^{O} = \{&x, l, l'\} \\
+    I = \{&at(a_1, l_1)\} \\
+    G = \{&at(a_1, l_4)\}
+\end{align*}
+
+Una diferencia importante es que ahora $move$ es un esquema de acción dado por:
+
+\begin{align*}
+    move(x, l, l') &= (pre(move), add(move), del(move)) \\
+                   &= (\{at(x, l)\}, \{at(x, l')\},\{at(x, l)\})
+\end{align*}
+
+Por otro lado, las variables y objetos que se utilizaban para expresar todas las
+proposiciones lógicas se hicieron parte de la especificación logrando expresar
+predicados y acciones de manera esquematica.
+
+\subsection{El lenguaje PDDL}
+
+Para especificar una tarea de planning a una computadora se necesita definir un
+lenguaje que permita al usuario definir cada una de sus componentes. Para dar
+respuesta a esta necesidad surge el \emph{Planning Domain Specification
+Language} (PDDL), Propuesta por Drew Mc Dermott para la competencia de planning
+AIPS-98 \citep{McDermott1998} siendo la heramienta más conocida y usada dentro
+de la comunidad de planning.
+
+Una especificación en PDDL consiste de dos archivos, la definición del dominio,
+donde se aclaran los predicados y esquemas de acción disponibles; y la
+definición de la tarea donde se mencionan los objetos concretos a modelar, el
+estado inicial, y la meta. Esta separación resulta importante ya que diferentes
+tareas de un mismo dominio comparten una estructura común.
+
+Los Listing 2.1 y 2.2 muestran los archivos de dominio y tarea del ejemplo del
+agente escritas en PDDL.
+
+\begin{lstlisting}[
+    float=!htb,
+    caption={Dominio Agent en PDDL.},
+    label={lst:agent-domain},
+    language=PDDL]
+  (
+    define (domain AGENT-DOMAIN)
+
+    (:requirements :strips :typing)
+
+    (:types AGENT LOCATION)
+
+    (:predicates (at ?x - AGENT ?y - LOCATION))
+
+    (:action move
+        :parameters (?x - AGENT ?s - LOCATION ?d - LOCATION)
+        :precondition (and (at ?x ?s))
+        :effect (and (not (at ?x ?s)) (at ?x ?d))
+    )
+  )
+\end{lstlisting}
+
+\begin{lstlisting}[
+    float=!htb,
+    caption={Ejemplo de una tarea del dominio Agent en PDDL.},
+    label={lst:agent-task},
+    language=PDDL]
+
+  (
+    define (problem AGENT-TASK)
+
+    (:domain AGENT-DOMAIN)
+
+    (:objects a1 - AGENT l1 l2 l3 l4 - LOCATION)
+
+    (:init at(a1, l1))
+    
+    (:goal (and at(a1, l4)))
+  )
+\end{lstlisting}
 
 \subsection{Relajación por deletes}
 
@@ -215,15 +316,15 @@ El problema de decidir si una tarea de planning STRIPS tiene un plan es
 PSPACE-completo, lo cual lo hace intratable para problemas complejos
 \citep{Nau-Ghallab-Malik-Traverso-2004}. Sin embargo, en ocasiones se suelen
 realizar simplificaciones para obtener uno nuevo, a priori más sencillo de
-resolver, que aporte información para resolver el original. En particular, la
-\emph{delete-relaxation} es una simplificación de la tarea que consiste en
+resolver, que aporte información para lidiar con el original. En particular, la
+\emph{relajación por deletes} es una simplificación de la tarea que consiste en
 eliminar los efectos negativos de una acción, es decir, su lista $del$. Esta
 relajación es ampliamente utilizada en planning y su importancia subyace en la
-siguiente propiedad: en la \emph{delete-relaxation} si un \emph{fact} se vuelve
-válido, entonces permanecerá válido para siempre. Por ejemplo, en el problema del agente, si este se desplazo por
-varias ubicaciones, tendriamos que se encuentra en más de un lugar al mismo
-tiempo ya que la proposición que indicaba su ubicación anterior no puede ser
-borrada.
+siguiente propiedad: en la \emph{relajación por deletes} si un \emph{fact} se
+vuelve válido, entonces permanecerá válido para siempre. Por ejemplo, en el
+problema del agente, si este se desplazo por varias ubicaciones, tendriamos que
+se encuentra en más de un lugar al mismo tiempo ya que la proposición que
+indicaba su ubicación anterior no puede ser borrada.
 
 Claramente es una modelización no realista, no obstante, encontrar un plan en una
 tarea relajada puede ser computada en tiempo polinomial, y en la práctica
@@ -270,7 +371,7 @@ relajadamente.
 
 Este proceso de grounding es el implementado por el planificador \emph{Fast
 Downward} \citep{Helmert-2011} y es sobre el cual se adaptará para utilizar
-técnicas de Machine Learning.
+técnicas de aprendizaje automático.
 
 \begin{mydef}
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.    
@@ -340,12 +441,12 @@ Grounding Cartesiano.
 
 Mencionamos que un plan de una tarea es también un plan relajado de la misma.
 Sin embargo, el reciproco no se cumple. Es más, un hecho o una acción que es
-relajadamente alcanzable, puede no serlo en la tarea original o ser irrelevante
-al no pertenecer a ningun plan que la resuelva. Es justamente esta pérdida de
-información la que origina que computar en el mundo relajado sea polinomial. Es
-aquí donde surge el foco de este trabajo donde se intentará predecir cual de estos
-hechos y acciones son verdaderamente relevantes para alcanzar la meta, priorizando
-su instanciación por sobre el resto.
+relajadamente alcanzable, puede no ser alcanzable en la tarea original o ser
+irrelevante al no pertenecer a ningun plan que la resuelva. Es justamente esta
+pérdida de información la que origina que computar en el mundo relajado sea
+polinomial. Es aquí donde surge el foco de este trabajo donde se intentará
+predecir cual de estos hechos y acciones son verdaderamente relevantes para
+alcanzar la meta, priorizando su instanciación por sobre el resto.
 
 El algoritmo de grounding heurístico que presentaremos es el mismo que se
 desarrolló en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} y está basado
@@ -399,11 +500,11 @@ sumo cientos de acciones en comparación a posiblemente millones de operadores
 groundeados.
 
 Es importante mencionar que este algoritmo es \emph{correcto}, si hallamos un
-plan de la tarea obtenida por grounding parcial, entonces ese mismo plan lo es
-para la tarea obtenida por grounding total. No obstante, no es \emph{completo},
-una tarea obtenida por grounding heurístico tiene solución si y sólo si las
-acciones correspondientes de al menos un plan (de la tarea obtenida por
-grounding total) fueron procesadas.
+plan de la tarea obtenida por grounding heurístico, entonces ese mismo plan lo
+es para la tarea obtenida por grounding total. No obstante, no es
+\emph{completo}, una tarea obtenida por grounding heurístico tiene solución si y
+sólo si las acciones correspondientes de al menos un plan (de la tarea obtenida
+por grounding total) fueron procesadas.
 
 Por último, algo a considerar es el remplazo de la cola del Algoritmo 1, por una
 cola de prioridades que asigna a las acciones un nivel de relevancia por la cual
@@ -412,7 +513,76 @@ probabilidad de que esta pertenezca a un plan de la tarea. Notar que una
 estimación ideal sería una probabilidad de 1 para las acciones que ocurren en
 algún plan de la tarea y 0 para las restantes. Pero computar esto es a la vez
 tan difı́cil como obtener una solución y sabemos que es PSPACE-completo. Es por
-eso que para estimar la relevancia se utilizaron técnicas de machine learning y
-serán el foco de la siguiente sección.
+eso que para estimar la relevancia se utilizaron técnicas de aprendizaje
+automático y serán el foco de la siguiente sección.
 
-\section{Machine Learning}
+\section{Aprendizaje automático}
+
+El aprendizaje automático es el campo de la inteligencia artificial que busca
+desarrollar programas que aumáticamente mejoren en base a la experiencia. Estos
+métodos difieren del típico paradigma de implementación donde en lugar de ser
+``programado`` es ``entrenado``. Tal entrenamiento consiste en disponerle al
+algoritmo información en forma de ejemplos con el fin de reconocer patrones
+estadísticios y eventualmente determinar reglas que sirvan para automatizar una
+tarea.
+
+En los últimos años varias aplicaciones se han beneficiado de esta área, desde
+programas relacionados con la detección fraudulenta de transacciones con tarjeta
+de credito, sistemas de recomendación que guían usuarios en un servicio de
+acuerdo a sus preferencias, o incluso vehículos que se manejan sin necesidad de
+la intervención del conductor. Al mismo tiempo, una importante cantidad de
+avances teóricos y algorítmicos se fueron realizando formando las bases de este
+campo. TODO: Poner referencias a los ejemplos.
+
+Aún con estos increibles logros, no se conoce aún como crear computadoras que
+aprendan al nivel que las personas lo hacen. No obstante, se han desarrollado
+algoritmos que se han aproximado a este objetivo siendo efectivos para varios
+tipos de problemas.
+
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+
+\subsection{Aprendizaje supervisado}
+
+El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
+objetivo es deducir un modelo a partir de datos anotados. Esta información está
+compuesta por un conjunto de ejemplares y sus correspondientes etiquetas, en
+ocasiones dada por un anotador humano, la cual indica el resultado del modelo a
+partir del dato como entrada. Las etiquetas pueden ser categóricas o continuas
+determinando un problema de clasificación o regresión. Algunas tareas más
+frecuentes de clasificación son la categorización de documentos, reconocimiento
+de lenguaje ofensivo, o análisis de sentimiento. Mientras que para regresión, lo
+son las estimaciones de precios de artículos, objetos, o viviendas.
+
+El resultado de ejecutar un algoritmo de machine learning supervisado se puede
+expresar como una función $f(\vect{x})$ que recibe un ejemplar $\vect{x}$ como
+entrada y genera un vector $\vect{y}$ de salida codificado de la misma manera
+que las etiquetas. Las muestras utilizadas para ajustar $f$ está dado por
+vectores $\{\vect{x}_1, ..., \vect{x}_n\}$ y anotaciones $\{y_1, .. y_n\}$
+conformando el \emph{conjunto de entrenamiento}.
+
+La forma precisa de $f$ es determinada durante la fase de entrenamiento. Una vez
+transcurrida, se puede estimar la identidad de nuevos datos etiquetados
+pertenecientes al \emph{conjunto de test} con el fin de evaluar la performance
+del modelo. En el caso que la predicción se aproxime a la esperada para estas
+nuevas entradas, el modelo logró generalizar la tarea.
+
+Para nuestro objetivo de guiar el proceso de grounding trabajaremos
+principalmente con técnicas de aprendizaje supervisado con el fin de estimar un
+clasificador que determine si un acción es considerada relevante o no para el
+plan de un problema en partcular. En secciones posterioremos volveremos sobre
+este tema para especificar concretamente la forma de los ejemplos $\vect{x}_i$ y
+el significado de sus etiquetas. 
+
+\subsection{Codificación de conjuntos de entrenamiento y test}
+
+Los modelos de aprendizaje automático dpeenden fuertemente de como se
+representen los datos de entrada que uno tiene disponible. Más concretamente los
+vectores $\vect{x}_i$ deben estar codificados en valores numéricos o categóricos
+ya que los algoritmos de aprendizaje dependen fuertemente de este paso de
+preprocesamiento.
+
+
+
+\subsection{Aprendizaje no supervisado}
+
+En contraste al 

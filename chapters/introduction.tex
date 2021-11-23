@@ -93,15 +93,18 @@ instanciadas, y los planes reales, de tal manera que guíen el proceso de
 
 En la literatura de planning se pueden encontrar numerosas técnicas que intentan
 lidiar con el proceso de grounding efectuado por el planificador. Algunas se
-basan en evitar procesar acciones que no son alcanzables desde el estado inicial
-\citep{}. En \citep{} utilizan nociones de simetría para evitar trabajo
-redundante. Otra opción es reducir el tamaño de las interfaces de los esquemas
-de acción al dividirla en subpartes. De esta manera la explosión exponencial de
-acciones groundeadas se disminuye drasticamente. Esta técnica se denomina
-\emph{action schema splitting} y es desarrollada en \citep{}. También existen
-métodos que evitan el proceso de grounding completamente y realizan la búsqueda
-del plan a partir de su especificación PDDL \citep{}. No obstante han perdido
-popularidad debido a la poca factibilidad de las mismas.
+basan en evitar procesar acciones que no son alcanzables relajadamente desde el
+estado inicial, tal es el caso del planificador Fast Downward
+\citep{Helmert-2011} utilizado en competencias de planning. En
+\citep{Röger_Sievers_Katz_2018} estudian nociones de simetría sobre la
+especificación de la tarea de planning para evitar trabajo redundante. Otra
+opción es reducir el tamaño de las interfaces de los esquemas de acción al
+dividirla en subpartes. De esta manera la explosión exponencial de acciones
+groundeadas se disminuye drasticamente. Esta técnica se denomina \emph{action
+schema splitting} y es desarrollada en
+\citep{Areces_Bustos_Dominguez_Hoffmann_2014}. También existen métodos que
+evitan el proceso de grounding completamente y realizan la búsqueda del plan a
+partir de su especificación PDDL \citep{Penberthy-1992}
 
 En particular, esta tesis sigue la continuación de un grupo de heurísticas
 desarrolladas en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} que proponen
@@ -112,10 +115,11 @@ conjunto a los estados iniciales y finales del problema en cuestión.
 
 Salvo esta última heurística, todas utilizan información de la tarea totalmente
 procesada para luego determinar el subconjunto de acciones sobre el cual
-realizar búsqueda. Es por eso que resultan inviables en aquellos problemas donde
-grounding total es inviable. Tampoco se han vistos muchos estudios sobre el uso
-de técnicas de aprendizaje automático en el área de planning lo cual es una
-fuerte iniciativa para empezar a combinar estos dos campos.
+realizar la búsqueda. Es por eso que resultan descartadas en aquellas
+situaciones donde grounding total es inviable. Tampoco se han vistos muchos
+estudios sobre el uso de técnicas de aprendizaje automático en el área de
+planning, lo cual es una fuerte iniciativa para empezar a combinar estos dos
+campos.
 
 \section{Estructura de la tesis}
 
@@ -124,17 +128,17 @@ aprendizaje automático que se utilizaran para unir estas dos áreas y sobre que
 problematica estamos trabajando.
 
 El capítulo 4 describe el conjunto de entrenamiento y test que se utilizaron,
-así como también su preprocesamiento y codificación. También se dejará en claro
+así como su preprocesamiento y codificación. También se dejará en evidencia
 la dificultad de los problemas que un planificador no puede resolver debido al
-problema de grounding y sobre los cuales nos interesa tomar aplicar grounding
+problema de grounding y sobre los cuales nos interesa aplicar grounding
 heurístico.
 
-El capítulo 5 presentaran los experimentos realizados especificando el
-preprocesamiento de datos realizados, el algoritmo de machine learning, y los
+El capítulo 5 presenta los experimentos desarrollados, especificando el
+preprocesamiento de datos realizados, los algoritmos de machine learning, y los
 resultados obtenidos para finalmente compararlos entre sí. Además, se mencionan
 otros experimentos que fueron parte del proceso científico de este trabajo y que
 a pesar de no lograr un resultado esperado, fueron de gran utilidad para la
 re-evaluación de nuestros objetivos.
 
-Por último, capítulo 6 se escriben las conclusiones obtenidas a partir de los
+Por último, en el capítulo 6 se escriben las conclusiones obtenidas a partir de los
 experimentos junto a las líneas de trabajo a futuro.

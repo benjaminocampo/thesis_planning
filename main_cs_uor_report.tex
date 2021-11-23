@@ -43,6 +43,7 @@
 \usepackage{algpseudocode}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{xcolor}
@@ -165,12 +166,18 @@
     \mainmatter
     
     \input{chapters/introduction}
-    \input{chapters/literature}
-    \input{chapters/methodology}
-    \input{chapters/results}
-    \input{chapters/conclusions}
-    \input{chapters/reflection}
     
+    \part{Fundamentos teóricos}
+    \input{chapters/literature_planning.tex}
+    \input{chapters/literature_machine_learning.tex}
+    
+    \part{Metodología}
+    \input{chapters/architecture}
+    \input{chapters/results}
+
+    \part{Conclusión}
+    \input{chapters/conclusions}
+
     % -------------------------------------------------------------------
     % Bibliography/References
     % -------------------------------------------------------------------

@@ -1,24 +1,15 @@
-\chapter{Fundamentos Teóricos}
+\chapter{Planning Clásico}
 \label{ch:lit_rev}
 
-En esta sección se detallaran una serie de definiciones teóricas, necesarias
-para comprender el enfoque de esta tesis. Partiendo desde el área de
+En este capítulo se detallaran una serie de definiciones teóricas, necesarias
+para comprender el enfoque de esta tesis y sobre que parte de este campo
+aplicaremos técnicas de aprendizaje automático. Partiendo desde el área de
 \emph{planning}, detallando más concretamente que son los estados y acciones,
 representación STRIPS de un problema, el lenguaje PDDL, el proceso de
 \emph{grounding}, la complejidad de encontrar un plan que resuelva la tarea, y
 la necesidad de tomar ventaja de planes relajados.
 
-Posteriormente, se profundizará en el área de \emph{aprendizaje automático} abarcando
-la representación de palabras y oraciones dadas por word embeddings, conceptos
-de aprendizaje supervisado, modelos de clasificación, y métricas.
-
-Además, se irán introduciendo progresivamente de que manera estas dos áreas
-se complementan para lograr nuestro objetivo de guiar el proceso de
-\emph{grounding}.
-
-\section{Planning}
-
-\subsection{Intuición de planning clásico}
+\section{¿Qué se entiende por planning?}
 
 Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
 anticipando el resultado de nuestras decisiones, aún si no estamos completamente
@@ -47,7 +38,7 @@ reciba un mensaje de reservación por un vuelo, siendo una acción que cambia su
 estado, siempre y cuando no se sobrepase el número de reservaciones máximo a
 partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
 
-\subsection{Estados y acciones}
+\section{Estados y acciones}
 
 Un mundo o estado  posible de una tarea de \emph{planning} se representa a
 partir de un conjunto de símbolos proposicionales que modelan un aspecto del
@@ -78,7 +69,7 @@ El tipo de fórmula que se permite en la precondición y en el efecto de las
 acciones determina el tipo de la tarea de \emph{planning}. En particular, se
 utilizaron tareas de \emph{planning} STRIPS durante el desarrolo de esta tesis.
 
-\subsection{Tareas STRIPS}
+\section{Tareas STRIPS}
 
 El tipo de una tarea de \emph{planning} está dada por la lógica de las formulas
 que ocurren en las acciones y en la meta. En STRIPS, las fórmulas son
@@ -177,7 +168,7 @@ la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
 \end{figure}
 
 
-\subsection{Representaciones STRIPS}
+\section{Representaciones STRIPS}
 
 Un dato de entrada necesario para cualquier algoritmo de planificación es una
 descripción del problema a ser resuelto. En la práctica, es usualmente imposible
@@ -251,7 +242,7 @@ Por otro lado, las variables y objetos que se utilizaban para expresar todas las
 proposiciones lógicas se hicieron parte de la especificación logrando expresar
 predicados y acciones de manera esquematica.
 
-\subsection{El lenguaje PDDL}
+\section{El lenguaje PDDL}
 
 Para especificar una tarea de planning a una computadora se necesita definir un
 lenguaje que permita al usuario definir cada una de sus componentes. Para dar
@@ -310,7 +301,7 @@ agente escritas en PDDL.
   )
 \end{lstlisting}
 
-\subsection{Relajación por deletes}
+\section{Relajación por deletes}
 
 El problema de decidir si una tarea de planning STRIPS tiene un plan es
 PSPACE-completo, lo cual lo hace intratable para problemas complejos
@@ -350,7 +341,7 @@ resulta ser una buena aproximación a un plan del problema inicial.
     \end{itemize}
 \end{mydef}
 
-\subsection{Proceso de grounding}
+\section{Proceso de grounding}
 
 Dada una especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
 \Sigma^{C}, \Sigma^{O}, I, G)$ se puede obtener su correspondiente tarea $\Pi =
@@ -437,7 +428,7 @@ instancias hasta el momento, esto es, si $G \subseteq F$. Un detalle a notar
 es que si la cola se encuentra vacía, entonces se obtiene el resultado de
 Grounding Cartesiano.
 
-\subsection{Grounding Heurístico}
+\section{Grounding heurístico}
 
 Mencionamos que un plan de una tarea es también un plan relajado de la misma.
 Sin embargo, el reciproco no se cumple. Es más, un hecho o una acción que es
@@ -515,74 +506,3 @@ algún plan de la tarea y 0 para las restantes. Pero computar esto es a la vez
 tan difı́cil como obtener una solución y sabemos que es PSPACE-completo. Es por
 eso que para estimar la relevancia se utilizaron técnicas de aprendizaje
 automático y serán el foco de la siguiente sección.
-
-\section{Aprendizaje automático}
-
-El aprendizaje automático es el campo de la inteligencia artificial que busca
-desarrollar programas que aumáticamente mejoren en base a la experiencia. Estos
-métodos difieren del típico paradigma de implementación donde en lugar de ser
-``programado`` es ``entrenado``. Tal entrenamiento consiste en disponerle al
-algoritmo información en forma de ejemplos con el fin de reconocer patrones
-estadísticios y eventualmente determinar reglas que sirvan para automatizar una
-tarea.
-
-En los últimos años varias aplicaciones se han beneficiado de esta área, desde
-programas relacionados con la detección fraudulenta de transacciones con tarjeta
-de credito, sistemas de recomendación que guían usuarios en un servicio de
-acuerdo a sus preferencias, o incluso vehículos que se manejan sin necesidad de
-la intervención del conductor. Al mismo tiempo, una importante cantidad de
-avances teóricos y algorítmicos se fueron realizando formando las bases de este
-campo. TODO: Poner referencias a los ejemplos.
-
-Aún con estos increibles logros, no se conoce aún como crear computadoras que
-aprendan al nivel que las personas lo hacen. No obstante, se han desarrollado
-algoritmos que se han aproximado a este objetivo siendo efectivos para varios
-tipos de problemas.
-
-\newcommand{\vect}[1]{\boldsymbol{#1}}
-
-\subsection{Aprendizaje supervisado}
-
-El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
-objetivo es deducir un modelo a partir de datos anotados. Esta información está
-compuesta por un conjunto de ejemplares y sus correspondientes etiquetas, en
-ocasiones dada por un anotador humano, la cual indica el resultado del modelo a
-partir del dato como entrada. Las etiquetas pueden ser categóricas o continuas
-determinando un problema de clasificación o regresión. Algunas tareas más
-frecuentes de clasificación son la categorización de documentos, reconocimiento
-de lenguaje ofensivo, o análisis de sentimiento. Mientras que para regresión, lo
-son las estimaciones de precios de artículos, objetos, o viviendas.
-
-El resultado de ejecutar un algoritmo de machine learning supervisado se puede
-expresar como una función $f(\vect{x})$ que recibe un ejemplar $\vect{x}$ como
-entrada y genera un vector $\vect{y}$ de salida codificado de la misma manera
-que las etiquetas. Las muestras utilizadas para ajustar $f$ está dado por
-vectores $\{\vect{x}_1, ..., \vect{x}_n\}$ y anotaciones $\{y_1, .. y_n\}$
-conformando el \emph{conjunto de entrenamiento}.
-
-La forma precisa de $f$ es determinada durante la fase de entrenamiento. Una vez
-transcurrida, se puede estimar la identidad de nuevos datos etiquetados
-pertenecientes al \emph{conjunto de test} con el fin de evaluar la performance
-del modelo. En el caso que la predicción se aproxime a la esperada para estas
-nuevas entradas, el modelo logró generalizar la tarea.
-
-Para nuestro objetivo de guiar el proceso de grounding trabajaremos
-principalmente con técnicas de aprendizaje supervisado con el fin de estimar un
-clasificador que determine si un acción es considerada relevante o no para el
-plan de un problema en partcular. En secciones posterioremos volveremos sobre
-este tema para especificar concretamente la forma de los ejemplos $\vect{x}_i$ y
-el significado de sus etiquetas. 
-
-\subsection{Codificación de conjuntos de entrenamiento y test}
-
-Los modelos de aprendizaje automático dpeenden fuertemente de como se
-representen los datos de entrada que uno tiene disponible. Más concretamente los
-vectores $\vect{x}_i$ deben estar codificados en valores numéricos o categóricos
-ya que los algoritmos de aprendizaje dependen fuertemente de este paso de
-preprocesamiento.
-
-
-
-\subsection{Aprendizaje no supervisado}
-
-En contraste al 

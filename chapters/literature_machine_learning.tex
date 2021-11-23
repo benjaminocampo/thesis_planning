@@ -1,0 +1,108 @@
+\chapter{Aprendizaje automático}
+
+En este capítulo se profundizará en el área de \emph{aprendizaje automático}
+abarcando la representación de palabras y oraciones dadas por one-hot encoders,
+word embeddings, conceptos de aprendizaje supervisado y no supervisado, modelos
+de clasificación, y métricas.
+
+\section{Orígenes y evolución}
+
+El aprendizaje automático es el campo de la inteligencia artificial que busca
+desarrollar programas que aumáticamente mejoren en base a la experiencia. Estos
+métodos difieren del típico paradigma de implementación donde en lugar de ser
+``programado`` es ``entrenado``. Tal entrenamiento consiste en disponerle al
+algoritmo información en forma de ejemplos con el fin de reconocer patrones
+estadísticios y eventualmente determinar reglas que sirvan para automatizar una
+tarea.
+
+En los últimos años varias aplicaciones se han beneficiado de esta área, desde
+programas relacionados con la detección fraudulenta de transacciones con tarjeta
+de credito, sistemas de recomendación que guían usuarios en un servicio de
+acuerdo a sus preferencias, o incluso vehículos que se manejan sin necesidad de
+la intervención del conductor. Al mismo tiempo, una importante cantidad de
+avances teóricos y algorítmicos se fueron realizando formando las bases de este
+campo. TODO: Poner referencias a los ejemplos.
+
+Aún con estos increibles logros, no se conoce aún como crear computadoras que
+aprendan al nivel que las personas lo hacen. No obstante, se han desarrollado
+algoritmos que se han aproximado a este objetivo siendo efectivos para varios
+tipos de problemas.
+
+\section{Tipos de aprendizaje}
+
+\subsection{Aprendizaje supervisado}
+
+El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
+objetivo es deducir una modelo a partir de datos anotados y permita mapear
+ejemplos no vistos previamente. Esta información está compuesta por un conjunto
+de ejemplares y sus correspondientes etiquetas, en ocasiones dada por un
+anotador humano, la cual indica el resultado del modelo a partir del dato como
+entrada. Las etiquetas pueden ser categóricas o continuas determinando un
+problema de clasificación o regresión. Algunas tareas más frecuentes de
+clasificación son la categorización de documentos, reconocimiento de lenguaje
+ofensivo, o análisis de sentimiento. Mientras que para regresión, lo son las
+estimaciones de precios de artículos, objetos, o viviendas.
+
+El resultado de ejecutar un algoritmo de machine learning supervisado se puede
+expresar como una función $f(\vect{x})$ que recibe un ejemplar $\vect{x}$ como
+entrada y genera un vector $\vect{y}$ de salida codificado de la misma manera
+que las etiquetas. Las muestras utilizadas para ajustar $f$ está dado por
+vectores $\{\vect{x}_1, ..., \vect{x}_n\}$ y anotaciones $\{y_1, .. y_n\}$
+conformando el \emph{conjunto de entrenamiento}.
+
+La forma precisa de $f$ es determinada durante la fase de entrenamiento. Una vez
+transcurrida, se puede estimar la identidad de nuevos datos etiquetados
+pertenecientes al \emph{conjunto de test} con el fin de evaluar la performance
+del modelo. En el caso que la predicción se aproxime a la esperada para estas
+nuevas entradas, el modelo logró generalizar la tarea.
+
+Sin embargo, los modelos de aprendizaje supervisado están limitados por datos
+anotados disponibles y su disponibilidad dependerá de la dificultad para
+obtenerlos. Algunas tareas son relativamente sencillas para etiquetar para
+cualquier persona, (e.g. como determinar si en una foto aparece un gato),
+mientras que en otros puede llegar a requerir humanos que sean expertos de
+dominio (e.g. abogados, médicos, linguistas, etc).
+
+\subsection{Aprendizaje no supervisado}
+
+En contraste al método anterior, el aprendizaje no supervisado consiste en
+descubrir automáticamente patrones sobre los datos de entrenamiento que permitan
+explicarlos sin depender de datos de anotados. Es considerada como una parte del
+área del análisis y exploración. Es por eso que no pueden ser evaluados
+basándose en exactitud o precisión, si no más bien en la cantidad de información
+que podamos extraer de los datos a partir del uso de estas técnicas. Algo a
+considerar es lo sencillo que es disponer de estos datos al no requerir ningún
+tipo de supervición humana.
+
+\section{Codificación de características}
+
+Los modelos de aprendizaje automático dependen fuertemente de como se
+representen los datos de entrada que uno tiene disponible. Preparar los
+ejemplares para acoplarse apropiadamente a un algoritmo de machine learning con
+el fin de mejorar la performance del modelo es una de las tareas las cuales los
+científicos de datos disponen la mayor parte de su atención y tiempo. Alguna de
+las obligaciones que incluye son la imputación de valores faltantes, manejo de
+outliers, estandarización y escalado, \emph{binning}, y codificación.
+
+En particular pondremos nuestro foco en la codificación de características
+desarrollando métodos \emph{one-hot} y \emph{word embeddings (word embeddings)}.
+
+\subsection{One-hot encoding}
+
+\subsection{Word embeddings (vectores de palabras)}
+
+\section{Entrenamiento y evaluación}
+
+\subsection{Validación cruzada}
+
+\subsection{Búsqueda de hiperparámetros}
+
+\section{Algoritmos de clasificación}
+
+\subsection{Regresión logistica}
+
+\subsection{XGBoost}
+
+\subsection{Redes neuronales}
+
+\section{Métricas de clasificación}

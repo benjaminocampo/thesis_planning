@@ -62,12 +62,12 @@ pertenecientes al \emph{conjunto de test} con el fin de evaluar la performance
 del modelo. En el caso que la predicción se aproxime a la esperada para estas
 nuevas entradas, entonces el modelo habría logrado generalizar la tarea.
 
-Sin embargo, los modelos de aprendizaje supervisado están limitados por datos
-anotados cuya disponibilidad dependerá de la dificultad para obtenerlos. Algunas
-tareas son relativamente sencillas para etiquetar para cualquier persona, (e.g.
-como determinar si en una foto aparece un gato), mientras que en otros puede
-llegar a requerir humanos que sean expertos de dominio (e.g. abogados, médicos,
-lingüistas, etc).
+Sin embargo, los modelos de aprendizaje supervisado están limitados por la
+disponibilidad de las anotaciones y la dificultad para obtenerlas.
+Algunas tareas son relativamente sencillas para etiquetar para cualquier
+persona, (e.g. como determinar si en una foto aparece un gato), mientras que en
+otros puede llegar a requerir humanos que sean expertos de dominio (e.g.
+abogados, médicos, lingüistas, etc).
 
 \section{Aprendizaje no supervisado}
 
@@ -77,8 +77,8 @@ explicarlos sin depender de datos de anotados. Es considerada como una parte del
 área del análisis y exploración. Es por eso que no pueden ser evaluados
 basándose en exactitud o precisión, si no más bien en la cantidad de información
 que podamos extraer de los datos a partir del uso de estas técnicas. Algo a
-considerar es lo sencillo que es disponer de estos datos al no requerir ningún
-tipo de supervición humana.
+considerar es la facilidad para disponer de estos datos (en comparación a los no
+supervisados) al no requerir ningún tipo de supervición humana.
 
 \section{Codificación de características}
 
@@ -92,8 +92,7 @@ valores atípicos, estandarización y escalado, transformación de característi
 numéricas a categóricas, y codificación.
 
 En particular pondremos nuestro foco en la codificación de características
-desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings (word
-embeddings)}.
+desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
 
 \subsection{One-hot encoding}
 
@@ -101,7 +100,7 @@ A menudo los datos disponibles presentan características que no estan dadas en
 un espacio continuo si no más bien categórico. Por ejemplo, se podría describir
 el continente de un país por las clases \emph{inAsia}, \emph{inAfrica},
 \emph{inEurope}, \emph{inSouthAmerica}, \emph{inNorthAmerica} siendo
-eficientemente representarse como enteros $[0, 1, 2, 3, 4]$. De esta manera, si
+eficientemente representables con enteros $[0, 1, 2, 3, 4]$. De esta manera, si
 tenemos una serie de variables categóricas, estas pueden codificarse enumerando
 por variable cada uno de sus objetos. Esta representación es conocida como
 \emph{ordinal encoder}.
@@ -203,12 +202,12 @@ Por ejemplo si la enumeración de las esquemas y tipos fuesen los siguientes:
 
 \begin{align*}
     &\{calibrate: 1,\ turn\_to: 2,\ switch\_on:3,\ take\_image:4 \} \\
-    &\{satellite: 1,\ instrument: 2,\ planet: 3,\ groundstation: 4,\ image: 5\} \\
-    & Longitud\ interfaz\ más\ larga = 4
+    &\{satellite: 1,\ instrument: 2,\ planet: 3,\ groundstation: 4,\ image: 5\}
 \end{align*}
 
-Entonces cada acción tendrá asociado un vector de dimensión $2 \times 4 + 1 = 9$
-y la codificación resultante sería:
+En este la longitud de la interfaz más larga es 4, entonces cada acción tendrá
+asociado un vector de dimensión $2 \times 4 + 1 = 9$ y la codificación
+resultante sería:
 
 \begin{align*}
     (calibrate\ satellite0\ instrument1\ groundstation0) &: (1\ 1\ 1\ 2\ 2\ 4\ 1\ 0\ 0) \\
@@ -217,25 +216,160 @@ y la codificación resultante sería:
     (turn\_to\ satellite0\ groundstation0\ planet5) &: (2\ 1\ 1\ 4\ 1\ 3\ 6\ 0\ 0) \\
 \end{align*}
 
+\subsection{Vectores de palabras (Word embeddings)}
 
-
-
-
-\subsection{Word embeddings (vectores de palabras)}
-
-Un vector denso de palabras (comúnmente conocido como word
-embedding, en inglés) es una de las técnicas de representación de vo-
-cabulario más popular en el área del procesamiento de lenguaje natural.
+Un vector denso de palabras (comúnmente conocido como word embedding, en inglés)
+es una de las técnicas de representación de vocabulario más popular en el área
+del procesamiento de lenguaje natural.
 
 Si bien hay distintas formas de representar palabras en una serie de documentos,
 los word embeddings proveen otra perspectiva que busca encontrar una
 representación vectorial compacta donde cada dimensión logre capturar las
 propiedades subyacentes y latentes de la palabra (sintácticas o semánticas). De
 esta manera, los embeddings son superiores a una representación que permanece en
-un nivel poco profundo
+un nivel poco profundo.
 
-Es capaz de capturar el contexto, semántica, y similitud sintáctica de una
-palabra en un documento
+Su principal característica  es que las palabras relacionadas entre sı́ (ya sea
+por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
+vectorial al cual se proyectan. Por ejemplo, si tenemos las oraciones: ``Que
+tengas una buena mañana`` y ``Que tengas una buena tarde``. Difieren
+semánticamente solo por las palabras ``mañana`` y ``tarde``. No obstante, se
+utilizan en contextos similares, lo cual esperariamos que esten cercanos
+vectorialmente.
+
+Otro ejemplo muy famoso que deja en evidencia el concepto de \emph{analogía} en
+word embeddings, es el que se muestra en la figura 3.1. En ella se identifican
+por medio de barras de colores la dimensión de los vectores asociados a las
+palabras \emph{king}, \emph{man}, \emph{woman}, \emph{queen}, y la operación
+vectorial \emph{king - man + woman}. Cada dimensión se encuentra en la escala de
+$[-2, 2]$ y se le asigna el color de rojo para valores cercanos al extremo
+derecho, azúl para las del extremo izquierdo, y blanco para las que se
+encuentren alrededor del 0.  Algo a notar es que \emph{man} y \emph{woman} son
+mucho más similares de lo que cada uno es con \emph{king} o \emph{queen}. No
+obstante, las franjas roja y azúl que se muestran para cada uno de los ejemplos
+indicando que son parecidos en tal dimensión. Probablemente corresponda a alguna
+característica humana aunque se desconoce que puedan llegar a significar
+debido a la poca interpretabilidad del espacio al cual se proyecta. 
+
+Aun así, lo importante es la comparación entre palabras. Dado que ahora tienen
+una representación vectorial, se pueden sumar o restar obteniendo nuevos
+resultados que forman parte del espacio. Este es el caso del vector dado por
+\emph{king - man + woman}. No conocemos que dimensiones exactamente capturan que
+rey es utilizado para identificar al monarca de un reino, pero se puede
+substraer el caracter masculino del vector \emph{man} y agregar las de
+\emph{woman} esperando que se aproximen a las de \emph{queen}.
+Sorprendentemente, de un total de 400000 palabras sobre las cuales se realizó el
+experimento, reina fue la palabra más cercana. Los detalles del mismo se pueden
+ver desde \footnote{\url{https://jalammar.github.io/illustrated-word2vec/}}.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.68]{figures/king-analogy-viz.png}
+    \caption{Vectores de palabras para ``king``, ``man``, y ``woman``}
+\end{figure}
+
+
+\subsubsection{Modelos de lenguaje}
+
+Después de ver el potencial de los embeddings, surge la pregunta, ¿cómo
+funcionan internamente? ¿de qué manera se obtienen estos vectores de palabras?
+Para ello debemos acudir al concepto de modelos de lenguaje neuronales.
+
+Los embeddings de palabras obtienen su representación a partir de otras sobre
+las que co-ocurren \citep{} y se obtienen a partir del texto que queremos
+representar. Para ello se hace uso de muchos documentos no supervisados y luego
+se representa la compañia de una palabra a partir de una ventana alrededor de
+ella que la contiene. Moviendo la ventana a lo largo de todo el documento, se
+generan ejemplares de entrenamiento para realizar una tarea de \emph{pretexto}.
+
+Los tipos de tareas de pretexto que mencionaremos son \emph{contionous bag of words} y \emph{skipgram}
+
+\subsubsection{Skipgram}
+
+Es un método desarrollado en \citep{Mikolov-2013} que consiste de una red
+neuronal cuyo objetivo de entrenamiento es encontrar representaciones de
+palabras que sean útiles para predecir una palabra dado su contexto. Por ejemplo
+la oración ``Que tengas una buena tarde`` y un contexto de tamaño 3,
+obtendriamos las secuencias ``Que tengas una``, ``tengas una buena``, y ``una
+buena tarde``. A cada ventana removemos el caracter del medio, ``Que \_\_ una``,
+``tengas \_\_ buena``, ``una \_\_ tarde``. Finalmente, en base a los restantes
+intentamos predecir aquel que se quitó. Para esta simple oración se podrían
+construir 3 ejemplares:
+
+\begin{equation*}
+    \begin{bmatrix}
+        Input_1 & Input_2 & Target\\
+        Que & una & tengas  \\
+        tengas & buena & una \\
+        una & tarde & buena
+    \end{bmatrix}
+\end{equation*}
+
+Una vez repetido esto para todas las oraciones del conjunto de datos con el
+que se está trabajando, se asigna una representación inicial aleatoria
+a las palabras. Estas se iran actualizando a medida que la red neuronal
+entrene para la tarea de predicción. El resultado final del modelo neuronal
+es, para cada palabra en el vocabulario, la probabilidad de que sea la faltante.
+
+Más formalmente, dada una secuencia de palabras $w_1, w_2, w_3, ... w_T$,
+maximizar la probabilidad media de registro:
+
+\begin{align*}
+    \frac{1}{T} \sum_{n=1}^{T} 
+                    \sum_{-c \leq j \leq c} \log p(w_{t+j} | w_t)
+\end{align*}
+
+donde $c$ es la ventana de contexto. En la formulación básica de skipgrams el
+valor de $p(w_{t+j}|w_{t})$ está definido como una función de softmax:
+
+\begin{align*}
+    p(w_{t+j}|w_{t}) = \frac{e^{v'_{w_O} v_{w_I}}}{\sum_{w=1}^{W} e^{v'_{w} v_{w_I}}}
+\end{align*}
+
+donde $v_w$ y $v'_w$ son las proyecciones vectoriales de entrada y salida de $w$
+y $W$ es el número de palabras en el vocabulario.
+
+\subsubsection{Continous bag of words}
+
+\subsubsection{Representación vectorial de oraciones}
+
+En \citep{Iacobacci-2016} se explican como utilizar word embeddings para
+desambiguación de sentidos, proponiendo distintos métodos de codificación de
+instancias de entrenamiento a partir de un modelo de lenguaje, con el fin
+de incluirlos en una arquitectura supervisada. En particular, detallaremos
+algunos métodos más sencillos y que son común en la literatura para resolver
+tareas de clasificación que involucren la manipulación de texto.
+
+\textbf{Concatenación}. Este método consiste en concatenar los vectores de las
+palabras que conforman la oración a codificar obteniendo un vector de largo
+igual a la suma de las dimensiones de los vectores individuales. En este caso,
+el problema evidente que surge es la representación de oraciones con distinto
+largo y el tamaño del vector resultante.
+
+\textbf{Promedio}. Como su nombre lo indica, este método computa el centroide de
+los embeddings de todas las palabras que conforman una oración. Usualmente esta
+codificación resulta ser adecuada siempre y cuando los vectores de las palabras
+se encuentren en la misma escala, lo cual no siempre suele ser el caso. Otro
+problema menos evidente es la posibilidad de ocurrencia de palabras poco
+representativas pero que tengan mucho peso en la suma, ignorando las ocurrencias
+que nos interesan para la tarea que se intenta resolver.
+
+\textbf{Promedio normalizado}. Por último, una mejora de la representación
+anterior es la normalización por norma L2 de cada vector previo a realizar el
+promedio.
+
+\subsubsection{Word2Vec}
+
+En \citep{Mikolov-Ilya-Kai-Greg-Jeffrey-2013} se presentaron dos arquitecturas
+para calcular representaciones vectoriales continuas de palabras a partir de
+conjuntos de datos muy grandes. El modelo de \emph{skip-grams continuos} y el de
+\emph{bolsa de palabras continuos} (CBOW)
+
+El modelo de CBOW consiste en una red neuronal con una capa oculta lineal
+donde todas las
+
+Estos métodos utilizan redes neuronales para crear un modelo de lenguaje a
+partir de una tarea de pretexto. 
 
 \section{Entrenamiento y evaluación}
 

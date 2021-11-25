@@ -275,19 +275,19 @@ utilizados en esta tesis.
 
 Después de ver el potencial de los embeddings, surge la pregunta, ¿Cómo
 funcionan internamente? ¿De qué manera se obtienen estos vectores de palabras? X
-en \citep{} expresó que el significado de una palabra está determinado según su
-co-ocurrencia. Si contemplamos la oración ``Que tengas un buen`` y se quisiese
-averiguar cual es la expresión que le sigue, lo más probable es que las palabras
-días, tarde, noche, o semana, hayan sido las primeras candidatas. Este tipo de
-tareas en las que se intenta predecir información de la oración a partir del
-contexto o viceversa son denominadas tareas de pretexto y son utilizadas para
-entrenar un clasificador que resuelva esta tarea, únicamente para preservar su
-representación a nivel de palabras.
+en \citep{} expresó que el significado de una palabra está determinado según sus
+palabras vecinas. Si contemplamos la oración ``Que tengas un buen`` y se
+quisiese averiguar cual es la expresión que le sigue, lo más probable es que las
+palabras días, tarde, noche, o semana, hayan sido las primeras candidatas. Este
+tipo de tareas en las que se intenta predecir información de la oración a partir
+del contexto o viceversa son denominadas tareas de pretexto y son utilizadas
+para entrenar un clasificador que resuelva esta tarea, únicamente para preservar
+su representación a nivel de palabras.
 
 \subsubsection{Skipgram}
 
-Es un método desarrollado en \citep{Mikolov-2013} cuyo objetivo es para un
-vocabulario de tamaño $W$, donde una palabra es identificada por su indice $w
+Es un método desarrollado en \citep{Mikolov-2013} cuyo objetivo es, para un
+vocabulario de tamaño $W$ donde una palabra es identificada por su indice $w
 \in \{1, ... W\}$, aprender una representación vectorial para cada $w$. Estas
 representaciones son entrenadas para predecir palabras vecinas a partir de una
 actual. Es decir, dado un largo corpus de entrenamiento, considerarlo como una
@@ -298,7 +298,7 @@ sola secuencia de palabras $w_1, ... w_T$ y maximizar la siguiente función:
                     \sum_{c \in C_t} \log P(w_c | w_t)
 \end{align*}
 
-donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
+Donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
 probabilidad de observar una palabra del contexto $w_c$ dado $w_t$ es modelada a
 partir de sus vectores representación. Por el momento, abstraeremos esto a
 partir de una función \emph{score} $s$ que mapea pares (palabra, contexto) a un
@@ -311,13 +311,13 @@ el contexto es por medio de la función \emph{softmax}:
 
 No obstante, este calculo es bastante costoso computacionalmente siendo que al
 final solo es de interés predecir una palabra del contexto $w_c$ dado una
-palabra $w_t$. Es por eso que el problema puede ser visto como un problema de
-clasificación binaria en lugar de uno multiclase. El objetivo es predecir
+palabra $w_t$. Es por eso que el problema puede ser visto como una tarea de
+clasificación binaria en lugar de una multiclase. El objetivo es predecir
 independientemente la presencia o ausencia de palabras de contexto. Para una
-palabra en la posición $t$ consideramos todas los contextos como ejemplos
-positivos y palabras seleccionadas aleatoriamente del vocabulario como
+palabra en la posición $t$, consideramos todos los contextos como ejemplos
+positivos, y palabras seleccionadas aleatoriamente del vocabulario, como
 negativos. Para un contexto $c$, utilizando la función de costo \emph{binary
-logistic}, obtenemos la siguiente función de probabilidad:
+logistic}, obteniendo la siguiente función de probabilidad:
 
 \begin{align*}
     \log\left( 1 + e^{-s(w_t, w_c)} \right) +
@@ -335,12 +335,12 @@ problema como:
         \sum_{n \in \mathcal{N}_{t, c}} l\left(-s(w_t, n) \right)
 \end{align*}
 
-Una parametrización natural para $s$ entre una palabra $w_t$ y un contexto
-$w_c$ es a partir del uso de vectores de palabras. Definimos dos vectores $u_w$ y $v_w$ en
-$R^d$ también conocidos vectores \emph{input} y \emph{output}. Es decir, tenemos
-vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$ asociados a palabras $w_t$ y $w_c$. Luego el
-\emph{score} puede computarse como $s\left( w_t, w_c \right) = \vect{u}_{w_t}^\top
-\vect{v}_{w_c}$.
+Una parametrización natural para $s$ entre una palabra $w_t$ y un contexto $w_c$
+es a partir del uso de vectores de palabras. Definimos dos vectores $u_w$ y
+$v_w$ en $R^d$ también conocidos como vectores \emph{input} y \emph{output}. Es
+decir, tenemos vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$ asociados a palabras
+$w_t$ y $w_c$. Luego el \emph{score} puede computarse como $s\left( w_t, w_c
+\right) = \vect{u}_{w_t}^\top \vect{v}_{w_c}$.
 
 Para ejemplificar como es el proceso de entrenamiento de este modelo, tomemos la
 secuencia ``Quiero dos rebanadas de pizza mozzarella``. Podemos pensar un
@@ -349,7 +349,7 @@ La imagen X muestra esto como un recuadro de color rosa que contiene 5 palabras
 de la secuencia. Deslizando con un paso de 1, obtendriamos un total de 3
 contextos.
 
-Con cada ventana seleccionamos aquella palabra que cargue más valor informativo,
+Con cada ventana, seleccionamos aquella palabra que cargue más valor informativo,
 en este caso la del medio, y la utilizamos para predecir sus vecinas. De esta
 manera, generamos un conjunto de entrenamiento compuesto por pares (palabra,
 palabra de contexto) donde etiquetamos con 1, si ambas son vecinas, y 0 en caso
@@ -364,19 +364,52 @@ eso que agregar ejemplos negativos de manera aleatoria a cada $w_t$ resulta una
 buena idea.
 
 Luego, al inicio del proceso de entrenamiento se crean dos matrices con valores
-aleatorios matrices, una matriz para los embeddings y otra para los contextos.
-Estas dos matrices de tamaño $V \times d$, tiene una fila por cada palabra en el
-vocabulario. En este caso $d$ es la cantidad de dimensiones que tendran sus
-representaciones. En cada paso de entrenamiento se seleccionan un ejemplo
+aleatorios, una para los embeddings y otra para los contextos. Estas dos
+matrices de tamaño $V \times d$, tiene una fila por cada palabra en el
+vocabulario. En este caso, $d$ es la cantidad de dimensiones que tendran sus
+representaciones. En cada paso de entrenamiento, se selecciona un ejemplo
 positivo y sus correspondientes ejemplos negativos. Este grupo es evaluado por
 el modelo a partir de los vectores representación \emph{input} y \emph{output}
 según el producto escalar entre ellas y su conversión en probabilidades por
 medio de la función \emph{sigmoid}. A partir de la etiqueta real, se puede
-determinar el puntaje de error para cada ejemplo para finalmente actualizar los
+determinar el puntaje de error para cada ejemplo y finalmente actualizar los
 parámetros de las matrices de embeddings y contexto. Eso concluye un paso de
 entrenamiento, que se repite por cada grupo de ejemplos positivos y negativos
 por una cierta cantidad de épocas. Una vez concluido el proceso de
 entrenamiento, la matriz de embeddings contiene las representaciones finales.
+
+\subsubsection{Modelos de lenguaje a nivel de subpalabra}
+
+El modelo de skipgrams al usar vectores representación por cada palabra se
+ignora su estructura interna. Esto fue lo que inspiró el estudio de modelos a
+nivel de subpalabra \citep{}. La principal característica de estos modelos
+radica en la función de score $s$. En lugar de considerar una palabra $w$ en su
+totalidad, esta es dividida en $n$-gramas de caracteres. Para delimitar inicio y
+fin de una palabra se agregan símbolos especiales < y > respectivamente. Esto a
+su vez permite distinguir prefijos y sufijos de otras secuencias de caracteres.
+Por último la palabra $w$ también es incluida como un n-grama o secuencia
+especial. Por ejemplo, la palabra \emph{color} y $n=4$ estaría representada por
+los 4-gramas:
+
+\begin{center}
+    \emph{<col}, \emph{colo}, \emph{olor}, \emph{lor>}
+\end{center}
+
+Junto a la secuencia completa \emph{<color>}. Notar que la secuencia
+\emph{<olor>} correspondiente a la palabra \emph{olor} es diferente al 4-grama
+\emph{olor}. Luego lo único que queda restante es modificar la función
+\emph{score} $s$ del método skipgram por la siguiente:
+
+\begin{align*}
+    s\left(w, c\right) = \sum_{g \in \mathcal{G}_w} \vect{z}_g^{\top}\vect{v}_c
+\end{align*}
+
+Donde $\mathcal{G}_w \subset \{1, .. G\}$ siendo $G$ el conjunto de $n$-gramas de
+tamaño $G$. $\vect{z}_g$ se define como el vector representación del $n$-grama $g$.
+
+Este modelo permite compartir representaciones entre palabras logrando aprender
+una confiable representación a palabras poco comunes siendo útil para los
+experimentos de esta tesis en la tarea de codificación de planes relajados.
 
 \subsubsection{Representación vectorial de oraciones}
 

@@ -8,19 +8,18 @@ supervisado, modelos de clasificación, ajuste de hiperparámetros, y métricas.
 \section{Orígenes y evolución}
 
 El aprendizaje automático es el campo de la inteligencia artificial que busca
-desarrollar programas que aumáticamente mejoren en base a la experiencia. Estos
-métodos difieren del típico paradigma de implementación donde en lugar de ser
+desarrollar programas que mejoren en base a la experiencia. Estos métodos
+difieren del típico paradigma de implementación donde en lugar de ser
 ``programado`` es ``entrenado``. Tal entrenamiento consiste en disponerle al
 algoritmo información en forma de ejemplos con el fin de reconocer patrones
 estadísticios y eventualmente determinar reglas que sirvan para automatizar una
 tarea.
 
 Por moderno que pueda parecer este campo, tuvo sus comienzos en los años 50 a
-partir del famoso \emph{Test de Turing} que consistía de una máquina cuyo
-objetivo era engañar a un humano haciéndole creer que se encontraba delante de
-otra persona en lugar de un ordenador. Llegando a la conclusión de que los
-computadores de propósito general, podrían ser capaces de aprender y ser de
-alguna manera originales.
+partir del famoso \emph{Test de Turing}, una máquina cuyo objetivo era engañar a
+un humano haciéndole creer que se encontraba delante de otra persona en lugar de
+un ordenador, se llegó  a la conclusión de que los computadores de propósito
+general, podrían ser capaces de aprender y ser de alguna manera originales.
 \footnote{\url{https://www.turing.org.uk/scrapbook/test.html}}
 
 En los últimos años varias aplicaciones se han beneficiado de esta área, desde
@@ -64,7 +63,7 @@ nuevas entradas, entonces el modelo habría logrado generalizar la tarea.
 
 Sin embargo, los modelos de aprendizaje supervisado están limitados por la
 disponibilidad de las anotaciones y la dificultad para obtenerlas.
-Algunas tareas son relativamente sencillas para etiquetar para cualquier
+Algunas tareas son relativamente sencillas de etiquetar por cualquier
 persona, (e.g. como determinar si en una foto aparece un gato), mientras que en
 otros puede llegar a requerir humanos que sean expertos de dominio (e.g.
 abogados, médicos, lingüistas, etc).
@@ -171,7 +170,7 @@ $instrument1$ es del tipo $instrument$ cuyo índice es $1$.
 
 La primera dificultad para codificarla surge bajo la pregunta de a que se
 identifica como una palabra de la oración. Una primera iniciativa es definir una
-acción como un token y utilizar un one hot encoding. No obstante, por lo general
+acción como tal y utilizar un one hot encoding. No obstante, por lo general
 una acción no suele ocurrir más de una vez en un plan de la tarea lo cual se
 perdería la información de la frecuencia en que ocurren los objetos en la
 secuencia. No solo es clave capturar los objetos si no también el índice del
@@ -180,12 +179,12 @@ cual se trata. Por lo tanto respetar su numeración es igual de relevante. Por
 representación vectorial, independientemente del esquema o el número de
 parámetros que reciba, y se debe asegurar el orden de la secuencia.
 
-Para solventar estas dificultades se mantuvo un codificación one hot ordinal que
+Para solventar estas dificultades se mantuvo una codificación one hot ordinal que
 consiste en:
 
 \begin{itemize}
     \item Cada elemento en la interfaz de una acción junto a su esquema son
-    definidos como tokens. Eso incluye la numeración de los objetos.
+    definidos como palabras. Eso incluye la numeración de los objetos.
     \item Cada vector que representa a una acción tiene dimensión $2 \times N +
     1$ siendo $N$ la longitud de la interfaz más larga de un esquema. Aquellas
     acciones con una interfaz más chica se les agrega un margen de $0's$ hasta
@@ -225,12 +224,11 @@ del procesamiento de lenguaje natural.
 Si bien hay distintas formas de representar palabras en una serie de documentos,
 los word embeddings proveen otra perspectiva que busca encontrar una
 representación vectorial compacta donde cada dimensión logre capturar las
-propiedades subyacentes y latentes de la palabra (sintácticas o semánticas). De
-esta manera, los embeddings son superiores a una representación que permanece en
-un nivel poco profundo.
+propiedades subyacentes y latentes de la palabra. De esta manera, los embeddings
+son superiores a una representación que permanece en un nivel poco profundo.
 
-Su principal característica  es que las palabras relacionadas entre sı́ (ya sea
-por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
+Su principal característica  es que las expresiones relacionadas entre sı́ (ya
+sea por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
 vectorial al cual se proyectan. Por ejemplo, si tenemos las oraciones: ``Que
 tengas una buena mañana`` y ``Que tengas una buena tarde``. Difieren
 semánticamente solo por las palabras ``mañana`` y ``tarde``. No obstante, se
@@ -245,11 +243,11 @@ vectorial \emph{king - man + woman}. Cada dimensión se encuentra en la escala d
 $[-2, 2]$ y se le asigna el color de rojo para valores cercanos al extremo
 derecho, azúl para las del extremo izquierdo, y blanco para las que se
 encuentren alrededor del 0.  Algo a notar es que \emph{man} y \emph{woman} son
-mucho más similares de lo que cada uno es con \emph{king} o \emph{queen}. No
-obstante, las franjas roja y azúl que se muestran para cada uno de los ejemplos
-indicando que son parecidos en tal dimensión. Probablemente corresponda a alguna
-característica humana aunque se desconoce que puedan llegar a significar
-debido a la poca interpretabilidad del espacio al cual se proyecta. 
+mucho más similares de lo que cada uno es con \emph{king} o \emph{queen}. Otro
+aspecto interesante son las franjas roja y azúl que se muestran para cada uno de
+los ejemplos, indicando que son parecidos en tal dimensión. Probablemente
+corresponda a alguna característica humana aunque se desconoce que puedan llegar
+a significar debido a la poca interpretabilidad del espacio al cual se proyectan.
 
 Aun así, lo importante es la comparación entre palabras. Dado que ahora tienen
 una representación vectorial, se pueden sumar o restar obteniendo nuevos
@@ -268,68 +266,117 @@ ver desde \footnote{\url{https://jalammar.github.io/illustrated-word2vec/}}.
     \caption{Vectores de palabras para ``king``, ``man``, y ``woman``}
 \end{figure}
 
+Esto refleja el gran potencial que tienen los word embeddings y su importancia
+para estudiarlos como métodos de codificación. A continuación analizaremos como
+se calculan dichas representaciones y que algoritmos fueron finalmente
+utilizados en esta tesis.
 
 \subsubsection{Modelos de lenguaje}
 
-Después de ver el potencial de los embeddings, surge la pregunta, ¿cómo
-funcionan internamente? ¿de qué manera se obtienen estos vectores de palabras?
-Para ello debemos acudir al concepto de modelos de lenguaje neuronales.
-
-Los embeddings de palabras obtienen su representación a partir de otras sobre
-las que co-ocurren \citep{} y se obtienen a partir del texto que queremos
-representar. Para ello se hace uso de muchos documentos no supervisados y luego
-se representa la compañia de una palabra a partir de una ventana alrededor de
-ella que la contiene. Moviendo la ventana a lo largo de todo el documento, se
-generan ejemplares de entrenamiento para realizar una tarea de \emph{pretexto}.
-
-Los tipos de tareas de pretexto que mencionaremos son \emph{contionous bag of words} y \emph{skipgram}
+Después de ver el potencial de los embeddings, surge la pregunta, ¿Cómo
+funcionan internamente? ¿De qué manera se obtienen estos vectores de palabras? X
+en \citep{} expresó que el significado de una palabra está determinado según su
+co-ocurrencia. Si contemplamos la oración ``Que tengas un buen`` y se quisiese
+averiguar cual es la expresión que le sigue, lo más probable es que las palabras
+días, tarde, noche, o semana, hayan sido las primeras candidatas. Este tipo de
+tareas en las que se intenta predecir información de la oración a partir del
+contexto o viceversa son denominadas tareas de pretexto y son utilizadas para
+entrenar un clasificador que resuelva esta tarea, únicamente para preservar su
+representación a nivel de palabras.
 
 \subsubsection{Skipgram}
 
-Es un método desarrollado en \citep{Mikolov-2013} que consiste de una red
-neuronal cuyo objetivo de entrenamiento es encontrar representaciones de
-palabras que sean útiles para predecir una palabra dado su contexto. Por ejemplo
-la oración ``Que tengas una buena tarde`` y un contexto de tamaño 3,
-obtendriamos las secuencias ``Que tengas una``, ``tengas una buena``, y ``una
-buena tarde``. A cada ventana removemos el caracter del medio, ``Que \_\_ una``,
-``tengas \_\_ buena``, ``una \_\_ tarde``. Finalmente, en base a los restantes
-intentamos predecir aquel que se quitó. Para esta simple oración se podrían
-construir 3 ejemplares:
-
-\begin{equation*}
-    \begin{bmatrix}
-        Input_1 & Input_2 & Target\\
-        Que & una & tengas  \\
-        tengas & buena & una \\
-        una & tarde & buena
-    \end{bmatrix}
-\end{equation*}
-
-Una vez repetido esto para todas las oraciones del conjunto de datos con el
-que se está trabajando, se asigna una representación inicial aleatoria
-a las palabras. Estas se iran actualizando a medida que la red neuronal
-entrene para la tarea de predicción. El resultado final del modelo neuronal
-es, para cada palabra en el vocabulario, la probabilidad de que sea la faltante.
-
-Más formalmente, dada una secuencia de palabras $w_1, w_2, w_3, ... w_T$,
-maximizar la probabilidad media de registro:
+Es un método desarrollado en \citep{Mikolov-2013} cuyo objetivo es para un
+vocabulario de tamaño $W$, donde una palabra es identificada por su indice $w
+\in \{1, ... W\}$, aprender una representación vectorial para cada $w$. Estas
+representaciones son entrenadas para predecir palabras vecinas a partir de una
+actual. Es decir, dado un largo corpus de entrenamiento, considerarlo como una
+sola secuencia de palabras $w_1, ... w_T$ y maximizar la siguiente función:
 
 \begin{align*}
     \frac{1}{T} \sum_{n=1}^{T} 
-                    \sum_{-c \leq j \leq c} \log p(w_{t+j} | w_t)
+                    \sum_{c \in C_t} \log P(w_c | w_t)
 \end{align*}
 
-donde $c$ es la ventana de contexto. En la formulación básica de skipgrams el
-valor de $p(w_{t+j}|w_{t})$ está definido como una función de softmax:
+donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
+probabilidad de observar una palabra del contexto $w_c$ dado $w_t$ es modelada a
+partir de sus vectores representación. Por el momento, abstraeremos esto a
+partir de una función \emph{score} $s$ que mapea pares (palabra, contexto) a un
+puntaje en $R$. Una posible forma de definir la probabilidad de una palabra en
+el contexto es por medio de la función \emph{softmax}:
 
 \begin{align*}
-    p(w_{t+j}|w_{t}) = \frac{e^{v'_{w_O} v_{w_I}}}{\sum_{w=1}^{W} e^{v'_{w} v_{w_I}}}
+    p(w_{O}|w_{I}) = \frac{e^{s(w_t, w_c)}}{\sum_{j=1}^{W} e^{s(w_t, j)}}
 \end{align*}
 
-donde $v_w$ y $v'_w$ son las proyecciones vectoriales de entrada y salida de $w$
-y $W$ es el número de palabras en el vocabulario.
+No obstante, este calculo es bastante costoso computacionalmente siendo que al
+final solo es de interés predecir una palabra del contexto $w_c$ dado una
+palabra $w_t$. Es por eso que el problema puede ser visto como un problema de
+clasificación binaria en lugar de uno multiclase. El objetivo es predecir
+independientemente la presencia o ausencia de palabras de contexto. Para una
+palabra en la posición $t$ consideramos todas los contextos como ejemplos
+positivos y palabras seleccionadas aleatoriamente del vocabulario como
+negativos. Para un contexto $c$, utilizando la función de costo \emph{binary
+logistic}, obtenemos la siguiente función de probabilidad:
 
-\subsubsection{Continous bag of words}
+\begin{align*}
+    \log\left( 1 + e^{-s(w_t, w_c)} \right) +
+    \sum_{n \in \mathcal{N}_{t, c}} \log\left( 1 + e^{s(w_t, n)} \right)
+\end{align*}
+
+Donde $\mathcal{N}_{t, c}$ es una muestra aleatoria de ejemplares negativos
+tomadas del vocabulario. Si denotamos la función logistica como $l: \rightarrow
+\log \left(1 + e^{-x} \right)$, podemos reescribir la función a maximizar del
+problema como:
+
+\begin{align*}
+    \sum_{n=1}^{T} 
+        \sum_{c \in C_t} l\left(s(w_t, w_c)\right) +
+        \sum_{n \in \mathcal{N}_{t, c}} l\left(-s(w_t, n) \right)
+\end{align*}
+
+Una parametrización natural para $s$ entre una palabra $w_t$ y un contexto
+$w_c$ es a partir del uso de vectores de palabras. Definimos dos vectores $u_w$ y $v_w$ en
+$R^d$ también conocidos vectores \emph{input} y \emph{output}. Es decir, tenemos
+vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$ asociados a palabras $w_t$ y $w_c$. Luego el
+\emph{score} puede computarse como $s\left( w_t, w_c \right) = \vect{u}_{w_t}^\top
+\vect{v}_{w_c}$.
+
+Para ejemplificar como es el proceso de entrenamiento de este modelo, tomemos la
+secuencia ``Quiero dos rebanadas de pizza mozzarella``. Podemos pensar un
+contexto como una ventana que se desliza a través del conjunto de entrenamiento.
+La imagen X muestra esto como un recuadro de color rosa que contiene 5 palabras
+de la secuencia. Deslizando con un paso de 1, obtendriamos un total de 3
+contextos.
+
+Con cada ventana seleccionamos aquella palabra que cargue más valor informativo,
+en este caso la del medio, y la utilizamos para predecir sus vecinas. De esta
+manera, generamos un conjunto de entrenamiento compuesto por pares (palabra,
+palabra de contexto) donde etiquetamos con 1, si ambas son vecinas, y 0 en caso
+contrario. El resultado final para cada contexto se puede ver en la figura X'.
+Esta es la simplificación del problema para trabajar sobre una tarea de
+clasificación binaria. En lugar de ser multiclase cuya  etiqueta sería la
+palabra de contexto, la incluimos como característica y reemplazamos las
+anotaciones por 1's y 0's. Ahora bien, con nuestros datos actuales solo
+tendríamos etiquetas con 1's. En tal caso, el modelo en lugar de aprender lo que
+necesitamos, estaría sesgado a siempre predecir afirmativamente. Es por
+eso que agregar ejemplos negativos de manera aleatoria a cada $w_t$ resulta una
+buena idea.
+
+Luego, al inicio del proceso de entrenamiento se crean dos matrices con valores
+aleatorios matrices, una matriz para los embeddings y otra para los contextos.
+Estas dos matrices de tamaño $V \times d$, tiene una fila por cada palabra en el
+vocabulario. En este caso $d$ es la cantidad de dimensiones que tendran sus
+representaciones. En cada paso de entrenamiento se seleccionan un ejemplo
+positivo y sus correspondientes ejemplos negativos. Este grupo es evaluado por
+el modelo a partir de los vectores representación \emph{input} y \emph{output}
+según el producto escalar entre ellas y su conversión en probabilidades por
+medio de la función \emph{sigmoid}. A partir de la etiqueta real, se puede
+determinar el puntaje de error para cada ejemplo para finalmente actualizar los
+parámetros de las matrices de embeddings y contexto. Eso concluye un paso de
+entrenamiento, que se repite por cada grupo de ejemplos positivos y negativos
+por una cierta cantidad de épocas. Una vez concluido el proceso de
+entrenamiento, la matriz de embeddings contiene las representaciones finales.
 
 \subsubsection{Representación vectorial de oraciones}
 

@@ -465,7 +465,28 @@ promedio.
 
 \section{Algoritmos de clasificación}
 
+El objetivo principal de un clasificador es aproximar una función no conocida
+$h: \mathbb{R}^d \rightarrow \{c_1,.., c_k\}$ la cual mapea ejemplos de entrada
+a una categoría $c_j$. En particular, nos enfocaremos en clasificadores binarios
+$k = 2$ que fueron los utilizados para la realización de este trabajo.
+
 \subsection{Regresión logistica}
+
+La forma más sencilla de representar un función que discrimine datos de entrada
+en dos clases es a partir de una función lineal que dependa de estos datos:
+
+\begin{align*}
+    h_{\vect{w}, b}\left( \vect{x} \right) &= g\left(\vect{w}^{\top} \vect{x} + b\right) \\
+                                           &= g\left(\sum_{j = 1 }^{d} w_j x_j + b\right) 
+\end{align*}
+
+$\vect{x}$ representa al vector de dimensión $(d \times 1)$ asociado a un
+ejemplo, mientras que $\vect{w}$ y $b$ son parámetros de la función $h$ donde
+$b$ es un escalar y $\vect{w}$ un vector con dimensiones $(d \times 1)$.
+$\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$.
+Por último $g: \mathbb{R} \rightarrow \{0, 1\}$
+
+
 
 \subsection{XGBoost}
 

@@ -385,7 +385,7 @@ cada $w_t$ resulta una buena idea.
 Luego, al inicio del proceso de entrenamiento se crean dos matrices con valores
 aleatorios, una para los embeddings y otra para los contextos. Estas dos
 matrices de tamaño $V \times d$, tiene una fila por cada palabra en el
-vocabulario. En este caso, $d$ es la cantidad de dimensiones que tendran sus
+vocabulario. En este caso, $d$ es la cantidad de dimensiones que tendrán sus
 representaciones. En cada paso de entrenamiento, se selecciona un ejemplo
 positivo y sus correspondientes ejemplos negativos (figura 3.5). Este grupo es
 evaluado por el modelo a partir de los vectores representación \emph{input} y
@@ -470,7 +470,7 @@ $h: \mathbb{R}^d \rightarrow \{c_1,.., c_k\}$ la cual mapea ejemplos de entrada
 a una categoría $c_j$. En particular, nos enfocaremos en clasificadores binarios
 $k = 2$ que fueron los utilizados para la realización de este trabajo.
 
-\subsection{Regresión logistica}
+\subsection{Regresión logística}
 
 La forma más sencilla de representar un función que discrimine datos de entrada
 en dos clases es a partir de una función lineal que dependa de estos datos:
@@ -480,13 +480,23 @@ en dos clases es a partir de una función lineal que dependa de estos datos:
                                            &= g\left(\sum_{j = 1 }^{d} w_j x_j + b\right) 
 \end{align*}
 
-$\vect{x}$ representa al vector de dimensión $(d \times 1)$ asociado a un
+Donde $\vect{w}$ es llamado el \emph{vector de pesos}, y $\vect{b}$ es el \emph{bias}.
+Ambos son parámetros de la función $h$ y son los que se buscan ajustar para lograr
+separar el conjunto de datos. $\vect{x}$ es uno de esos ejemplos. Las dimensiones
+de los vectores $\vect{x}$, y $\vect{w}$ son ambas $(d \times 1)$ en lugar del bias
+que es un escalar. La expresión $\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$. Por lo que el resultado de $\vect{w}^{\top} \vect{x} + b\right$
+es también un escalar. Dado que nos interesa asignar a $\vect{x}$ una categoría se debe
+tomar una decisión en base al resultado obtenido por el producto interno. Es por eso
+la necesidad de agregar una nueva función $g : \mathbb{R} \rightarrow \{c_1, c_2\}$ tal
+que mapea valores a una clase $c_1$, o $c_2$. Esta $g$ es conocida en la literatura como
+función de decisión o activación.
+ 
+
+Donde $\vect{x}$ representa al vector de dimensión $(d \times 1)$ asociado a un
 ejemplo, mientras que $\vect{w}$ y $b$ son parámetros de la función $h$ donde
 $b$ es un escalar y $\vect{w}$ un vector con dimensiones $(d \times 1)$.
 $\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$.
 Por último $g: \mathbb{R} \rightarrow \{0, 1\}$
-
-
 
 \subsection{XGBoost}
 

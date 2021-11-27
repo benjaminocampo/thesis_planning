@@ -466,37 +466,250 @@ promedio.
 \section{Algoritmos de clasificación}
 
 El objetivo principal de un clasificador es aproximar una función no conocida
-$h: \mathbb{R}^d \rightarrow \{c_1,.., c_k\}$ la cual mapea ejemplos de entrada
-a una categoría $c_j$. En particular, nos enfocaremos en clasificadores binarios
-$k = 2$ que fueron los utilizados para la realización de este trabajo.
+$f$ a partir de un modelo $h: \mathbb{R}^d \rightarrow \{c_1,.., c_k\}$ la cual
+mapea ejemplos de entrada a una categoría $c_j$. En particular, nos enfocaremos
+en clasificadores binarios $k = 2$ que fueron los utilizados para la realización
+de este trabajo.
 
-\subsection{Regresión logística}
+\subsection{Modelos lineales}
 
 La forma más sencilla de representar un función que discrimine datos de entrada
 en dos clases es a partir de una función lineal que dependa de estos datos:
 
 \begin{align*}
-    h_{\vect{w}, b}\left( \vect{x} \right) &= g\left(\vect{w}^{\top} \vect{x} + b\right) \\
-                                           &= g\left(\sum_{j = 1 }^{d} w_j x_j + b\right) 
+    h_{\vect{w}, w_0}\left( \vect{x} \right) &= \vect{w}^{\top} \vect{x} + w_0 \\
+                                           &= \sum_{j = 1 }^{d} w_j x_j + w_0
 \end{align*}
 
-Donde $\vect{w}$ es llamado el \emph{vector de pesos}, y $\vect{b}$ es el \emph{bias}.
-Ambos son parámetros de la función $h$ y son los que se buscan ajustar para lograr
-separar el conjunto de datos. $\vect{x}$ es uno de esos ejemplos. Las dimensiones
-de los vectores $\vect{x}$, y $\vect{w}$ son ambas $(d \times 1)$ en lugar del bias
-que es un escalar. La expresión $\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$. Por lo que el resultado de $\vect{w}^{\top} \vect{x} + b\right$
-es también un escalar. Dado que nos interesa asignar a $\vect{x}$ una categoría se debe
-tomar una decisión en base al resultado obtenido por el producto interno. Es por eso
-la necesidad de agregar una nueva función $g : \mathbb{R} \rightarrow \{c_1, c_2\}$ tal
-que mapea valores a una clase $c_1$, o $c_2$. Esta $g$ es conocida en la literatura como
-función de decisión o activación.
- 
-
-Donde $\vect{x}$ representa al vector de dimensión $(d \times 1)$ asociado a un
-ejemplo, mientras que $\vect{w}$ y $b$ son parámetros de la función $h$ donde
-$b$ es un escalar y $\vect{w}$ un vector con dimensiones $(d \times 1)$.
+Donde $\vect{w}$ es llamado el \emph{vector de pesos}, y $\vect{w_0}$ es el
+\emph{sesgo}. Ambos son parámetros de la función $h$ y son los que se buscan
+ajustar para lograr separar el conjunto de datos. $\vect{x}$ es uno de esos
+ejemplos. Las dimensiones de los vectores $\vect{x}$, y $\vect{w}$ son ambas $(d
+\times 1)$ a diferencia del sesgo que es un escalar. La expresión
 $\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$.
-Por último $g: \mathbb{R} \rightarrow \{0, 1\}$
+Por lo que el resultado de $\vect{w}^{\top} \vect{x} + b$ es también un escalar.
+Dado que nos interesa asignar a $\vect{x}$ una categoría, se debe decidir a cual
+pertenece en base al resultado obtenido por el producto interno. Es por eso que
+surge la necesidad de agregar una nueva operación que discrimine un valor de
+entrada en una clase. Para ello definimos la función $f: \mathbb{R} \rightarrow
+\{c_1, c_2\}$ conocida como \emph{función de decisión} tal que mapea valores a
+una clase $c_1$, o $c_2$.
+
+Una posible función de decisión podría estar definida como $f(x) = c_1$ si $x
+\geq 0$, $f(x) = c_2$ caso contrario. Por lo tanto la frontera de decisión queda
+definida por la relación $h_{\vect{w}, w_0}\left( \vect{x} \right) = 0$ y
+corresponde a un hiperplano de ($d-1$ dimensiones) en uno de $d$ dimensiones. El
+sesgo $w_0$ desplaza el hiperplano del origen coordenados de $d$.
+
+Algunas veces es conveniente usar una notación más compacta en la que
+introducimos una ``inocente`` componente de entrada más $x_0 = 1$ al vector
+$\vect{x}$ para luego definir $\vect{w}' = (w_0, \vect{w})$ y $\vect{x}' = (x_0,
+\vect{x})$ de tal manera que 
+
+\begin{align*}
+    h_{\vect{w'}}\left( \vect{x'} \right) &= \vect{w'}^{\top} \vect{x'}\\
+                                           &= \sum_{j = 0 }^{d} w_j x_j
+\end{align*}
+
+Ahora la frontera de decisión corresponde a un hiperplano de dimensión $d$ que
+pasa por el origen del espacio $d + 1$ dimensional. A partir de ahora, cada vez
+que se omita el sesgo estaremos utilizando esta notación.
+
+\subsection{Modelos probabilisticos}
+
+En el capítulo 2 mencionamos que el objetivo de usar un algoritmo de aprendizaje
+automático era con el fin de determinar una función que modele la probabilidad
+de que una acción sea relevante para encontrar un plan de una tarea STRIPS. Sin
+embargo desconocemos aún de que manera se obtienen estas probabilidades, es por
+eso que el foco de esta sección es indagar sobre los modelos probabilisticos.
+
+El objetivo es modelar la densidad condicional $p(c_k | \vect{x})$ que
+representa la probilidad de la clase $c_k$ dado $\vect{x}$. El inconveniente con
+esto es que cada condicionamiento define una densidad probabilistica. Por lo que
+se tendría una por cada posible ejemplar $\vect{x}$ resultando intratable de
+modelar. No obstante, si se considera el condicionamiento $p(\vect{x} | c_k)$
+solo es necesario modelar una cantidad pequeña de clases, en especial para un
+clasificador binario. Para nuestra suerte $p(c_k | \vect{x})$ está relacionado
+con $p(\vect{x} | c_k)$ por la \emph{regla de Bayes}.
+
+\begin{align*}
+    p\left( c_1 | \vect{x} \right) &= \frac{p\left( \vect{x} | c_1 \right)p(c_1)}{
+                                            p\left( \vect{x} | c_1 \right) p(c_1) + 
+                                            p\left( \vect{x} | c_2 \right)p(c_2)} \\
+                                   &= \frac{1}{1 + \exp\left( -a \right)} \\
+                                   &= \sigma(a)
+\end{align*}
+
+Donde definimos $a = \ln \frac{p\left( \vect{x} | c_1 \right) p\left( c_1
+\right)}{p\left( \vect{x} | c_2 \right) p\left( c_2 \right)}$. La función
+$\sigma(a)$ es conocida como la función \emph{sigmoide} y juega un importante
+rol en muchos algoritmos de clasificación por su propiedad de simetría
+$\sigma(-a) = 1 - \sigma(a)$, el significado de su inversa $a = \ln \left(
+\frac{\sigma}{1 - \sigma} \right)$ que representa el logaritmo del radio de las
+probabilidades de las clases $c_1$ y $c_2$, y la capacidad de mapear el eje real
+en un intervalo finito.
+
+Se puede generalizar esta ecuación para el caso $k > 2$ de la siguiente manera:
+
+\begin{align*}
+    p\left( c_k | \vect{x} \right) &= \frac{p\left( \vect{x} | c_k \right)p(c_k)}{
+                                                \sum_{j=1}^{k} p\left( \vect{x} |
+                                                c_j \right) p(c_j) } \\
+                                       &= \frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j} \\
+\end{align*}
+
+Donde $a_k = \ln p\left( \vect{x} | c_k \right) p\left( c_k \right)$. La función
+$\frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j}$ es conocida como la función
+\emph{softmax} ya que es una versión suavizada del \emph{max} en el sentido de
+si $a_k >> a_j$ para todo $j \neq k$ entonces $p(c_k | \vect{x}) \approx 1$ y
+$p(c_j | \vect{x} \approx 0)$.
+
+\subsection{Función de costo}
+
+Varios de los métodos de machine learning existentes no pueden obtener los pesos
+$W$ de manera analítica. Es por eso que se hacen uso de métodos iterativos en
+base a una \emph{función de costo} que mide la precisión de su predicción en
+comparación con la etiqueta. Si tenemos ejemplos de entrenamiento
+$\{(\vect{x}^{(1)}, y^{(1)}), ..., (\vect{x}^{(n)}, y^{(n)})\}$ podemos definir la
+función de costo en base a cada ejemplar $i$.
+
+Un ejemplo clásico de función de costo es el error cuadratico medio:
+
+\begin{align*}
+    J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right) - y \right)
+\end{align*}
+
+Por lo tanto al minizar $J$ se estará reduciendo el error de estimación de $h$
+obteniendo que $h_{\vect{w}}\left( \vect{x}^{(i)} \right) \approx f(\vect{x}^{(i)})$. Para
+lograr tal minimización, existe una técnica denominada \emph{descenso por el
+gradiente}. la cual actualiza de manera iterativa de los parámetros W, logrando
+la convergencia de la función de costo J a un mínimo valor.
+
+\subsection{Descenso por el gradiente}
+
+Definimos $\vect{\Delta J\left( w \right)}$ al gradiente de $J$ en $\vect{w}$
+como $\vect{\Delta J\left( \vect{w} \right)} = \left(\frac{\partial
+J(\vect{w})}{\partial w_1}, ..., \frac{\partial J(\vect{w})}{\partial w_n}
+\right)$, el vector de derivadas parciales. Este algoritmo empieza con una
+inicialización aleatoria de $\vect{w}$ donde en cada iteración se determina
+$\vect{\Delta J\left( w \right)}$. El negativo del gradiente indica la dirección
+de mayor descenso en el cual la función $J(\vect{w})$ disminuye. Por lo tanto si
+al vector $\vect{w}$ se le suma el negativo del gradiente se estaría
+dirigiendolo en torno a un mínimo local de la función de costo. La magnitud del
+desplazamiento vectorial en cada iteración está determinado por una constante
+$\alpha$ conocida como la \emph{taza de aprendizaje}.
+
+\begin{align*}
+    \vect{w} \leftarrow \vect{w} - \alpha \vect{\Delta J\left( w \right)}
+\end{align*}
+
+En cada iteración se realiza la operación de la ecuación actualizando
+$\vect{w}$. Algo a notar es que es una operación vectorial de tal manera que
+cada componente se actualice simultaneamente. Intuitivamente, en cada paso, dado
+a que siempre $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$ disminuirá
+y eventualmente la función de costos $J$ convergerá a su valor mínimo en $T$
+iteraciones. El método de descenso por el gradiente es también llamado el
+optimizador de la función de costo. En la literatura hay varias variantes de
+este método que llevan a optimizadores más complejos y eficientes, tales como
+\emph{adam}, \emph{descenso por el gradiente estocástico}, entre otros.
+
+\subsection{Sobreajuste (overfitting)}
+
+Una vez optimizado la función de costo y haber encontrado los configuración de
+$\vect{w}$ que minimize la función de costo se pueden utilizar estos pesos
+aprendidos para hacer predicciones de ejemplos no antes visto en el proceso de
+entrenamiento. Sin embargo, algo que suele ocurrir al utilizar solamente la
+función de costo para optimizar modelos de machine learning, es que tienden a
+sobreajustar los datos de entrenamiento reduciendo su error pero obteniendo
+malas predicciones en estos nuevos ejemplares. Por lo general suele asociarse
+con la magnitud de los coeficientes en $\vect{w}$ que suele ser muy alta para
+estos casos. Otras razones de esto suele ser la dimensión de $\vect{w}$. En
+cuanto mayor la cantidad de parámetros de ajuste, existen más chances de que el
+modelo de machine learning presente sobreajuste. Para solucionar esto se suele
+recurrir a varias técnicas con el fin de obtener modelos sencillos pero que
+logren generalizar la tarea que se está queriendo clasificar. Uno de ellos es
+agregar a la función de costo un \emph{término de regularización} sobre las
+componentes de $\vect{w}$ para lidiar el problema de su magnitud. Por ejemplo para
+el error cuadratico medio:
+
+\begin{align*}
+    J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right) - y \right) +
+                  \frac{\lambda}{2} ||\vect{w}||^{2}
+\end{align*}
+
+Otros métodos para el control del overfitting dependen del método de
+clasificación que se utilice, función de costo, parámetros de ajuste, entre
+otros que iremos explicando a medida que avancemos con los modelos utilizados en
+los experimentos.
+
+\subsection{Regresión logística}
+
+El primer modelo de clasificación que veremos es la \emph{regresión logistica}. Es un
+clasificador binario que busca modequelar la probabilidad a posterior de $c_1$ a
+partir de una función sigmoide actuando sobre los vectores de
+entrada:
+
+\begin{align*}
+    p\left( c_1 | \vect{x} \right) = \sigma\left( \vect{w}^{\top} \vect{x} \right)
+\end{align*}
+
+Luego $p\left( c_2 | \vect{x} \right) = 1 - p\left( c_1 | \vect{x} \right)$.
+Para un espacio de características $\vect{x}$ de $d$ dimensiones este modelo
+consta de $d$ parámetros para ajustar. En particular este método suele codificar
+las etiquetas de las clases $c_1$ y $c_2$, como $0$ y $1$, ya que permite
+algunas simplificaciones en la definición de su función de costo.
+
+De esta manera podemos pensar la etiqueta $y$ como observaciones discretas de una
+distribución bernoulli.
+
+\begin{align*}
+    & p(y = 1 | \vect{x}) = h_{\vect{w}}(\vect{x}) \\
+    & p(y = 0 | \vect{x}) = 1 - h_{\vect{w}}(\vect{x}) \\
+    & p(y | \vect{x}) = (h_{\vect{w}}(\vect{x}))^{y}(1 - h_{\vect{w}}(\vect{x}))^{1 - y} \\
+\end{align*}
+
+Luego los pesos $\vect{w}$ se obtienen a partir de un optimizador del tipo del
+descenso por el gradiente minimizando la función de costo definida como:
+
+\begin{align*}
+    J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y^{i} | x^{i}) \\
+                             &= \sum_{i=1}^{n}
+                                    y^{i}\log\left( h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) +
+                                    (1 - y^{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right)
+\end{align*}
+
+Algo a notar es que la función de costo se puede expresar como suma de penalizaciones
+individuales:
+
+\begin{align*}
+    J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y^{i} | x^{i}) \\
+                             &= \sum_{i=1}^{n} \ell\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right), y^{(i)}\right)
+\end{align*}
+
+Donde $\ell$ es la penalización a nivel de ejemplo:
+
+\begin{align*}
+    \ell\left( \vect{x}, y \right) =
+    \begin{cases}
+        y^{i}\log\left( h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) & y = 1 \\
+        (1 - y^{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) & y = 0
+    \end{cases}
+\end{align*}
+
+Si analizamos la forma de $\ell$ para ambos casos podemos observar que, $J$
+captura la intuición de que mayores errores en la predicción deben recibir
+mayores penalizaciones.
+
+Para el caso en que la etiqueta es $y = 1$. La función de costo a nivel de
+ejemplo es la curva que se marca en color azúl de la figura X donde se puede ver
+que si $h_{\vect{w}}\left( \vect{x} \right) \rightarrow 0$ (la función de
+predicción asigna a $\vect{x}$ una probabilidad cercana a $0$), entonces el
+costo incrementa y por lo tanto $\ell(\vect{x}, y) \rightarrow \infty$. Si
+$h_{\vect{x}}\left( \vect{x} \right) \rightarrow 1$ entonces el costo disminuye
+y $\ell(\vect{x}, y) \rightarrow 0$. De manera similar ocurre para el caso $y =
+0$ y la curva marcada en rojo de la figura X'.
+
+
 
 \subsection{XGBoost}
 

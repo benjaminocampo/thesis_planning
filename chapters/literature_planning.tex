@@ -60,7 +60,8 @@ entorno. Por ejemplo, consideremos la siguiente acción $A$:
 \end{align*}
 
 $A$ no es aplicable en el estado $\{p, r\}$, ya que, no se cumple su
-precondición, pero si en el estado $\{p\}$ transformandolo en el estado $\{q\}$. Se puede interpretar las acciones como operadores de transformación de
+precondición, pero si en el estado $\{p\}$ transformandolo en el estado $\{q\}$.
+Se puede interpretar las acciones como operadores de transformación de
 estados en el que su ejecución genera que ciertos símbolos proposicionales
 empiecen a valer o no según si estos ocurren positivamente o negativamente en el
 efecto de la acción.
@@ -141,11 +142,11 @@ técnicas del área.
     \end{itemize}
 \end{mydef}
 
-Para ejemplificar estas definiciones consideremos el problema de la figura 2.1.
-Tenemos único agente $a_1$ que se encuentra inicialmente en la posición $l_1$
-marcada en azúl y desea ir hacia la ubicación $l_4$ en rojo. Los enlaces de la
-figura indican los posibles movimientos dentro del mapa. La tarea STRIPS en este
-caso estaría dada por:
+Para ejemplificar estas definiciones consideremos el problema de la Figura
+\ref{fig:agent_example} Tenemos único agente $a_1$ que se encuentra inicialmente
+en la posición $l_1$ marcada en azúl y desea ir hacia la ubicación $l_4$ en
+rojo. Los enlaces de la figura indican los posibles movimientos dentro del mapa.
+La tarea STRIPS en este caso estaría dada por:
 
 \begin{align*}
     F = \{&at(a_1, l_1), at(a_1, l_2), at(a_1, l_3), at(a_1, l_4)\} \\
@@ -165,6 +166,7 @@ la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
     \includegraphics[scale=0.5]{figures/agent_example.png}
     \caption{Ejemplo del problema del agente. Su posición inicial es la ubicación
              $l1$ en azúl queriendo llegar a la posición $l4$ marcada con rojo.}
+    \label{fig:agent_example}
 \end{figure}
 
 
@@ -257,8 +259,8 @@ definición de la tarea donde se mencionan los objetos concretos a modelar, el
 estado inicial, y la meta. Esta separación resulta importante ya que diferentes
 tareas de un mismo dominio comparten una estructura común.
 
-Los Listing 2.1 y 2.2 muestran los archivos de dominio y tarea del ejemplo del
-agente escritas en PDDL.
+Los Listing \ref{lst:agent-domain} y \ref{lst:agent-task} muestran los archivos
+de dominio y tarea del ejemplo del agente escritas en PDDL.
 
 \begin{lstlisting}[
     float=!htb,
@@ -386,7 +388,8 @@ técnicas de aprendizaje automático.
 
 
 \begin{algorithm}
-    \caption{Grounding por alcanzabilidad relajada}\label{alg:cap}
+    \caption{Grounding por alcanzabilidad
+    relajada}\label{alg:grounding_delete_relaxed}
     \begin{algorithmic}
     \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
     \Sigma^{C}, \Sigma^{O}, I, G)$
@@ -412,9 +415,10 @@ técnicas de aprendizaje automático.
     \end{algorithmic}
 \end{algorithm}
 
-El algoritmo implementado por Fast Downward parte de una cola $q$ que almacena
-todos los símbolos proposicionales del estado inicial. A partir de allí, se
-remueve elemento a elemento de $q$ consultando si es un hecho o una acción.
+El algoritmo \ref{alg:grounding_delete_relaxed} implementado por Fast Downward
+parte de una cola $q$ que almacena todos los símbolos proposicionales del estado
+inicial. A partir de allí, se remueve elemento a elemento de $q$ consultando si
+es un hecho o una acción.
 
 En el caso de encontrarse con un hecho, se lo instancia y se agregan a $q$ todas
 las acciones aplicables (aún no procesadas) a partir de las proposiciones
@@ -456,7 +460,7 @@ procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
 \end{mydef}
 
 \begin{algorithm}
-    \caption{Grounding por alcanzabilidad relajada}\label{alg:cap}
+    \caption{Grounding heurístico}\label{alg:grounding-heuristico}
     \begin{algorithmic}
     \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
     \Sigma^{C}, \Sigma^{O}, I, G)$
@@ -465,7 +469,7 @@ procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
     \State $F \gets \emptyset$
     \State $A \gets \emptyset$
     \While{$ \lnot (q.empty() \lor G \subseteq F) \land |A| \leq N$}    
-    \If{q.containsFact()}
+    \If{$q.containsFact()$}
         \State $f \gets q.popFact()$
         \State $F \gets F \cup \{f\}$
         \For{$a \notin A \land pre(a) \subseteq F$}
@@ -497,12 +501,13 @@ es para la tarea obtenida por grounding total. No obstante, no es
 sólo si las acciones correspondientes de al menos un plan (de la tarea obtenida
 por grounding total) fueron procesadas.
 
-Por último, algo a considerar es el remplazo de la cola del Algoritmo 1, por una
-cola de prioridades que asigna a las acciones un nivel de relevancia por la cual
-son ordenadas. La relevancia de una acción está directamente relacionada con la
-probabilidad de que esta pertenezca a un plan de la tarea. Notar que una
-estimación ideal sería una probabilidad de 1 para las acciones que ocurren en
-algún plan de la tarea y 0 para las restantes. Pero computar esto es a la vez
-tan difı́cil como obtener una solución y sabemos que es PSPACE-completo. Es por
-eso que para estimar la relevancia se utilizaron técnicas de aprendizaje
-automático y serán el foco del siguiente capítulo.
+Por último, algo a considerar es el remplazo de la cola del Algoritmo
+\ref{alg:grounding-heuristico}, por una cola de prioridades que asigna a las
+acciones un nivel de relevancia por la cual son ordenadas. La relevancia de una
+acción está directamente relacionada con la probabilidad de que esta pertenezca
+a un plan de la tarea. Notar que una estimación ideal sería una probabilidad de
+1 para las acciones que ocurren en algún plan de la tarea y 0 para las
+restantes. Pero computar esto es a la vez tan difı́cil como obtener una solución
+y sabemos que es PSPACE-completo. Es por eso que para estimar la relevancia se
+utilizaron técnicas de aprendizaje automático y serán el foco del siguiente
+capítulo.

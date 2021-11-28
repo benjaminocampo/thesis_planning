@@ -38,7 +38,7 @@ tipos de problemas.
 \section{Aprendizaje supervisado}
 
 El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
-objetivo es deducir una modelo a partir de datos anotados que permita mapear
+objetivo es deducir un modelo a partir de datos anotados que permita mapear
 ejemplos no vistos previamente. Esta información está compuesta por un conjunto
 de ejemplares y sus correspondientes etiquetas, en ocasiones dada por un
 anotador humano, la cual indica el resultado del modelo a partir del dato como
@@ -236,18 +236,19 @@ utilizan en contextos similares, lo cual esperariamos que esten cercanos
 vectorialmente.
 
 Otro ejemplo muy famoso que deja en evidencia el concepto de \emph{analogía} en
-word embeddings, es el que se muestra en la figura 3.1. En ella se identifican
-por medio de barras de colores la dimensión de los vectores asociados a las
-palabras \emph{king}, \emph{man}, \emph{woman}, \emph{queen}, y la operación
-vectorial \emph{king - man + woman}. Cada dimensión se encuentra en la escala de
-$[-2, 2]$ y se le asigna el color de rojo para valores cercanos al extremo
-derecho, azúl para las del extremo izquierdo, y blanco para las que se
-encuentren alrededor del 0.  Algo a notar es que \emph{man} y \emph{woman} son
-mucho más similares de lo que cada uno es con \emph{king} o \emph{queen}. Otro
-aspecto interesante son las franjas roja y azúl que se muestran para cada uno de
-los ejemplos, indicando que son parecidos en tal dimensión. Probablemente
-corresponda a alguna característica humana aunque se desconoce que puedan llegar
-a significar debido a la poca interpretabilidad del espacio al cual se proyectan.
+word embeddings, es el que se muestra en la Figura \ref{fig:king-queen-example}.
+En ella se identifican por medio de barras de colores la dimensión de los
+vectores asociados a las palabras \emph{king}, \emph{man}, \emph{woman},
+\emph{queen}, y la operación vectorial \emph{king - man + woman}. Cada dimensión
+se encuentra en la escala de $[-2, 2]$ y se le asigna el color de rojo para
+valores cercanos al extremo derecho, azúl para las del extremo izquierdo, y
+blanco para las que se encuentren alrededor del 0.  Algo a notar es que
+\emph{man} y \emph{woman} son mucho más similares de lo que cada uno es con
+\emph{king} o \emph{queen}. Otro aspecto interesante son las franjas roja y azúl
+que se muestran para cada uno de los ejemplos, indicando que son parecidos en
+tal dimensión. Probablemente corresponda a alguna característica humana aunque
+se desconoce que puedan llegar a significar debido a la poca interpretabilidad
+del espacio al cual se proyectan.
 
 Aun así, lo importante es la comparación entre palabras. Dado que ahora tienen
 una representación vectorial, se pueden sumar o restar obteniendo nuevos
@@ -264,6 +265,7 @@ ver desde \footnote{\url{https://jalammar.github.io/illustrated-word2vec/}}.
     \centering
     \includegraphics[scale=0.68]{figures/king-analogy-viz.png}
     \caption{Vectores de palabras para ``king``, ``man``, y ``woman``}
+    \label{fig:king-queen-example}
 \end{figure}
 
 Esto refleja el gran potencial que tienen los word embeddings y su importancia
@@ -287,27 +289,27 @@ para preservar su representación a nivel de palabras.
 \subsubsection{Skipgram}
 
 Es un método desarrollado en \citep{Mikolov-2013} cuyo objetivo es, para un
-vocabulario de tamaño $W$ donde una palabra es identificada por su indice $w
-\in \{1, ... W\}$, aprender una representación vectorial para cada $w$. Estas
+vocabulario de tamaño $W$ donde una palabra es identificada por su indice $w \in
+\{1, ... W\}$, aprender una representación vectorial para cada $w$. Estas
 representaciones son entrenadas para predecir palabras vecinas a partir de una
 actual. Es decir, dado un largo corpus de entrenamiento, considerarlo como una
-sola secuencia de palabras $w_1, ... w_T$ y maximizar la siguiente función:
+sola secuencia de palabras $w_1, ... w_T$ y maximizar la función en \ref{eq:skipgram-ideal}
 
-\begin{align*}
-    \frac{1}{T} \sum_{n=1}^{T} 
+\begin{equation} \label{eq:skipgram-ideal}
+    \frac{1}{T} \sum_{n=1}^{T}
                     \sum_{c \in C_t} \log P(w_c | w_t)
-\end{align*}
+\end{equation}
 
 Donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
 probabilidad de observar una palabra del contexto $w_c$ dado $w_t$ es modelada a
 partir de sus vectores representación. Por el momento, abstraeremos esto a
 partir de una función \emph{score} $s$ que mapea pares (palabra, contexto) a un
 puntaje en $R$. Una posible forma de definir la probabilidad de una palabra en
-el contexto es por medio de la función \emph{softmax}:
+el contexto es por medio de la función \emph{softmax}.
 
-\begin{align*}
+\begin{equation} \label{eq:skipram-softmax}
     P(w_{c}|w_{t}) = \frac{e^{s(w_t, w_c)}}{\sum_{j=1}^{W} e^{s(w_t, j)}}
-\end{align*}
+\end{equation}
 
 No obstante, este calculo es bastante costoso computacionalmente siendo que al
 final solo es de interés predecir una palabra del contexto $w_c$ dado una
@@ -319,28 +321,28 @@ positivos, y palabras seleccionadas aleatoriamente del vocabulario, como
 negativos. Para un contexto $c$, utilizando la función de costo \emph{binary
 logistic}, obteniendo la siguiente función de probabilidad:
 
-\begin{align*}
+\begin{equation}
     \log\left( 1 + e^{-s(w_t, w_c)} \right) +
     \sum_{n \in \mathcal{N}_{t, c}} \log\left( 1 + e^{s(w_t, n)} \right)
-\end{align*}
+\end{equation}
 
 Donde $\mathcal{N}_{t, c}$ es una muestra aleatoria de ejemplares negativos
 tomadas del vocabulario. Si denotamos la función logistica como $\ell: x \mapsto
 \log \left(1 + e^{-x} \right)$, podemos reescribir la función a maximizar del
 problema como:
 
-\begin{align*}
+\begin{equation}
     \sum_{n=1}^{T} 
         \sum_{c \in C_t} \ell\left(s(w_t, w_c)\right) +
         \sum_{n \in \mathcal{N}_{t, c}} \ell\left(-s(w_t, n) \right)
-\end{align*}
+\end{equation}
 
 Una parametrización natural para $s$ entre una palabra $w_t$ y un contexto $w_c$
-es a partir del uso de vectores de palabras. Definimos dos vectores $\vect{u}_w$ y
-$\vect{v}_w$ en $\mathbb{R}^d$ también conocidos como vectores \emph{input} y \emph{output}. Es
-decir, tenemos vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$ asociados a palabras
-$w_t$ y $w_c$. Luego el \emph{score} puede computarse como $s\left( w_t, w_c
-\right) = \vect{u}_{w_t}^\top \vect{v}_{w_c}$.
+es a partir del uso de vectores de palabras. Definimos dos vectores $\vect{u}_w$
+y $\vect{v}_w$ en $\mathbb{R}^d$ también conocidos como vectores \emph{input} y
+\emph{output}. Es decir, tenemos vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$
+asociados a palabras $w_t$ y $w_c$. Luego el \emph{score} puede computarse como
+$s\left( w_t, w_c \right) = \vect{u}_{w_t}^\top \vect{v}_{w_c}$.
 
 Para ejemplificar como es el proceso de entrenamiento de este modelo, tomemos la
 secuencia ``Me gustaría dos rebanadas de pizza mozzarella``. Podemos pensar un
@@ -425,9 +427,9 @@ Junto a la secuencia completa \verb|<color>|. Notar que la secuencia
 \verb|olor|. Luego lo único que queda restante es modificar la función
 \emph{score} $s$ del método skipgram por la siguiente:
 
-\begin{align*}
+\begin{equation}
     s\left(w, c\right) = \sum_{g \in \mathcal{G}_w} \vect{z}_g^{\top}\vect{v}_c
-\end{align*}
+\end{equation}
 
 Donde $\mathcal{G}_w \subset \{1, .. G\}$ siendo $G$ el conjunto de $n$-gramas
 de tamaño $G$ y $\vect{z}_g$ el vector representación del $n$-grama $g$.
@@ -476,10 +478,10 @@ de este trabajo.
 La forma más sencilla de representar un función que discrimine datos de entrada
 en dos clases es a partir de una función lineal que dependa de estos datos:
 
-\begin{align*}
+\begin{align}
     h_{\vect{w}, w_0}\left( \vect{x} \right) &= \vect{w}^{\top} \vect{x} + w_0 \\
                                            &= \sum_{j = 1 }^{d} w_j x_j + w_0
-\end{align*}
+\end{align}
 
 Donde $\vect{w}$ es llamado el \emph{vector de pesos}, y $\vect{w_0}$ es el
 \emph{sesgo}. Ambos son parámetros de la función $h$ y son los que se buscan
@@ -506,10 +508,10 @@ introducimos una ``inocente`` componente de entrada más $x_0 = 1$ al vector
 $\vect{x}$ para luego definir $\vect{w}' = (w_0, \vect{w})$ y $\vect{x}' = (x_0,
 \vect{x})$ de tal manera que 
 
-\begin{align*}
+\begin{align}
     h_{\vect{w'}}\left( \vect{x'} \right) &= \vect{w'}^{\top} \vect{x'}\\
                                            &= \sum_{j = 0 }^{d} w_j x_j
-\end{align*}
+\end{align}
 
 Ahora la frontera de decisión corresponde a un hiperplano de dimensión $d$ que
 pasa por el origen del espacio $d + 1$ dimensional. A partir de ahora, cada vez
@@ -532,13 +534,13 @@ solo es necesario modelar una cantidad pequeña de clases, en especial para un
 clasificador binario. Para nuestra suerte $p(c_k | \vect{x})$ está relacionado
 con $p(\vect{x} | c_k)$ por la \emph{regla de Bayes}.
 
-\begin{align*}
+\begin{align}
     p\left( c_1 | \vect{x} \right) &= \frac{p\left( \vect{x} | c_1 \right)p(c_1)}{
                                             p\left( \vect{x} | c_1 \right) p(c_1) + 
                                             p\left( \vect{x} | c_2 \right)p(c_2)} \\
                                    &= \frac{1}{1 + \exp\left( -a \right)} \\
                                    &= \sigma(a)
-\end{align*}
+\end{align}
 
 Donde definimos $a = \ln \frac{p\left( \vect{x} | c_1 \right) p\left( c_1
 \right)}{p\left( \vect{x} | c_2 \right) p\left( c_2 \right)}$. La función
@@ -551,12 +553,12 @@ en un intervalo finito.
 
 Se puede generalizar esta ecuación para el caso $k > 2$ de la siguiente manera:
 
-\begin{align*}
+\begin{align}
     p\left( c_k | \vect{x} \right) &= \frac{p\left( \vect{x} | c_k \right)p(c_k)}{
                                                 \sum_{j=1}^{k} p\left( \vect{x} |
                                                 c_j \right) p(c_j) } \\
                                        &= \frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j} \\
-\end{align*}
+\end{align}
 
 Donde $a_k = \ln p\left( \vect{x} | c_k \right) p\left( c_k \right)$. La función
 $\frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j}$ es conocida como la función
@@ -575,9 +577,9 @@ función de costo en base a cada ejemplar $i$.
 
 Un ejemplo clásico de función de costo es el error cuadratico medio:
 
-\begin{align*}
+\begin{align}
     J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right) - y \right)
-\end{align*}
+\end{align}
 
 Por lo tanto al minizar $J$ se estará reduciendo el error de estimación de $h$
 obteniendo que $h_{\vect{w}}\left( \vect{x}^{(i)} \right) \approx f(\vect{x}^{(i)})$. Para
@@ -599,9 +601,9 @@ dirigiendolo en torno a un mínimo local de la función de costo. La magnitud de
 desplazamiento vectorial en cada iteración está determinado por una constante
 $\alpha$ conocida como la \emph{taza de aprendizaje}.
 
-\begin{align*}
+\begin{align}
     \vect{w} \leftarrow \vect{w} - \alpha \vect{\Delta J\left( w \right)}
-\end{align*}
+\end{align}
 
 En cada iteración se realiza la operación de la ecuación actualizando
 $\vect{w}$. Algo a notar es que es una operación vectorial de tal manera que
@@ -632,10 +634,10 @@ agregar a la función de costo un \emph{término de regularización} sobre las
 componentes de $\vect{w}$ para lidiar el problema de su magnitud. Por ejemplo para
 el error cuadratico medio:
 
-\begin{align*}
+\begin{align}
     J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right) - y \right) +
                   \frac{\lambda}{2} ||\vect{w}||^{2}
-\end{align*}
+\end{align}
 
 Otros métodos para el control del overfitting dependen del método de
 clasificación que se utilice, función de costo, parámetros de ajuste, entre
@@ -649,9 +651,9 @@ clasificador binario que busca modequelar la probabilidad a posterior de $c_1$ a
 partir de una función sigmoide actuando sobre los vectores de
 entrada:
 
-\begin{align*}
+\begin{align}
     p\left( c_1 | \vect{x} \right) = \sigma\left( \vect{w}^{\top} \vect{x} \right)
-\end{align*}
+\end{align}
 
 Luego $p\left( c_2 | \vect{x} \right) = 1 - p\left( c_1 | \vect{x} \right)$.
 Para un espacio de características $\vect{x}$ de $d$ dimensiones este modelo
@@ -662,39 +664,39 @@ algunas simplificaciones en la definición de su función de costo.
 De esta manera podemos pensar la etiqueta $y$ como observaciones discretas de una
 distribución bernoulli.
 
-\begin{align*}
+\begin{align}
     & p(y = 1 | \vect{x}) = h_{\vect{w}}(\vect{x}) \\
     & p(y = 0 | \vect{x}) = 1 - h_{\vect{w}}(\vect{x}) \\
-    & p(y | \vect{x}) = (h_{\vect{w}}(\vect{x}))^{y}(1 - h_{\vect{w}}(\vect{x}))^{1 - y} \\
-\end{align*}
+    & p(y | \vect{x}) = (h_{\vect{w}}(\vect{x}))^{y}(1 - h_{\vect{w}}(\vect{x}))^{1 - y}
+\end{align}
 
 Luego los pesos $\vect{w}$ se obtienen a partir de un optimizador del tipo del
 descenso por el gradiente minimizando la función de costo definida como:
 
-\begin{align*}
+\begin{align}
     J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y^{i} | x^{i}) \\
                              &= \sum_{i=1}^{n}
                                     y^{i}\log\left( h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) +
                                     (1 - y^{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right)
-\end{align*}
+\end{align}
 
 Algo a notar es que la función de costo se puede expresar como suma de penalizaciones
 individuales:
 
-\begin{align*}
+\begin{align}
     J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y^{i} | x^{i}) \\
                              &= \sum_{i=1}^{n} \ell\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right), y^{(i)}\right)
-\end{align*}
+\end{align}
 
 Donde $\ell$ es la penalización a nivel de ejemplo:
 
-\begin{align*}
+\begin{align}
     \ell\left( \vect{x}, y \right) =
     \begin{cases}
         y^{i}\log\left( h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) & y = 1 \\
         (1 - y^{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) & y = 0
     \end{cases}
-\end{align*}
+\end{align}
 
 Si analizamos la forma de $\ell$ para ambos casos podemos observar que, $J$
 captura la intuición de que mayores errores en la predicción deben recibir
@@ -709,10 +711,178 @@ $h_{\vect{x}}\left( \vect{x} \right) \rightarrow 1$ entonces el costo disminuye
 y $\ell(\vect{x}, y) \rightarrow 0$. De manera similar ocurre para el caso $y =
 0$ y la curva marcada en rojo de la figura X'.
 
+\subsection{Redes neuronales}
 
+Una red neuronal artificial (ANN) es un modelo computacional que en los últimos
+tiempos se ha convertido en el estado del arte y el enfoque más utilizado en la
+mayoría de las áreas relacionadas al diseño e implementación de sistemas
+predictivos. Estas áreas incluyen, entre otras el procesamiento del habla, la
+visión por computadoras, el procesamiento del lenguaje natural y la toma de
+decisiones y control en agentes situados.
+
+El término surge bajo los intentos de definir un modelo matemático de una red
+neuronal biológica \citep{}. No obstante, enfocaremos nuestra atención en un tipo
+especifico de red neuronal reconocida por su alto valor práctico, denominado
+\emph{perceptrón multicapa}.
+
+Las redes neuronales surgen de la necesidad de aprender la representación de los
+datos cuya disposición en el espacio requieren de una modelización no lineal
+mucho más compleja. Similar a un modelo lineal, las redes neuronales reciben un
+vector de entrada $\vect{x}$ donde cada componente $x_i$ es ponderada mediante
+una combinación lineal por el peso $w_i$ en $\vect{w}$. La única diferencia es que
+al resultado se le aplica una función de transformación no lineal $g$ conocida
+como \emph{función de activación}.
+
+\begin{equation} \label{eq:nn}
+    z_{\vect{w}}\left( \vect{x} \right) = g\left( \sum_{i=0}^{D} w_i x_i \right)
+\end{equation}
+
+En la ecuación \ref{eq:nn} y figura X' se ilustran los principales componentes de una
+neurona, tanto a nivel biológico como matemático.
+
+Notar además que se puede pensar está red neuronal simple como un modelo de
+regresión logística si la función de activación es la sigmoide, es decir, si $g
+= \sigma$.
+
+\subsection{Perceptrón multicapa}
+
+Este modelo puede describirse como una serie de tranformaciones similares a la
+ecuación \ref{eq:nn}. Primero construimos $M$ combinaciones lineales a partir de
+las componentes del ejemplo de entrada $\vect{x} = (x_0, ..., x_D)$.
+
+\begin{equation}
+    a_j = \sum_{i = 0}^{D} w_{ji}^{(1)} x_{i}
+\end{equation}
+
+Donde $j = 1,..., M$. El supra-índice $(1)$ indica que los parámetros
+correspondientes $w_{ji}^{(1)}$ están en la primera capa de la red. Luego cada
+$a_j$ es transformado por una función de activación no lineal $g$.
+
+\begin{equation}
+    z_j = g(a_j)
+\end{equation}
+
+Estas cantidades corresponden a las salidas de cada neurona o unidad. Luego para
+estos valores construimos nuevamente $K$ combinaciones lineales obteniendo $K$
+neuronas de salida.
+
+\begin{equation}
+    a_k = \sum_{j=0}^{M} w_{kj}^{(2)}z_j
+\end{equation}
+
+Donde $k= 1,..., K$. Esta transformación corresponde con la segunda capa de la
+red, como lo indica el supra-índice $(2)$. Finalmente los unidades de salidas
+realizan su predicción $y_k$ activando los datos por última vez con otra función
+de activación. Esta última depende de la codificación de la variable objetivo, y
+si se está trabajando sobre un problema de regresión o clasificación. Para el
+caso de regresión la función de activación de salida suele ser la función de
+identidad, para clasificación binaria una sigmoide, y para multiclase una softmax.
+
+\begin{equation}
+    y_{k} = \sigma\left( a_k \right)
+\end{equation}
+
+Podemos combinar estas dos transiciones y dar una expresión del modelo completo
+en función de $\vect{x}$ y $\vect{w}$.
+
+\begin{equation}
+    y_k(\vect{x}, \vect{w}) = \sigma\left(
+                \sum_{j=0}^{M} w_{kj}^{(2)}
+                    g\left( \sum_{i = 0}^{D} w_{ji}^{(1)} x_{i}
+                \right)
+            \right)
+\end{equation}
+
+Por lo tanto un modelo neuronal es simplemente una función no lineal que depende
+de un ejemplo $\vect{x}$, que retorna un vector de salida $\vect{y}$, y que es
+controlado por un vector de parámetros $\vect{w}$, donde las dimensiones de
+estos vectores son $D$, $K$, y $(D \times M)$ respectivamente. Esta función
+también puede representarse a partir de un gráfico de red como el que se vé en
+la figura X. El proceso de evaluar un ejemplo puede interpretarse como una
+propagación hacia adelante (\emph{forward propagation} en inglés), que transmite
+la información a través de la red. Por último, algo a notar son las componentes
+$w_{j0}^{(1)}$ y $w_{k0}^{(2)}$ que se corresponden con el sesgo de los modelos
+lineales.
+
+\subsection{Backpropagation}
+
+Una vez determinado explicitamente el modelo, es necesario encontrar el vector
+$\vect{w}$ que ajuste a los datos de entrenamiento y sea capaz de generalizar a
+ejemplares nuevos. Para ello, similar a los modelos lineales se debe definir una
+función objetivo a optimizar, es decir, una función de costo en compañia de una
+regularización para prevenir sobreajuste, a la cual minimizar mediante algún
+método del tipo descenso por el gradiente. El inconveniente para este caso es
+que la función objetivo, en particular la de costo, depende del modelo en
+cuestión para comparar su predicción con la etiqueta real. Lo cual dificulta el
+cálculo del gradiente y el cálculo de los parámetros en la red. Es por eso que
+el método de \emph{backpropagation} a partir de la capa de salida propaga el
+error hacia las capas iniciales derivando el gradiente de manera iterativa y
+asignandole a cada neurona una porción de error en relación a su aporte generado
+en la salida original.
+
+En resumen el algoritmo de aprendizaje de una red neuronal consiste en:
+
+\begin{itemize}
+    \item Inicializar el vector de pesos $\vect{w}$ aleatoriamente.
+    \item Realizar forward propagation sobre una entrada para obtener
+    predicciones.
+    \item Calcular el error cometido en base a una función de optimización
+    (función de perdida y regularización).
+    \item Realizar backpropagation para propagar el error a los parámetros de
+    cada interconexión neuronal actualizandolos mediante descenso por el gradiente.
+    \item Repetir los pasos para cada ejemplo de entrada.
+\end{itemize}
+
+\subsection{Funciones de activación}
+
+Hasta el momento no mencionamos la forma de la función de activación $g$ siendo
+la protagonista para obtener un modelo no lineal. Algunas de las funciones más
+comunes es la \emph{sigmoide} introducida en la sección X. Esta toma valores
+reales y los mapea al rango $[0, 1]$ siendo muy utilizada en procesos de
+clasificación.
+
+Otras funciones muy usadas son la \emph{tanh} (tangente hiperbólica) y
+\emph{ReLU} (unidad rectificadora lineal).
+
+\begin{equation}
+    \tanh\left( x \right) = \frac{2}{1 + \exp(-2x)} - 1
+\end{equation}
+
+\begin{equation}
+    ReLU\left( x \right) = \max(0, x)
+\end{equation}
+
+Notar que la tangente hiperbólica realiza un cambio de escalada de la sigmoide
+mapeando valores reales al rango $[-1, 1]$ como se muestra en la ecuación \ref{eq:tanh_vs_sigmoid}.
+
+\begin{equation} \label{eq:tanh_vs_sigmoid}
+    \tanh\left( x \right) = 2 \sigma(2x) - 1
+\end{equation}
+
+En el caso de la \emph{ReLU} cumple el rol de quitar los valores negativos
+dejando invariantes los positivos.
+
+\subsection{Variantes de arquitectura y métodos de entrenamiento}
+
+Al modelo y procedimiento definido en las secciones X, X', es una de las
+variantes más simples de una red neuronal multicapa. En particular existen
+formas de alterar este proceso que aportan permiten dar cierta flexibilidad al
+predictor en algunas circumstancias. Una de ellas es la posibilidad de
+``apagar`` neuronas aleatoriamente con el fin de evitar el overfitting. Por lo
+general a mayor cantidad de capas, hay más posibilidad de memorizar los datos de
+entrenamiento y obtener no muy buenos resultados en ejemplares nuevos. Es por
+eso que está método, denominado \emph{dropout}, puede reducir la complejidad del
+modelo cada ciertos tramos en el proceso de entrenamiento.
+
+Otra variante es el uso de \emph{batches} al actualizar $\vect{w}$ recopila el
+error de varios ejemplares para su posterior propagación a diferencia del modelo
+explicado en la sección X.
+
+También es posible agregar normalización de caracteristicas en las capas
+iniciales de la red neuronal. El uso de escalas distintas en las componentes de
+los vectores de entrada en el cálculo del error puede llevar a ponderar el error
+cometido en una escala que por sobre otra.
 
 \subsection{XGBoost}
-
-\subsection{Redes neuronales}
 
 \section{Métricas de clasificación}

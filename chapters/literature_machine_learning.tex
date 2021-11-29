@@ -885,4 +885,210 @@ cometido en una escala que por sobre otra.
 
 \subsection{XGBoost}
 
+El ultimo modelo de aprendizaje que veremos es \emph{XGBoost} (eXtreme Gradient
+Boosting en inglés) un modelo de \emph{ensemble} que consiste en combinar la
+respuesta de varios modelos para obtener una respuesta. Es decir, en lugar de
+consultar la predicción de un modelo, $K$ de ellos son utilizados. Este tipo de
+heurísticas y en particular la de XGBoost han sido enormemente utilizadas por
+cientifico de datos siendo el estado del arte en multiples problemas de
+aprendizaje automático. Desde comparaciones en \emph{benchmarks} hasta
+competencias como Netflix prize, Kaggle, y KDDCup.
+
+Otro de los aspectos importantes detrás del éxito de XGBoost es su escalabilidad
+en todo tipo de escenarios siendo muy rapido para manejar consultas de billones
+de ejemplos en dominios donde se cuenta con una cantidad limitada de recursos.
+Esto motivo aún más su uso en esta tesis principalmente por la necesidad de
+modelos con un rápido tiempo de respuesta durante el proceso de grounding
+heurístico.
+
+A diferencia de la regresión logistica y las redes neuronales, XGBoost se basa
+en una estructura completamente distinta para la definición de sus modelos.
+Estas consisten de árboles de decisión donde cada uno aporta su predicción a un
+ejemplo de entrada. El objetivo de utilizar varios clasificadores es con la
+iniciativa de que se complementen entre sí. Por ejemplo, supongamos que queremos
+averiguar si una persona le gusta un videojuego de computadora. Los datos de
+entrada serían vectores cuyas componentes representen su edad y la frecuencia en
+la que utilizan el ordenador. Si mantenemos dos árboles para cada una de estas
+componentes podemos complementar sus respuestas como se muestra en la figura X.
+
+Nuevamente consideremos un conjunto de datos etiquetados ${(\vect{x}_1, y_1),
+..., (\vect{x}_n, y_n)}$ donde cada $\{\vect{x}_i \in \mathbb{R}^{D}\}$. Un
+modelo de \emph{ensemble} del tipo \emph{boosting tree} puede escribirse
+matemáticamente como una suma de $K$ funciones que dependan de un ejemplo
+$\vect{x}_i$.
+
+\begin{equation} \label{eq:xgb-model-1}
+    \hat{y_{i}} = \sum_{k=1}^{K} f_{k} \left( \vect{x}_{i}\right)
+\end{equation}
+
+Donde cada $f_k \in \mathcal{F}$. Ahora bien, ¿Como están definido cada uno de
+los árboles de decisión $f_k$?¿De qué forma son los elementos en $\mathcal{F}$?
+¿Cuales son los parámetros del modelo?. Debemos representar matemáticamente la
+estructura del árbol que asigne un ejemplo de entrada $\vect{x}$ a una
+correspondiente hoja y por ende a un puntaje como vimos en la figura X. Los
+parámetros a encontrar son tales puntajes y se suele referir a ellos como los
+pesos del modelo. Otro factor importante es la manera en que se determina la
+estructura que debe tener cada árbol.
+
+Formalmente $\mathcal{F} = \{f(\vect{x}) = w_{q\left( \vect{x} \right)}\}$ donde
+$q : \mathbb{R}^{D} \rightarrow T$ y $\vect{w} \in \mathbb{R}^{T}$. Aquí $q$
+representa el mapeo de un ejemplo $\vect{x}$ una hoja en el árbol. $T$ es el
+número de hojas de este último. Y $w_{q\left( \vect{x} \right)}$ es una
+componente de $\vect{w}$ que representa el puntaje asociado al ejemplo
+$\vect{x}$ según la estructura del árbol determinada por $q$.
+
+Luego como los modelos vistos hasta ahora, para determinar los pesos $\vect{w}$
+y la estructura del árbol es necesario definir una función objetivo a minimizar
+compuesta por una función de costo y su regularización. No obstante, aprender la
+estructura es mucho más complejo que solo tomar utilizar algún método del tipo
+descenso por el gradiente. Es por eso que la estrategia utilizada por los
+algoritmos de \emph{boosting} es agregar de manera iterativa un nuevo árbol a lo
+aprendido agregando en cada paso el árbol que optimize algún objetivo. Esto da
+lugar a definir la predicción del modelo al paso $(t)$.
+
+\begin{align*}
+    \hat{y_i}^{(0)} &= 0 \\
+    \hat{y_i}^{(1)} &= f_{1}\left( \vect{x}_i \right) = \hat{y_i}^{(0)} + f_1{(\vect{x}_i)} \\
+    ... \\
+    \hat{y_i}^{(t)} &= \sum_{k=1}^{t} f_{k} \left( \vect{x}_{i}\right) = \hat{y_i}^{(t - 1)} + f_t{(\vect{x}_i)}
+\end{align*}
+
+Luego, la función a optimizar en la iteración $(t)$ se define como:
+
+\begin{align}
+    \mathcal{L}^{(t)} &= \sum_{i=1}^{n} \ell\left( y_i, \hat{y_i}^{(t)} \right) + \Omega(f_t) \\
+                      &= \sum_{i=1}^{n} \ell\left( y_i, \hat{y_i}^{(t - 1)} + f_t{(\vect{x}_i)} \right) + \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_{j}^{2}
+\end{align}
+
+Con $\Omega(f_t)$ la regularización para el predictor que se agrega en la
+iteración $(t)$. $\gamma$ y $\lambda$ son parámetros de $\Omega$ que intensifican o
+disminuyen la regularización.
+
+El último requerimiento es optimizar $\mathcal{L}$ para un paso arbitrario y el
+significado de la función de costo $\ell$. XGBoost admite cualquier función de
+perdida que aproxima a partir de una expansión de Taylor de segundo orden.
+
+\begin{equation} \label{eq:xgboost-loss-taylor}
+    \mathcal{L}^{(t)} = \sum_{i = 1}^{n} [
+        \ell\left(y_i,
+                  \hat{y_{i}}^{(t-1)}
+            \right) +
+                g_i f_t(\vect{x}_i) +
+                \frac{1}{2} h_i f_t^{2}(\vect{x}_i)
+        ] + \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_{j}^{2}
+\end{equation}
+
+Donde $g_i$ y $h_i$ son definidas como:
+
+\begin{align}
+    g_i &= \partial_{\hat{y_{i}}^{(t-1)}} \ell\left(y_i, \hat{y_{i}}^{(t-1)}\right) \\
+    h_i &= \partial_{\hat{y_{i}}^{(t-1)}}^{2} \ell\left(y_i, \hat{y_{i}}^{(t-1)}\right)
+\end{align}
+
+Algo a notar de la ecuación \ref{eq:xgboost-loss-taylor} es que $\sum_{i =
+1}^{n} \ell\left(y_i, \hat{y_{i}}^{(t-1)} \right)$ es una suma realizada hasta
+un paso anterior, estando ya calculado por el algoritmo y por lo tanto se
+considera constante para el paso actual $(t)$. Omitiendo dicho término se
+obtiene:
+
+\begin{align}
+    \mathcal{L}^{(t)} &= \sum_{i = 1}^{n} [
+        g_i f_t(\vect{x}_i) +
+                \frac{1}{2} h_i f_t^{2}(\vect{x}_i)
+        ] + \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_{j}^{2} \\
+                      &= \sum_{i = 1}^{n} [ \label{eq:xgboost-loss-final}
+                        g_i w_{q(\vect{x}_i)} +
+                                \frac{1}{2} h_i w_{q(\vect{x}_i)}^{2}
+                        ] + \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_{j}^{2}
+\end{align}
+
+Se puede identificar la penalización de la función de costo que se agrega al
+peso $w_j$ como $G_{j} = \sum_{i \in I_j} g_i$ y $H_j = \sum_{i \in I_j} h_i$
+con $I_j = \{i | q(\vect{x}_i) = j\}$ (Conjunto de índices de ejemplares que son
+asignados a la $j$-ésima hoja). Es decir, cada componente $w_j$ es penalizada
+$|I_{j}|$ veces por $g_i$ y por $h_i$. Luego la ecuación
+\ref{eq:xgboost-loss-final} se puede escribir como:
+
+\begin{equation}
+    \mathcal{L}^{(t)} = \sum_{j = 1}^{T}[G_j w_j + \frac{1}{2} (H_j + \lambda)w_j^2] + \gamma T
+\end{equation}
+
+Finalmente, igualando a $0$ y despejando $w_j$ se obtienen los $w_j$ óptimos para
+un árbol con estructura $q(\vect{x})$ y la mejor forma de evaluar su performance
+son los de las ecuaciones \ref{eq:xgboost-best-w} y \ref{eq:xgboost-best-opt}.
+
+\begin{align}
+    w_{j}^{*} &= - \frac{G_j}{H_j + \lambda} \label{eq:xgboost-best-w}\\
+    \mathcal{L}^{*} &= -\frac{1}{2} \sum_{j=1}^{T} \frac{G_{j}^{2}}{H_j + \lambda} + \gamma T \label{eq:xgboost-best-opt}
+\end{align}
+
+En resumen, para una estructura de árbol dada, cada ejemplo es evaluado
+asignandole una hoja. Se recopilan los ejemplos que pertenecen a cada una de
+ellas y se penaliza según los estadisticos $g_i$ y $h_i$ y finalmente obtener el
+error cometido por el árbol $\mathcal{L^{*}}$. Aquel árbol que tenga menor error
+es el mejor para ser incluido en la iteración actual.
+
 \section{Métricas de clasificación}
+
+Con el fin de evaluar que tan bien se desempeña el modelo se contrastan
+resultados predichos por el clasificador contra otros previamente anotados que
+no formaron parte como material de entrenamiento. Para un problema de
+clasificación binaria donde los positivos corresponden con la clase $1$, y los
+negativos con la $0$ dispusimos de las siguientes métricas.
+
+\textbf{Precisión}. Cociente entre verdaderos positivos y el total de
+predicciones positivas. 
+
+\begin{equation}
+    precision = \frac{TP}{TP + FP}
+\end{equation}
+
+\textbf{Recall}. Cociente entre verdaderos positivos y el total de positivos.
+
+\begin{equation}
+    recall = \frac{TP}{TP + FN}
+\end{equation}
+
+\textbf{F-score} ($F_{\beta}$). El inconveniente de las primeras dos métricas es
+que ambas alcanzan el 100\% en modelos triviales. Es decir aquellos que predicen
+siempre la clase positiva obtienen un valor máximo en recall, mientras los que
+predicen siempre la clase negativa consiguen un valor máximo en precisión. La
+$F_{\beta}$ mide el desbalance entre las dos anteriores ponderando una por sobre
+la otra de acuerdo al valor de $\beta$ pero esta vez penalizando los modelos
+triviales. 
+
+\begin{equation}
+    F_{\beta} = (1 + \beta^2) \frac{precision . recall}{\beta^2 precision + recall}
+\end{equation}
+
+Valores comunes de $\beta$ suelen ser $0.5$ (priorizar precisión), $1$ (ninguna
+prioridad), $1.5$ (priorizar recall).
+
+\textbf{H-score} ($H_{\beta}$). Durante el desarrollo de la tesis se definió una
+variante de la $F_{\beta}$, qie denominamos $H_{\beta}$, permitiendo lidiar con
+datos desbalanceados. Si la cantidad de datos negativos es mucho mayor que la de
+positivos, la precisión puede verse más comprometida que la recall, al haber más
+oportunidades de cometer un falso positivo. Para solucionar en eso, en vez de
+considerar precisión y recall en la ecuación de $F_{\beta}$, utilizar la
+\emph{taza de verdaderos positivos y negativos} (true positive rate y true
+negative rate).
+
+\begin{align}
+    TPR &= \frac{TP}{TP + FN} \\
+    TNR &= \frac{TN}{TN + FP} \\
+    H_{\beta} &= (1 + \beta^2) \frac{TNR . TPR}{\beta^2 TNR + TPR}
+\end{align}
+
+Notar que TNR continua penalizando por la cantidad de falsos positivos de manera
+similar a precisión. No obstante, la métrica es relativa a la cantidad de
+negativos. Si el desbalance es sobre los negativos, entonces la métrica no se ve
+comprometida. De manera similar a $F_{\beta}$, un valor de 0.5 prioriza TNR, de
+1 considera un balance entre ambas métricas, y 1.5 prioriza TPR.
+
+\textbf{Gráficos de distribución de predicciones.} Por úĺtimo, la métrica
+estrella de este trabajo son los gráfico de distribución de predicciones. Dado
+que para el algoritmo de grounding heurístico se utilizan las probabilidades
+asignadas a un plan relajado y una acción, un histograma que refleje la
+distribución de las probabilidades asociadas a cada par es excelente para
+determinar si las clases positivas se distribuyen con una probabilidad mayor que
+las negativas.

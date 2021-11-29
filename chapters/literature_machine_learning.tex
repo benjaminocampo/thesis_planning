@@ -4,7 +4,7 @@
 En este capítulo se profundizará en el área de \emph{aprendizaje automático}
 abarcando la representación de palabras y oraciones dadas por codificaciones del
 tipo one-hot, word embeddings, conceptos de aprendizaje supervisado y no
-supervisado, modelos de clasificación, ajuste de hiperparámetros, y métricas.
+supervisado, modelos de clasificación, y métricas. Este capítulo se baso en mayor parte del contenido en \citep{Bishop-2006}, y \citep{Tianqi-2016} para la explicación de conceptos de aprendizaje supervisado, y  \citep{Bojanowski-Grave-Joulin-Mikolov-2016, bojanowski-2017, Mikolov-2013} para representación de palabras.
 
 \section{Orígenes y evolución}
 
@@ -13,25 +13,25 @@ desarrollar programas que mejoren en base a la experiencia. Estos métodos
 difieren del típico paradigma de implementación donde en lugar de ser
 ``programado`` es ``entrenado``. Tal entrenamiento consiste en disponerle al
 algoritmo información en forma de ejemplos con el fin de reconocer patrones
-estadísticios y eventualmente determinar reglas que sirvan para automatizar una
+estadísticos y eventualmente determinar reglas que sirvan para automatizar una
 tarea.
 
 Por moderno que pueda parecer este campo, tuvo sus comienzos en los años 50 a
 partir del famoso \emph{Test de Turing}, una máquina cuyo objetivo era engañar a
 un humano haciéndole creer que se encontraba delante de otra persona en lugar de
-un ordenador, se llegó  a la conclusión de que los computadores de propósito
+un ordenador, llegando  a la conclusión de que los computadores de propósito
 general, podrían ser capaces de aprender y ser de alguna manera originales.
 \footnote{\url{https://www.turing.org.uk/scrapbook/test.html}}
 
 En los últimos años varias aplicaciones se han beneficiado de esta área, desde
 programas relacionados con la detección fraudulenta de transacciones con tarjeta
-de credito, sistemas de recomendación que guían usuarios en un servicio de
-acuerdo a sus preferencias, o incluso vehículos que se manejan sin necesidad de
-la intervención del conductor. Al mismo tiempo, una importante cantidad de
+de crédito \citep{Fang-2021}, sistemas de recomendación que guían usuarios en un servicio de
+acuerdo a sus preferencias \citep{Burke-2007}, o incluso vehículos que se manejan sin necesidad de
+la intervención del conductor \citep{Sorin-2019}. Al mismo tiempo, una importante cantidad de
 avances teóricos y algorítmicos se fueron realizando formando las bases de este
-campo. TODO: Poner referencias a los ejemplos.
+campo.
 
-Aún con estos increibles logros, no se conoce aún como crear computadoras que
+Aún con estos increíbles logros, no se conoce aún como crear computadoras que
 aprendan al nivel que las personas lo hacen. No obstante, se han desarrollado
 algoritmos que se han aproximado a este objetivo siendo efectivos para varios
 tipos de problemas.
@@ -42,7 +42,7 @@ El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
 objetivo es deducir un modelo a partir de datos anotados que permita mapear
 ejemplos no vistos previamente. Esta información está compuesta por un conjunto
 de ejemplares y sus correspondientes etiquetas, en ocasiones dada por un
-anotador humano, la cual indica el resultado del modelo a partir del dato como
+anotador humano, la cual indica el resultado esperado del modelo a partir del dato como
 entrada. Las etiquetas pueden ser categóricas o continuas determinando un
 problema de clasificación o regresión. Algunas tareas más frecuentes de
 clasificación son la categorización de documentos, reconocimiento de lenguaje
@@ -51,9 +51,9 @@ estimaciones de precios de artículos, objetos, o viviendas.
 
 El resultado de ejecutar un algoritmo de machine learning supervisado se puede
 expresar como una función $f(\vect{x})$ que recibe un ejemplar $\vect{x}$ como
-entrada y genera un vector $\vect{y}$ de salida codificado de la misma manera
-que las etiquetas. Las muestras utilizadas para ajustar $f$ estan dadas por
-vectores $\{\vect{x}_1, ..., \vect{x}_n\}$ y anotaciones $\{y_1, .. y_n\}$
+entrada y genera un valor $y$ de salida codificado de la misma manera
+que las etiquetas. Las muestras utilizadas para ajustar $f$ están dadas por
+pares (vector, etiqueta) $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$
 conformando el \emph{conjunto de entrenamiento}.
 
 La forma precisa de $f$ es determinada durante la fase de entrenamiento. Una vez
@@ -73,403 +73,21 @@ abogados, médicos, lingüistas, etc).
 
 En contraste al método anterior, el aprendizaje no supervisado consiste en
 descubrir automáticamente patrones sobre los datos de entrenamiento que permitan
-explicarlos sin depender de datos de anotados. Es considerada como una parte del
+explicarlos sin depender de datos de anotados. Es considerada como parte del
 área del análisis y exploración. Es por eso que no pueden ser evaluados
 basándose en exactitud o precisión, si no más bien en la cantidad de información
 que podamos extraer de los datos a partir del uso de estas técnicas. Algo a
 considerar es la facilidad para disponer de estos datos (en comparación a los no
-supervisados) al no requerir ningún tipo de supervición humana.
-
-\section{Codificación de características}
-
-Los modelos de aprendizaje automático dependen fuertemente de como se
-representen los datos de entrada que uno tiene disponible. Preparar los
-ejemplares para acoplarse apropiadamente a un algoritmo de machine learning con
-el fin de mejorar la performance del modelo es una de las tareas las cuales los
-científicos de datos disponen la mayor parte de su atención y tiempo. Alguna de
-las obligaciones que incluye son la imputación de valores faltantes, manejo de
-valores atípicos, estandarización y escalado, transformación de características
-numéricas a categóricas, y codificación.
-
-En particular pondremos nuestro foco en la codificación de características
-desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
-
-\subsection{One-hot encoding}
-
-A menudo los datos disponibles presentan características que no estan dadas en
-un espacio continuo si no más bien categórico. Por ejemplo, se podría describir
-el continente de un país por las clases \emph{inAsia}, \emph{inAfrica},
-\emph{inEurope}, \emph{inSouthAmerica}, \emph{inNorthAmerica} siendo
-eficientemente representables con enteros $[0, 1, 2, 3, 4]$. De esta manera, si
-tenemos una serie de variables categóricas, estas pueden codificarse enumerando
-por variable cada uno de sus objetos. Esta representación es conocida como
-\emph{ordinal encoder}.
-
-\begin{equation*}
-    \begin{bmatrix}
-         & inContinent\\
-        Argentina & 3 \\
-        Brasil & 3 \\
-        España & 2 \\
-        USA & 4  \\
-        Italia & 2 
-    \end{bmatrix}
-\end{equation*}
-
-Otra opción es usar un esquema \emph{one-of-K} que
-transforma una característica categórica con $N$ clases, en $N$ categorias
-binarias con una de ellas 1 y el resto 0. Para el ejemplo anterior tendríamos:
-
-\begin{equation*}
-\begin{bmatrix}
-    & inAsia & inAfrica & inEurope & inSouthAmerica & inNorthAmerica \\
-    Argentina & 0 & 0 & 0 & 1 & 0 \\
-    Brasil & 0 & 1 & 0 & 1 & 0 \\
-    España & 0 & 0 & 1 & 0 & 0 \\
-    USA & 0 & 0 & 0 & 0 & 1 \\
-    Italia & 0 & 0 & 1 & 0 & 0
-\end{bmatrix}
-\end{equation*}
-
-La misma técnica es válida si se quisiera representar oraciones o documentos del
-lenguaje natural. Supongamos que tenemos los documentos.
-
-\begin{center}
-    $D_1$: ``El sol es una estrella, no es un planeta.`` \\
-    $D_2$: ``La tierra es un planeta.``    
-\end{center}
-
-Basado en  estos dos textos, un vocabulario de 9 palabras distintas es
-construido. Por lo tanto cada documento es representado como un vector de 9
-dimensiones.
-
-\begin{equation*}
-    \begin{bmatrix}
-        & El & sol & es & una & estrella & no & un & planeta & tierra \\
-        D_1 & 1 & 1 & 2 & 1 & 1 & 1 & 1 & 1 & 0  \\
-        D_2 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 
-    \end{bmatrix}
-\end{equation*}
-
-Observar que para este caso una codificación ordinal no sería adecuada dado que
-se deberían enumerar todas las palabras del vocabulario.
-
-Sin embargo, tomemos una oración dada en el contexto de planning (en particular
-del dominio \emph{satellite} descripto en apéndice A). La siguiente secuencia
-muestra un plan relajado de largo 4 asociado a una tarea STRIPS cuyos esquemas
-de acción son $calibrate, switch\_on, take\_image,$ y $turn\_to$. El resto de
-expresiones son objetos concretos del dominio. También es importante mencionar
-que cada objeto de un cierto tipo está enumerado. Por ejemplo el objeto
-$instrument1$ es del tipo $instrument$ cuyo índice es $1$. 
-
-\begin{align*}
-    & (calibrate\ satellite0\ instrument1\ groundstation0) \\
-    & (switch\_on\ instrument1\ satellite0) \\
-    & (take\_image\ satellite0\ planet5\ instrument1\ image1) \\
-    & (turn\_to\ satellite0\ groundstation0\ planet5) \\
-\end{align*}
-
-La primera dificultad para codificarla surge bajo la pregunta de a que se
-identifica como una palabra de la oración. Una primera iniciativa es definir una
-acción como tal y utilizar un one hot encoding. No obstante, por lo general
-una acción no suele ocurrir más de una vez en un plan de la tarea lo cual se
-perdería la información de la frecuencia en que ocurren los objetos en la
-secuencia. No solo es clave capturar los objetos si no también el índice del
-cual se trata. Por lo tanto respetar su numeración es igual de relevante. Por
-último cada acción debe mantener la misma cantidad de componentes en su
-representación vectorial, independientemente del esquema o el número de
-parámetros que reciba, y se debe asegurar el orden de la secuencia.
-
-Para solventar estas dificultades se mantuvo una codificación one hot ordinal que
-consiste en:
-
-\begin{itemize}
-    \item Cada elemento en la interfaz de una acción junto a su esquema son
-    definidos como palabras. Eso incluye la numeración de los objetos.
-    \item Cada vector que representa a una acción tiene dimensión $2 \times N +
-    1$ siendo $N$ la longitud de la interfaz más larga de un esquema. Aquellas
-    acciones con una interfaz más chica se les agrega un margen de $0's$ hasta
-    completar el largo requerido.
-    \item Los esquemas de acción son enumerados en el rango $1, ..., M$ con $M$
-    la cantidad de esquemas.
-    \item El tipo de los objetos son enumerados en el rango de $1, ..., K$. con
-    $K$ la cantidad de tipos.
-    \item Si un objeto tiene el índice $i$ se lo incrementa en 1 (para evitar que
-    aquellos objetos que empiecen con indice 0 se malinterpreten como margenes).
-\end{itemize}
-
-Por ejemplo si la enumeración de las esquemas y tipos fuesen los siguientes:
-
-\begin{align*}
-    &\{calibrate: 1,\ turn\_to: 2,\ switch\_on:3,\ take\_image:4 \} \\
-    &\{satellite: 1,\ instrument: 2,\ planet: 3,\ groundstation: 4,\ image: 5\}
-\end{align*}
-
-En este la longitud de la interfaz más larga es 4, entonces cada acción tendrá
-asociado un vector de dimensión $2 \times 4 + 1 = 9$ y la codificación
-resultante sería:
-
-\begin{align*}
-    (calibrate\ satellite0\ instrument1\ groundstation0) &: (1\ 1\ 1\ 2\ 2\ 4\ 1\ 0\ 0) \\
-    (switch\_on\ instrument1\ satellite0) &: (3\ 2\ 2\ 1\ 1\ 0\ 0\ 0\ 0) \\
-    (take\_image\ satellite0\ planet5\ instrument1\ image1) &: (4\ 1\ 1\ 3\ 6\ 2\ 2\ 5\ 2) \\
-    (turn\_to\ satellite0\ groundstation0\ planet5) &: (2\ 1\ 1\ 4\ 1\ 3\ 6\ 0\ 0) \\
-\end{align*}
-
-\subsection{Vectores de palabras (Word embeddings)}
-
-Un vector denso de palabras (comúnmente conocido como word embedding, en inglés)
-es una de las técnicas de representación de vocabulario más popular en el área
-del procesamiento de lenguaje natural.
-
-Si bien hay distintas formas de representar palabras en una serie de documentos,
-los word embeddings proveen otra perspectiva que busca encontrar una
-representación vectorial compacta donde cada dimensión logre capturar las
-propiedades subyacentes y latentes de la palabra. De esta manera, los embeddings
-son superiores a una representación que permanece en un nivel poco profundo.
-
-Su principal característica  es que las expresiones relacionadas entre sı́ (ya
-sea por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
-vectorial al cual se proyectan. Por ejemplo, si tenemos las oraciones: ``Que
-tengas una buena mañana`` y ``Que tengas una buena tarde``. Difieren
-semánticamente solo por las palabras ``mañana`` y ``tarde``. No obstante, se
-utilizan en contextos similares, lo cual esperariamos que esten cercanos
-vectorialmente.
-
-Otro ejemplo muy famoso que deja en evidencia el concepto de \emph{analogía} en
-word embeddings, es el que se muestra en la Figura \ref{fig:king-queen-example}.
-En ella se identifican por medio de barras de colores la dimensión de los
-vectores asociados a las palabras \emph{king}, \emph{man}, \emph{woman},
-\emph{queen}, y la operación vectorial \emph{king - man + woman}. Cada dimensión
-se encuentra en la escala de $[-2, 2]$ y se le asigna el color de rojo para
-valores cercanos al extremo derecho, azúl para las del extremo izquierdo, y
-blanco para las que se encuentren alrededor del 0.  Algo a notar es que
-\emph{man} y \emph{woman} son mucho más similares de lo que cada uno es con
-\emph{king} o \emph{queen}. Otro aspecto interesante son las franjas roja y azúl
-que se muestran para cada uno de los ejemplos, indicando que son parecidos en
-tal dimensión. Probablemente corresponda a alguna característica humana aunque
-se desconoce que puedan llegar a significar debido a la poca interpretabilidad
-del espacio al cual se proyectan.
-
-Aun así, lo importante es la comparación entre palabras. Dado que ahora tienen
-una representación vectorial, se pueden sumar o restar obteniendo nuevos
-resultados que forman parte del espacio. Este es el caso del vector dado por
-\emph{king - man + woman}. No conocemos que dimensiones exactamente capturan que
-rey es utilizado para identificar al monarca de un reino, pero se puede
-substraer el caracter masculino del vector \emph{man} y agregar las de
-\emph{woman} esperando que se aproximen a las de \emph{queen}.
-Sorprendentemente, de un total de 400000 palabras sobre las cuales se realizó el
-experimento, reina fue la palabra más cercana. Los detalles del mismo se pueden
-ver desde \footnote{\url{https://jalammar.github.io/illustrated-word2vec/}}.
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.68]{figures/king-analogy-viz.png}
-    \caption{Vectores de palabras para ``king``, ``man``, y ``woman``}
-    \label{fig:king-queen-example}
-\end{figure}
-
-Esto refleja el gran potencial que tienen los word embeddings y su importancia
-para estudiarlos como métodos de codificación. A continuación analizaremos como
-se calculan dichas representaciones y que algoritmos fueron finalmente
-utilizados en esta tesis.
-
-\subsubsection{Modelos de lenguaje}
-
-Después de ver el potencial de los embeddings, surge la pregunta, ¿Cómo
-funcionan internamente? ¿De qué manera se obtienen estos vectores de palabras?
-En \citep{firth-57} se mostró que el significado de una palabra está determinado
-según sus palabras vecinas. Si contemplamos la oración ``Que tengas un buen`` y
-se quisiese averiguar cual es la expresión que le sigue, lo más probable es que
-las palabras días, tarde, noche, o semana, hayan sido las primeras candidatas.
-Este tipo de tareas en las que se intenta predecir información de la oración a
-partir del contexto o viceversa son denominadas tareas de pretexto y son
-utilizadas para entrenar un clasificador que resuelva esta tarea, únicamente
-para preservar su representación a nivel de palabras.
-
-\subsubsection{Skipgram}
-
-Es un método desarrollado en \citep{Mikolov-2013} cuyo objetivo es, para un
-vocabulario de tamaño $W$ donde una palabra es identificada por su indice $w \in
-\{1, ... W\}$, aprender una representación vectorial para cada $w$. Estas
-representaciones son entrenadas para predecir palabras vecinas a partir de una
-actual. Es decir, dado un largo corpus de entrenamiento, considerarlo como una
-sola secuencia de palabras $w_1, ... w_T$ y maximizar la función en \ref{eq:skipgram-ideal}
-
-\begin{equation} \label{eq:skipgram-ideal}
-    \frac{1}{T} \sum_{n=1}^{T}
-                    \sum_{c \in C_t} \log P(w_c | w_t)
-\end{equation}
-
-Donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
-probabilidad de observar una palabra del contexto $w_c$ dado $w_t$ es modelada a
-partir de sus vectores representación. Por el momento, abstraeremos esto a
-partir de una función \emph{score} $s$ que mapea pares (palabra, contexto) a un
-puntaje en $R$. Una posible forma de definir la probabilidad de una palabra en
-el contexto es por medio de la función \emph{softmax}.
-
-\begin{equation} \label{eq:skipram-softmax}
-    P(w_{c}|w_{t}) = \frac{e^{s(w_t, w_c)}}{\sum_{j=1}^{W} e^{s(w_t, j)}}
-\end{equation}
-
-No obstante, este calculo es bastante costoso computacionalmente siendo que al
-final solo es de interés predecir una palabra del contexto $w_c$ dado una
-palabra $w_t$. Es por eso que el problema puede ser visto como una tarea de
-clasificación binaria en lugar de una multiclase. El objetivo es predecir
-independientemente la presencia o ausencia de palabras de contexto. Para una
-palabra en la posición $t$, consideramos todos los contextos como ejemplos
-positivos, y palabras seleccionadas aleatoriamente del vocabulario, como
-negativos. Para un contexto $c$, utilizando la función de costo \emph{binary
-logistic}, obteniendo la siguiente función de probabilidad:
-
-\begin{equation}
-    \log\left( 1 + e^{-s(w_t, w_c)} \right) +
-    \sum_{n \in \mathcal{N}_{t, c}} \log\left( 1 + e^{s(w_t, n)} \right)
-\end{equation}
-
-Donde $\mathcal{N}_{t, c}$ es una muestra aleatoria de ejemplares negativos
-tomadas del vocabulario. Si denotamos la función logistica como $\ell: x \mapsto
-\log \left(1 + e^{-x} \right)$, podemos reescribir la función a maximizar del
-problema como:
-
-\begin{equation}
-    \sum_{n=1}^{T} 
-        \sum_{c \in C_t} \ell\left(s(w_t, w_c)\right) +
-        \sum_{n \in \mathcal{N}_{t, c}} \ell\left(-s(w_t, n) \right)
-\end{equation}
-
-Una parametrización natural para $s$ entre una palabra $w_t$ y un contexto $w_c$
-es a partir del uso de vectores de palabras. Definimos dos vectores $\vect{u}_w$
-y $\vect{v}_w$ en $\mathbb{R}^d$ también conocidos como vectores \emph{input} y
-\emph{output}. Es decir, tenemos vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$
-asociados a palabras $w_t$ y $w_c$. Luego el \emph{score} puede computarse como
-$s\left( w_t, w_c \right) = \vect{u}_{w_t}^\top \vect{v}_{w_c}$.
-
-Para ejemplificar como es el proceso de entrenamiento de este modelo, tomemos la
-secuencia ``Me gustaría dos rebanadas de pizza mozzarella``. Podemos pensar un
-contexto como una ventana que se desliza a través del conjunto de entrenamiento.
-La figura 3.2 muestra las 3 posibles ventanas de tamaño 5 que se pueden obtener
-a partir de la secuencia deslizandose con un paso de 1.
-
-Con cada ventana, seleccionamos aquella palabra que cargue más valor
-informativo, que por lo general suele ser la del medio, y la utilizamos para
-predecir sus vecinas. De esta manera, generamos un conjunto de entrenamiento
-compuesto por pares (palabra, palabra de contexto) donde etiquetamos con 1, si
-ambas son vecinas, y 0 en caso contrario. El resultado final para cada contexto
-se puede ver en la figura 3.3. Esta es la simplificación del problema para
-trabajar sobre una tarea de clasificación binaria. En lugar de ser multiclase
-cuya  etiqueta sería la palabra de contexto, la incluimos como característica y
-reemplazamos las anotaciones por 1's y 0's. Ahora bien, con nuestros datos
-actuales solo tendríamos etiquetas con 1's. En tal caso, el modelo en lugar de
-aprender lo que necesitamos, estaría sesgado a siempre predecir afirmativamente.
-Es por eso que agregar ejemplos negativos de manera aleatoria (figura 3.4) a
-cada $w_t$ resulta una buena idea.
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.60]{figures/context_example_1.png}
-    \caption{Todas las ventanas de contexto con tamaño 5 que se pueden formar con la frase
-             ``Me gustaría dos rebanadas de pizza mozzarella``.}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{minipage}[b]{0.4\textwidth}
-      \includegraphics[scale=0.5]{figures/context_example_2.png}
-      \caption{Material de entrenamiento obtenido de las ventanas.}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.4\textwidth}
-      \includegraphics[scale=0.5]{figures/context_example_3.png}
-      \caption{Selección aleatoria de 2 ejemplos negativos por cada positivo.}
-    \end{minipage}
-\end{figure}
-
-Luego, al inicio del proceso de entrenamiento se crean dos matrices con valores
-aleatorios, una para los embeddings y otra para los contextos. Estas dos
-matrices de tamaño $V \times d$, tiene una fila por cada palabra en el
-vocabulario. En este caso, $d$ es la cantidad de dimensiones que tendrán sus
-representaciones. En cada paso de entrenamiento, se selecciona un ejemplo
-positivo y sus correspondientes ejemplos negativos (figura 3.5). Este grupo es
-evaluado por el modelo a partir de los vectores representación \emph{input} y
-\emph{output} según el producto escalar entre ellas y su conversión en
-probabilidades por medio de la función \emph{sigmoid}. A partir de la etiqueta
-real, se puede determinar el puntaje de error para cada ejemplo y finalmente
-actualizar los parámetros de las matrices de embeddings y contexto. Eso concluye
-un paso de entrenamiento, que se repite por cada grupo de ejemplos positivos y
-negativos por una cierta cantidad de épocas. Una vez concluido el proceso de
-entrenamiento, la matriz de embeddings contiene las representaciones finales.
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.5]{figures/context_example_4.png}
-    \caption{Matrices para los embeddings y contextos.}
-\end{figure}
-
-\subsubsection{Modelos de lenguaje a nivel de subpalabra}
-
-El modelo de skipgrams al usar vectores representación por cada palabra se
-ignora su estructura interna. Esto fue lo que inspiró el estudio de modelos a
-nivel de subpalabra en \citep{bojanowski-2017}. La principal característica de estos modelos
-radica en la función de score $s$. En lugar de considerar una palabra $w$ en su
-totalidad, esta es dividida en $n$-gramas de caracteres. Para delimitar inicio y
-fin de una palabra se agregan símbolos especiales \verb|<| y \verb|>| respectivamente. Esto a
-su vez permite distinguir prefijos y sufijos de otras secuencias de caracteres.
-Por último la palabra $w$ también es incluida como un $n$-grama o secuencia
-especial. Por ejemplo, la palabra \emph{color} y $n=4$ estaría representada por
-los $4$-gramas:
-
-\begin{center}
-    \verb|<col|, \verb|colo|, \verb|olor|, \verb|lor>|
-\end{center}
-
-Junto a la secuencia completa \verb|<color>|. Notar que la secuencia
-\verb|<olor>| correspondiente a la palabra \emph{olor} es diferente al $4$-grama
-\verb|olor|. Luego lo único que queda restante es modificar la función
-\emph{score} $s$ del método skipgram por la siguiente:
-
-\begin{equation}
-    s\left(w, c\right) = \sum_{g \in \mathcal{G}_w} \vect{z}_g^{\top}\vect{v}_c
-\end{equation}
-
-Donde $\mathcal{G}_w \subset \{1, .. G\}$ siendo $G$ el conjunto de $n$-gramas
-de tamaño $G$ y $\vect{z}_g$ el vector representación del $n$-grama $g$.
-
-Este modelo permite compartir representaciones entre palabras logrando aprender
-una confiable representación a palabras poco comunes siendo útil para los
-experimentos de esta tesis en la tarea de codificación de planes relajados.
-
-\subsubsection{Representación vectorial de oraciones}
-
-En \citep{Iacobacci-2016} se explican como utilizar word embeddings para
-desambiguación de sentidos, proponiendo distintos métodos de codificación de
-instancias de entrenamiento a partir de un modelo de lenguaje, con el fin
-de incluirlos en una arquitectura supervisada. En particular, detallaremos
-algunos métodos más sencillos y que son común en la literatura para resolver
-tareas de clasificación que involucren la manipulación de texto.
-
-\textbf{Concatenación}. Este método consiste en concatenar los vectores de las
-palabras que conforman la oración a codificar obteniendo un vector de largo
-igual a la suma de las dimensiones de los vectores individuales. En este caso,
-el problema evidente que surge es la representación de oraciones con distinto
-largo y el tamaño del vector resultante.
-
-\textbf{Promedio}. Como su nombre lo indica, este método computa el centroide de
-los embeddings de todas las palabras que conforman una oración. Usualmente esta
-codificación resulta ser adecuada siempre y cuando los vectores de las palabras
-se encuentren en la misma escala, lo cual no siempre suele ser el caso. Otro
-problema menos evidente es la posibilidad de ocurrencia de palabras poco
-representativas pero que tengan mucho peso en la suma, ignorando las ocurrencias
-que nos interesan para la tarea que se intenta resolver.
-
-\textbf{Promedio normalizado}. Por último, una mejora de la representación
-anterior es la normalización por norma L2 de cada vector previo a realizar el
-promedio.
+supervisados) al no requerir ningún tipo de supervisión humana.
 
 \section{Algoritmos de clasificación}
 
+Comenzaremos estudiando algunos métodos de aprendizaje supervisado sin preocuparnos
+inicialmente por la manera en que los ejemplares están codificados con excepción de las etiquetas. Es decir para un conjunto de entrenamiento $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$ la codificación de los $\vect{x}_i's$ será irrelevante por el momento. La únicas restricciones que se pedirán es que sean vectores numéricos. Los $y_i's$ aparte de ser
+numérico debe ser categórico dado que trataremos con algoritmos de clasificación.
+
 El objetivo principal de un clasificador es aproximar una función no conocida
-$f$ a partir de un modelo $h: \mathbb{R}^d \rightarrow \{c_1,.., c_k\}$ la cual
+$f$ a partir de un modelo $h: \mathbb{R}^D \rightarrow \{c_1,.., c_k\}$ la cual
 mapea ejemplos de entrada a una categoría $c_j$. En particular, nos enfocaremos
 en clasificadores binarios $k = 2$ que fueron los utilizados para la realización
 de este trabajo.
@@ -480,59 +98,59 @@ La forma más sencilla de representar un función que discrimine datos de entrad
 en dos clases es a partir de una función lineal que dependa de estos datos:
 
 \begin{align}
-    h_{\vect{w}, w_0}\left( \vect{x} \right) &= \vect{w}^{\top} \vect{x} + w_0 \\
-                                           &= \sum_{j = 1 }^{d} w_j x_j + w_0
+    h_{\vect{w}, w_0}\left( \vect{x} \right) &= \vect{w}^{\top} \vect{x} + w_0  \label{eq:linear_w_bias}\\
+                                           &= \sum_{j = 1 }^{D} w_j x_j + w_0 \label{eq:linear_wo_bias}
 \end{align}
 
-Donde $\vect{w}$ es llamado el \emph{vector de pesos}, y $\vect{w_0}$ es el
+Donde $\vect{w}$ es llamado el \emph{vector de pesos}, y $w_0$ es el
 \emph{sesgo}. Ambos son parámetros de la función $h$ y son los que se buscan
-ajustar para lograr separar el conjunto de datos. $\vect{x}$ es uno de esos
-ejemplos. Las dimensiones de los vectores $\vect{x}$, y $\vect{w}$ son ambas $(d
+ajustar para lograr separar el conjunto de datos donde $\vect{x}$ es uno de tales
+ejemplos. Las dimensiones de los vectores $\vect{x}$, y $\vect{w}$ son ambas $(D
 \times 1)$ a diferencia del sesgo que es un escalar. La expresión
 $\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$.
 Por lo que el resultado de $\vect{w}^{\top} \vect{x} + b$ es también un escalar.
 Dado que nos interesa asignar a $\vect{x}$ una categoría, se debe decidir a cual
 pertenece en base al resultado obtenido por el producto interno. Es por eso que
 surge la necesidad de agregar una nueva operación que discrimine un valor de
-entrada en una clase. Para ello definimos la función $f: \mathbb{R} \rightarrow
-\{c_1, c_2\}$ conocida como \emph{función de decisión} tal que mapea valores a
-una clase $c_1$, o $c_2$.
+entrada en una clase. Para ello definimos una \emph{función de decisión} $d: \mathbb{R} \rightarrow
+\{c_1, c_2\}$ tal que mapea valores a una clase $c_1$, o $c_2$.
 
-Una posible función de decisión podría estar definida como $f(x) = c_1$ si $x
-\geq 0$, $f(x) = c_2$ caso contrario. Por lo tanto la frontera de decisión queda
+Una posible función de decisión podría estar definida como $d(t) = c_1$ si $t
+\geq 0$, $d(t) = c_2$ caso contrario. Por lo tanto la frontera de decisión queda
 definida por la relación $h_{\vect{w}, w_0}\left( \vect{x} \right) = 0$ y
-corresponde a un hiperplano de ($d-1$ dimensiones) en uno de $d$ dimensiones. El
-sesgo $w_0$ desplaza el hiperplano del origen coordenados de $d$.
+corresponde a un hiperplano de ($D-1$ dimensiones) en uno de $D$ dimensiones. El
+sesgo $w_0$ desplaza el hiperplano del origen coordenados de $D$.
 
 Algunas veces es conveniente usar una notación más compacta en la que
 introducimos una ``inocente`` componente de entrada más $x_0 = 1$ al vector
 $\vect{x}$ para luego definir $\vect{w}' = (w_0, \vect{w})$ y $\vect{x}' = (x_0,
-\vect{x})$ de tal manera que 
+\vect{x})$. Luego las ecuaciones \ref{eq:linear_w_bias} y \ref{eq:linear_wo_bias}
+se pueden expresar como:
 
 \begin{align}
     h_{\vect{w'}}\left( \vect{x'} \right) &= \vect{w'}^{\top} \vect{x'}\\
-                                           &= \sum_{j = 0 }^{d} w_j x_j
+                                           &= \sum_{j = 0 }^{D} w_j x_j
 \end{align}
 
-Ahora la frontera de decisión corresponde a un hiperplano de dimensión $d$ que
-pasa por el origen del espacio $d + 1$ dimensional. A partir de ahora, cada vez
+Ahora la frontera de decisión corresponde a un hiperplano de dimensión $D$ que
+pasa por el origen del espacio $D + 1$ dimensional. A partir de ahora, cada vez
 que se omita el sesgo estaremos utilizando esta notación.
 
-\subsection{Modelos probabilisticos}
+\subsection{Modelos probabilísticos}
 
-En el capítulo 2 mencionamos que el objetivo de usar un algoritmo de aprendizaje
-automático era con el fin de determinar una función que modele la probabilidad
+En el capítulo \ref{ch:lit_planning} mencionamos que el objetivo de usar un algoritmo de aprendizaje
+automático es determinar una función que modele la probabilidad
 de que una acción sea relevante para encontrar un plan de una tarea STRIPS. Sin
-embargo desconocemos aún de que manera se obtienen estas probabilidades, es por
-eso que el foco de esta sección es indagar sobre los modelos probabilisticos.
+embargo, desconocemos aún de que manera se obtienen estas probabilidades, es por
+eso que el foco de esta sección es indagar sobre los modelos probabilísticos.
 
-El objetivo es modelar la densidad condicional $p(c_k | \vect{x})$ que
-representa la probilidad de la clase $c_k$ dado $\vect{x}$. El inconveniente con
-esto es que cada condicionamiento define una densidad probabilistica. Por lo que
+En estos modelos se busca modelar la densidad condicional $p(c_k | \vect{x})$ que
+representa la probabilidad de la clase $c_k$ dado $\vect{x}$. El inconveniente con
+esto es que cada condicionamiento define una densidad probabilística. Por lo que
 se tendría una por cada posible ejemplar $\vect{x}$ resultando intratable de
 modelar. No obstante, si se considera el condicionamiento $p(\vect{x} | c_k)$
 solo es necesario modelar una cantidad pequeña de clases, en especial para un
-clasificador binario. Para nuestra suerte $p(c_k | \vect{x})$ está relacionado
+clasificador binario. Para nuestra suerte $p(c_k | \vect{x})$, está relacionado
 con $p(\vect{x} | c_k)$ por la \emph{regla de Bayes}.
 
 \begin{align}
@@ -563,7 +181,7 @@ Se puede generalizar esta ecuación para el caso $k > 2$ de la siguiente manera:
 
 Donde $a_k = \ln p\left( \vect{x} | c_k \right) p\left( c_k \right)$. La función
 $\frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j}$ es conocida como la función
-\emph{softmax} ya que es una versión suavizada del \emph{max} en el sentido de
+\emph{softmax} ya que es una versión suavizada de la función $max$ en el sentido de
 si $a_k >> a_j$ para todo $j \neq k$ entonces $p(c_k | \vect{x}) \approx 1$ y
 $p(c_j | \vect{x} \approx 0)$.
 
@@ -573,20 +191,20 @@ Varios de los métodos de machine learning existentes no pueden obtener los peso
 $W$ de manera analítica. Es por eso que se hacen uso de métodos iterativos en
 base a una \emph{función de costo} que mide la precisión de su predicción en
 comparación con la etiqueta. Si tenemos ejemplos de entrenamiento
-$\{(\vect{x}^{(1)}, y^{(1)}), ..., (\vect{x}^{(n)}, y^{(n)})\}$ podemos definir la
+$\{(\vect{x}_{1}, y_{1}), ..., (\vect{x}_{n}, y_{n})\}$ podemos definir la
 función de costo en base a cada ejemplar $i$.
 
-Un ejemplo clásico de función de costo es el error cuadratico medio:
+Un ejemplo clásico de función de costo es el error cuadrático medio:
 
 \begin{align}
-    J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right) - y \right)
+    J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}_{i}\right) - y \right)
 \end{align}
 
-Por lo tanto al minizar $J$ se estará reduciendo el error de estimación de $h$
-obteniendo que $h_{\vect{w}}\left( \vect{x}^{(i)} \right) \approx f(\vect{x}^{(i)})$. Para
+Por lo tanto, al minimizar $J$ se estará reduciendo el error de estimación de $h$
+obteniendo que $h_{\vect{w}}\left( \vect{x}_{i} \right) \approx f(\vect{x}_{i})$. Para
 lograr tal minimización, existe una técnica denominada \emph{descenso por el
-gradiente}. la cual actualiza de manera iterativa de los parámetros W, logrando
-la convergencia de la función de costo J a un mínimo valor.
+gradiente}. la cual actualiza de manera iterativa el vector $\vect{w}$ logrando
+la convergencia de la función de costo $J$ a un mínimo valor.
 
 \subsection{Descenso por el gradiente}
 
@@ -594,24 +212,23 @@ Definimos $\vect{\Delta J\left( w \right)}$ al gradiente de $J$ en $\vect{w}$
 como $\vect{\Delta J\left( \vect{w} \right)} = \left(\frac{\partial
 J(\vect{w})}{\partial w_1}, ..., \frac{\partial J(\vect{w})}{\partial w_n}
 \right)$, el vector de derivadas parciales. Este algoritmo empieza con una
-inicialización aleatoria de $\vect{w}$ donde en cada iteración se determina
-$\vect{\Delta J\left( w \right)}$. El negativo del gradiente indica la dirección
-de mayor descenso en el cual la función $J(\vect{w})$ disminuye. Por lo tanto si
+inicialización aleatoria de $\vect{w}$ y calcula
+$\vect{\Delta J\left( w \right)}$ por una cantidad de iteraciones. El negativo del gradiente indica la dirección de mayor descenso en el cual la función $J(\vect{w})$ disminuye. Por lo tanto si
 al vector $\vect{w}$ se le suma el negativo del gradiente se estaría
 dirigiendolo en torno a un mínimo local de la función de costo. La magnitud del
 desplazamiento vectorial en cada iteración está determinado por una constante
 $\alpha$ conocida como la \emph{taza de aprendizaje}.
 
-\begin{align}
+\begin{align} \label{eq:gradient_descent}
     \vect{w} \leftarrow \vect{w} - \alpha \vect{\Delta J\left( w \right)}
 \end{align}
 
 En cada iteración se realiza la operación de la ecuación actualizando
-$\vect{w}$. Algo a notar es que es una operación vectorial de tal manera que
-cada componente se actualice simultaneamente. Intuitivamente, en cada paso, dado
-a que siempre $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$ disminuirá
-y eventualmente la función de costos $J$ convergerá a su valor mínimo en $T$
-iteraciones. El método de descenso por el gradiente es también llamado el
+$\vect{w}$. Dado a que $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$ disminuirá
+y eventualmente la función de costo $J$ convergerá a su valor mínimo en $T$
+iteraciones. Algo a notar es que la ecuación \ref{eq:gradient_descent}, al ser una operación vectorial, cada componente se actualiza simultáneamente.
+
+El método de descenso por el gradiente es también llamado el
 optimizador de la función de costo. En la literatura hay varias variantes de
 este método que llevan a optimizadores más complejos y eficientes, tales como
 \emph{adam}, \emph{descenso por el gradiente estocástico}, entre otros.
@@ -1028,6 +645,392 @@ asignandole una hoja. Se recopilan los ejemplos que pertenecen a cada una de
 ellas y se penaliza según los estadisticos $g_i$ y $h_i$ y finalmente obtener el
 error cometido por el árbol $\mathcal{L^{*}}$. Aquel árbol que tenga menor error
 es el mejor para ser incluido en la iteración actual.
+
+\section{Codificación de características}
+
+Los modelos de aprendizaje automático dependen fuertemente de como se
+representen los datos de entrada que uno tiene disponible. Preparar los
+ejemplares para acoplarse apropiadamente a un algoritmo de machine learning con
+el fin de mejorar la performance del modelo es una de las tareas las cuales los
+científicos de datos disponen la mayor parte de su atención y tiempo. Alguna de
+las obligaciones que incluye son la imputación de valores faltantes, manejo de
+valores atípicos, estandarización y escalado, transformación de características
+numéricas a categóricas, y codificación.
+
+En particular pondremos nuestro foco en la codificación de características
+desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
+
+\subsection{One-hot encoding}
+
+A menudo los datos disponibles presentan características que no están dadas en
+un espacio continuo si no más bien categórico. Por ejemplo, se podría describir
+el continente de un país por las clases \emph{inAsia}, \emph{inAfrica},
+\emph{inEurope}, \emph{inSouthAmerica}, \emph{inNorthAmerica} siendo
+eficientemente representables con enteros $[0, 1, 2, 3, 4]$. De esta manera, si
+tenemos un variable que puede tomar una serie de valores categóricos, estas pueden codificarse enumerando
+por variable cada uno de sus objetos. Esta representación es conocida como
+\emph{ordinal encoder}.
+
+\begin{equation*}
+    \begin{bmatrix}
+         & inContinent\\
+        Argentina & 3 \\
+        Brasil & 3 \\
+        España & 2 \\
+        USA & 4  \\
+        Italia & 2 
+    \end{bmatrix}
+\end{equation*}
+
+Otra opción es usar un esquema \emph{one-of-K} que
+transforma una característica categórica con $N$ clases, en $N$ categorias
+binarias con una de ellas 1 y el resto 0. Para el ejemplo anterior tendríamos:
+
+\begin{equation*}
+\begin{bmatrix}
+    & inAsia & inAfrica & inEurope & inSouthAmerica & inNorthAmerica \\
+    Argentina & 0 & 0 & 0 & 1 & 0 \\
+    Brasil & 0 & 1 & 0 & 1 & 0 \\
+    España & 0 & 0 & 1 & 0 & 0 \\
+    USA & 0 & 0 & 0 & 0 & 1 \\
+    Italia & 0 & 0 & 1 & 0 & 0
+\end{bmatrix}
+\end{equation*}
+
+La misma técnica es válida si se quisiera representar oraciones o documentos del
+lenguaje natural. Supongamos que tenemos los documentos.
+
+\begin{center}
+    $D_1$: ``El sol es una estrella, no es un planeta.`` \\
+    $D_2$: ``La tierra es un planeta.``    
+\end{center}
+
+Basado en  estos dos textos, un vocabulario de 9 palabras distintas es
+construido. Por lo tanto cada documento es representado como un vector de 9
+dimensiones.
+
+\begin{equation*}
+    \begin{bmatrix}
+        & El & sol & es & una & estrella & no & un & planeta & tierra \\
+        D_1 & 1 & 1 & 2 & 1 & 1 & 1 & 1 & 1 & 0  \\
+        D_2 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 
+    \end{bmatrix}
+\end{equation*}
+
+Observar que para este caso una codificación ordinal no sería adecuada dado que
+se deberían enumerar todas las palabras del vocabulario.
+
+Sin embargo, tomemos una oración dada en el contexto de planning (en particular
+del dominio \emph{satellite} descripto en apéndice A). La siguiente secuencia
+muestra un plan relajado de largo 4 asociado a una tarea STRIPS cuyos esquemas
+de acción son $calibrate, switch\_on, take\_image,$ y $turn\_to$. El resto de
+expresiones son objetos concretos del dominio. También es importante mencionar
+que cada objeto de un cierto tipo está enumerado. Por ejemplo el objeto
+$instrument1$ es del tipo $instrument$ cuyo índice es $1$. 
+
+\begin{align*}
+    & (calibrate\ satellite0\ instrument1\ groundstation0) \\
+    & (switch\_on\ instrument1\ satellite0) \\
+    & (take\_image\ satellite0\ planet5\ instrument1\ image1) \\
+    & (turn\_to\ satellite0\ groundstation0\ planet5) \\
+\end{align*}
+
+La primera dificultad para codificarla surge bajo la pregunta de a que se
+identifica como una palabra de la oración. Una primera iniciativa es definir una
+acción como tal y utilizar un one hot encoding. No obstante, por lo general
+una acción no suele ocurrir más de una vez en un plan de la tarea lo cual se
+perdería la información de la frecuencia en que ocurren los objetos en la
+secuencia. No solo es clave capturar los objetos si no también el índice del
+cual se trata. Por lo tanto respetar su numeración es igual de relevante. Por
+último cada acción debe mantener la misma cantidad de componentes en su
+representación vectorial, independientemente del esquema o el número de
+parámetros que reciba, y se debe asegurar el orden de la secuencia.
+
+Para solventar estas dificultades se mantuvo una codificación one hot ordinal que
+consiste en:
+
+\begin{itemize}
+    \item Cada elemento en la interfaz de una acción junto a su esquema son
+    definidos como palabras. Eso incluye la numeración de los objetos.
+    \item Cada vector que representa a una acción tiene dimensión $2 \times N +
+    1$ siendo $N$ la longitud de la interfaz más larga de un esquema. Aquellas
+    acciones con una interfaz más chica se les agrega un margen de $0's$ hasta
+    completar el largo requerido.
+    \item Los esquemas de acción son enumerados en el rango $1, ..., M$ con $M$
+    la cantidad de esquemas.
+    \item El tipo de los objetos son enumerados en el rango de $1, ..., K$. con
+    $K$ la cantidad de tipos.
+    \item Si un objeto tiene el índice $i$ se lo incrementa en 1 (para evitar que
+    aquellos objetos que empiecen con indice 0 se malinterpreten como margenes).
+\end{itemize}
+
+Por ejemplo si la enumeración de las esquemas y tipos fuesen los siguientes:
+
+\begin{align*}
+    &\{calibrate: 1,\ turn\_to: 2,\ switch\_on:3,\ take\_image:4 \} \\
+    &\{satellite: 1,\ instrument: 2,\ planet: 3,\ groundstation: 4,\ image: 5\}
+\end{align*}
+
+En este la longitud de la interfaz más larga es 4, entonces cada acción tendrá
+asociado un vector de dimensión $2 \times 4 + 1 = 9$ y la codificación
+resultante sería:
+
+\begin{align*}
+    (calibrate\ satellite0\ instrument1\ groundstation0) &: (1\ 1\ 1\ 2\ 2\ 4\ 1\ 0\ 0) \\
+    (switch\_on\ instrument1\ satellite0) &: (3\ 2\ 2\ 1\ 1\ 0\ 0\ 0\ 0) \\
+    (take\_image\ satellite0\ planet5\ instrument1\ image1) &: (4\ 1\ 1\ 3\ 6\ 2\ 2\ 5\ 2) \\
+    (turn\_to\ satellite0\ groundstation0\ planet5) &: (2\ 1\ 1\ 4\ 1\ 3\ 6\ 0\ 0) \\
+\end{align*}
+
+\subsection{Vectores de palabras (Word embeddings)}
+
+Un vector denso de palabras (comúnmente conocido como word embedding, en inglés)
+es una de las técnicas de representación de vocabulario más popular en el área
+del procesamiento de lenguaje natural.
+
+Si bien hay distintas formas de representar palabras en una serie de documentos,
+los word embeddings proveen otra perspectiva que busca encontrar una
+representación vectorial compacta donde cada dimensión logre capturar las
+propiedades subyacentes y latentes de la palabra. De esta manera, los embeddings
+son superiores a una representación que permanece en un nivel poco profundo.
+
+Su principal característica  es que las expresiones relacionadas entre sı́ (ya
+sea por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
+vectorial al cual se proyectan. Por ejemplo, si tenemos las oraciones: ``Que
+tengas una buena mañana`` y ``Que tengas una buena tarde``. Difieren
+semánticamente solo por las palabras ``mañana`` y ``tarde``. No obstante, se
+utilizan en contextos similares, lo cual esperariamos que esten cercanos
+vectorialmente.
+
+Otro ejemplo muy famoso que deja en evidencia el concepto de \emph{analogía} en
+word embeddings, es el que se muestra en la Figura \ref{fig:king-queen-example}.
+En ella se identifican por medio de barras de colores la dimensión de los
+vectores asociados a las palabras \emph{king}, \emph{man}, \emph{woman},
+\emph{queen}, y la operación vectorial \emph{king - man + woman}. Cada dimensión
+se encuentra en la escala de $[-2, 2]$ y se le asigna el color de rojo para
+valores cercanos al extremo derecho, azúl para las del extremo izquierdo, y
+blanco para las que se encuentren alrededor del 0.  Algo a notar es que
+\emph{man} y \emph{woman} son mucho más similares de lo que cada uno es con
+\emph{king} o \emph{queen}. Otro aspecto interesante son las franjas roja y azúl
+que se muestran para cada uno de los ejemplos, indicando que son parecidos en
+tal dimensión. Probablemente corresponda a alguna característica humana aunque
+se desconoce que puedan llegar a significar debido a la poca interpretabilidad
+del espacio al cual se proyectan.
+
+Aun así, lo importante es la comparación entre palabras. Dado que ahora tienen
+una representación vectorial, se pueden sumar o restar obteniendo nuevos
+resultados que forman parte del espacio. Este es el caso del vector dado por
+\emph{king - man + woman}. No conocemos que dimensiones exactamente capturan que
+rey es utilizado para identificar al monarca de un reino, pero se puede
+substraer el caracter masculino del vector \emph{man} y agregar las de
+\emph{woman} esperando que se aproximen a las de \emph{queen}.
+Sorprendentemente, de un total de 400000 palabras sobre las cuales se realizó el
+experimento, reina fue la palabra más cercana. Los detalles del mismo se pueden
+ver desde \footnote{\url{https://jalammar.github.io/illustrated-word2vec/}}.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.68]{figures/king-analogy-viz.png}
+    \caption{Vectores de palabras para ``king``, ``man``, y ``woman``}
+    \label{fig:king-queen-example}
+\end{figure}
+
+Esto refleja el gran potencial que tienen los word embeddings y su importancia
+para estudiarlos como métodos de codificación. A continuación analizaremos como
+se calculan dichas representaciones y que algoritmos fueron finalmente
+utilizados en esta tesis.
+
+\subsubsection{Modelos de lenguaje}
+
+Después de ver el potencial de los embeddings, surge la pregunta, ¿Cómo
+funcionan internamente? ¿De qué manera se obtienen estos vectores de palabras?
+En \citep{firth-57} se mostró que el significado de una palabra está determinado
+según sus palabras vecinas. Si contemplamos la oración ``Que tengas un buen`` y
+se quisiese averiguar cual es la expresión que le sigue, lo más probable es que
+las palabras días, tarde, noche, o semana, hayan sido las primeras candidatas.
+Este tipo de tareas en las que se intenta predecir información de la oración a
+partir del contexto o viceversa son denominadas tareas de pretexto y son
+utilizadas para entrenar un clasificador que resuelva esta tarea, únicamente
+para preservar su representación a nivel de palabras.
+
+\subsubsection{Skipgram}
+
+Es un método desarrollado en \citep{Mikolov-2013} cuyo objetivo es, para un
+vocabulario de tamaño $W$ donde una palabra es identificada por su indice $w \in
+\{1, ... W\}$, aprender una representación vectorial para cada $w$. Estas
+representaciones son entrenadas para predecir palabras vecinas a partir de una
+actual. Es decir, dado un largo corpus de entrenamiento, considerarlo como una
+sola secuencia de palabras $w_1, ... w_T$ y maximizar la función en \ref{eq:skipgram-ideal}
+
+\begin{equation} \label{eq:skipgram-ideal}
+    \frac{1}{T} \sum_{n=1}^{T}
+                    \sum_{c \in C_t} \log P(w_c | w_t)
+\end{equation}
+
+Donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
+probabilidad de observar una palabra del contexto $w_c$ dado $w_t$ es modelada a
+partir de sus vectores representación. Por el momento, abstraeremos esto a
+partir de una función \emph{score} $s$ que mapea pares (palabra, contexto) a un
+puntaje en $R$. Una posible forma de definir la probabilidad de una palabra en
+el contexto es por medio de la función \emph{softmax}.
+
+\begin{equation} \label{eq:skipram-softmax}
+    P(w_{c}|w_{t}) = \frac{e^{s(w_t, w_c)}}{\sum_{j=1}^{W} e^{s(w_t, j)}}
+\end{equation}
+
+No obstante, este calculo es bastante costoso computacionalmente siendo que al
+final solo es de interés predecir una palabra del contexto $w_c$ dado una
+palabra $w_t$. Es por eso que el problema puede ser visto como una tarea de
+clasificación binaria en lugar de una multiclase. El objetivo es predecir
+independientemente la presencia o ausencia de palabras de contexto. Para una
+palabra en la posición $t$, consideramos todos los contextos como ejemplos
+positivos, y palabras seleccionadas aleatoriamente del vocabulario, como
+negativos. Para un contexto $c$, utilizando la función de costo \emph{binary
+logistic}, obteniendo la siguiente función de probabilidad:
+
+\begin{equation}
+    \log\left( 1 + e^{-s(w_t, w_c)} \right) +
+    \sum_{n \in \mathcal{N}_{t, c}} \log\left( 1 + e^{s(w_t, n)} \right)
+\end{equation}
+
+Donde $\mathcal{N}_{t, c}$ es una muestra aleatoria de ejemplares negativos
+tomadas del vocabulario. Si denotamos la función logistica como $\ell: x \mapsto
+\log \left(1 + e^{-x} \right)$, podemos reescribir la función a maximizar del
+problema como:
+
+\begin{equation}
+    \sum_{n=1}^{T} 
+        \sum_{c \in C_t} \ell\left(s(w_t, w_c)\right) +
+        \sum_{n \in \mathcal{N}_{t, c}} \ell\left(-s(w_t, n) \right)
+\end{equation}
+
+Una parametrización natural para $s$ entre una palabra $w_t$ y un contexto $w_c$
+es a partir del uso de vectores de palabras. Definimos dos vectores $\vect{u}_w$
+y $\vect{v}_w$ en $\mathbb{R}^d$ también conocidos como vectores \emph{input} y
+\emph{output}. Es decir, tenemos vectores $\vect{u}_{w_t}$ y $\vect{v}_{w_c}$
+asociados a palabras $w_t$ y $w_c$. Luego el \emph{score} puede computarse como
+$s\left( w_t, w_c \right) = \vect{u}_{w_t}^\top \vect{v}_{w_c}$.
+
+Para ejemplificar como es el proceso de entrenamiento de este modelo, tomemos la
+secuencia ``Me gustaría dos rebanadas de pizza mozzarella``. Podemos pensar un
+contexto como una ventana que se desliza a través del conjunto de entrenamiento.
+La figura 3.2 muestra las 3 posibles ventanas de tamaño 5 que se pueden obtener
+a partir de la secuencia deslizandose con un paso de 1.
+
+Con cada ventana, seleccionamos aquella palabra que cargue más valor
+informativo, que por lo general suele ser la del medio, y la utilizamos para
+predecir sus vecinas. De esta manera, generamos un conjunto de entrenamiento
+compuesto por pares (palabra, palabra de contexto) donde etiquetamos con 1, si
+ambas son vecinas, y 0 en caso contrario. El resultado final para cada contexto
+se puede ver en la figura 3.3. Esta es la simplificación del problema para
+trabajar sobre una tarea de clasificación binaria. En lugar de ser multiclase
+cuya  etiqueta sería la palabra de contexto, la incluimos como característica y
+reemplazamos las anotaciones por 1's y 0's. Ahora bien, con nuestros datos
+actuales solo tendríamos etiquetas con 1's. En tal caso, el modelo en lugar de
+aprender lo que necesitamos, estaría sesgado a siempre predecir afirmativamente.
+Es por eso que agregar ejemplos negativos de manera aleatoria (figura 3.4) a
+cada $w_t$ resulta una buena idea.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.60]{figures/context_example_1.png}
+    \caption{Todas las ventanas de contexto con tamaño 5 que se pueden formar con la frase
+             ``Me gustaría dos rebanadas de pizza mozzarella``.}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.4\textwidth}
+      \includegraphics[scale=0.5]{figures/context_example_2.png}
+      \caption{Material de entrenamiento obtenido de las ventanas.}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.4\textwidth}
+      \includegraphics[scale=0.5]{figures/context_example_3.png}
+      \caption{Selección aleatoria de 2 ejemplos negativos por cada positivo.}
+    \end{minipage}
+\end{figure}
+
+Luego, al inicio del proceso de entrenamiento se crean dos matrices con valores
+aleatorios, una para los embeddings y otra para los contextos. Estas dos
+matrices de tamaño $V \times d$, tiene una fila por cada palabra en el
+vocabulario. En este caso, $d$ es la cantidad de dimensiones que tendrán sus
+representaciones. En cada paso de entrenamiento, se selecciona un ejemplo
+positivo y sus correspondientes ejemplos negativos (figura 3.5). Este grupo es
+evaluado por el modelo a partir de los vectores representación \emph{input} y
+\emph{output} según el producto escalar entre ellas y su conversión en
+probabilidades por medio de la función \emph{sigmoid}. A partir de la etiqueta
+real, se puede determinar el puntaje de error para cada ejemplo y finalmente
+actualizar los parámetros de las matrices de embeddings y contexto. Eso concluye
+un paso de entrenamiento, que se repite por cada grupo de ejemplos positivos y
+negativos por una cierta cantidad de épocas. Una vez concluido el proceso de
+entrenamiento, la matriz de embeddings contiene las representaciones finales.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{figures/context_example_4.png}
+    \caption{Matrices para los embeddings y contextos.}
+\end{figure}
+
+\subsubsection{Modelos de lenguaje a nivel de subpalabra}
+
+El modelo de skipgrams al usar vectores representación por cada palabra se
+ignora su estructura interna. Esto fue lo que inspiró el estudio de modelos a
+nivel de subpalabra en \citep{bojanowski-2017}. La principal característica de estos modelos
+radica en la función de score $s$. En lugar de considerar una palabra $w$ en su
+totalidad, esta es dividida en $n$-gramas de caracteres. Para delimitar inicio y
+fin de una palabra se agregan símbolos especiales \verb|<| y \verb|>| respectivamente. Esto a
+su vez permite distinguir prefijos y sufijos de otras secuencias de caracteres.
+Por último la palabra $w$ también es incluida como un $n$-grama o secuencia
+especial. Por ejemplo, la palabra \emph{color} y $n=4$ estaría representada por
+los $4$-gramas:
+
+\begin{center}
+    \verb|<col|, \verb|colo|, \verb|olor|, \verb|lor>|
+\end{center}
+
+Junto a la secuencia completa \verb|<color>|. Notar que la secuencia
+\verb|<olor>| correspondiente a la palabra \emph{olor} es diferente al $4$-grama
+\verb|olor|. Luego lo único que queda restante es modificar la función
+\emph{score} $s$ del método skipgram por la siguiente:
+
+\begin{equation}
+    s\left(w, c\right) = \sum_{g \in \mathcal{G}_w} \vect{z}_g^{\top}\vect{v}_c
+\end{equation}
+
+Donde $\mathcal{G}_w \subset \{1, .. G\}$ siendo $G$ el conjunto de $n$-gramas
+de tamaño $G$ y $\vect{z}_g$ el vector representación del $n$-grama $g$.
+
+Este modelo permite compartir representaciones entre palabras logrando aprender
+una confiable representación a palabras poco comunes siendo útil para los
+experimentos de esta tesis en la tarea de codificación de planes relajados.
+
+\subsubsection{Representación vectorial de oraciones}
+
+En \citep{Iacobacci-2016} se explican como utilizar word embeddings para
+desambiguación de sentidos, proponiendo distintos métodos de codificación de
+instancias de entrenamiento a partir de un modelo de lenguaje, con el fin
+de incluirlos en una arquitectura supervisada. En particular, detallaremos
+algunos métodos más sencillos y que son común en la literatura para resolver
+tareas de clasificación que involucren la manipulación de texto.
+
+\textbf{Concatenación}. Este método consiste en concatenar los vectores de las
+palabras que conforman la oración a codificar obteniendo un vector de largo
+igual a la suma de las dimensiones de los vectores individuales. En este caso,
+el problema evidente que surge es la representación de oraciones con distinto
+largo y el tamaño del vector resultante.
+
+\textbf{Promedio}. Como su nombre lo indica, este método computa el centroide de
+los embeddings de todas las palabras que conforman una oración. Usualmente esta
+codificación resulta ser adecuada siempre y cuando los vectores de las palabras
+se encuentren en la misma escala, lo cual no siempre suele ser el caso. Otro
+problema menos evidente es la posibilidad de ocurrencia de palabras poco
+representativas pero que tengan mucho peso en la suma, ignorando las ocurrencias
+que nos interesan para la tarea que se intenta resolver.
+
+\textbf{Promedio normalizado}. Por último, una mejora de la representación
+anterior es la normalización por norma L2 de cada vector previo a realizar el
+promedio.
 
 \section{Métricas de clasificación}
 

@@ -12,7 +12,7 @@ El objetivo es definir un modelo que se asemeje a una tarea o problema de
 nuestro entorno por medio de una especificación donde se describan todos los
 detalles en que esta consiste. Estas son el estado inicial, la meta, y un
 conjunto de acciones. El estado inicial describe las propiedades válidas con las
-que se parte dentro del entorno. La meta o estado final representa cuales son
+que se parte dentro del entorno. La meta o estado final representa cuáles son
 las propiedades deseables en él. Y el conjunto de acciones está compuesto de
 transformadores de estados que permiten alterar estas propiedades. Si se obtiene
 una secuencia de acciones que sea aplicable en el estado inicial, y que luego de
@@ -21,7 +21,7 @@ del problema. \citep{Georgievski-et-al-2016}
 
 Para hallar un plan que resuelva la tarea, se realizan técnicas de búsqueda y
 optimización, efectuadas por \emph{planificadores}, algoritmos que computan el
-comportamiento de un agente por medio de una descripción del problema comunmente
+comportamiento de un agente por medio de una descripción del problema comúnmente
 definida en el \emph{Planning Domain Definition Language} (PDDL). En PDDL, se
 especifican las propiedades del entorno en términos de predicados, y las
 transformaciones por medio de esquemas de acción. Estas consisten en expresiones
@@ -33,7 +33,7 @@ el cual encontrar un plan.
 Sin embargo, la mayoría de los planificadores trabajan sobre una representación
 sin variables libres. Por consecuente, estos computan todas las instanciaciones
 que asignan los objetos a los argumentos de los predicados y esquemas de acción
-definidas por el PDDL del problema. Este proceso, conocido como
+definidos por el PDDL del problema. Este proceso, conocido como
 \emph{grounding}, es exponencial en la cantidad de argumentos de los esquemas de
 acción y predicados, llegando a obtener una cantidad inmensurable de instancias
 cuando el número de parámetros definidos es alto. Esto puede llevar a la falla
@@ -43,7 +43,7 @@ en la práctica solo una pequeña fracción de ellas ocurren en los planes del
 problema.
 \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019}
 
-Ahora bien, si se instancian las acciones necesarias para confeccionar por lo
+Ahora bien, si se obtienen las acciones necesarias para confeccionar por lo
 menos un plan, entonces el proceso de búsqueda encontraría alguna de tales
 soluciones. Por ende, surge la siguiente pregunta ¿cómo determinamos que
 acciones son relevantes para algún plan de tal manera que puedan ser incluidas
@@ -55,7 +55,7 @@ Esta pregunta es las que nos llevó a considerar el uso de técnicas de
 \emph{aprendizaje automático}. La idea principal fue lograr encontrar un modelo
 que prediga la probabilidad de que una acción sea relevante a partir de planes
 de varios problemas y acciones etiquetadas. No obstante, dado que las tareas que
-nos interesan resolver son aquellas que no pueden ser instanciadas. Utilizar
+nos interesan resolver son aquellas que no pueden ser groundeadas. Utilizar
 problemas equivalentes para construir el material de entrenamiento no es una
 posibilidad, ya que no podríamos computar algún plan de la tarea ni determinar
 que acciones son relevantes para anotarlas. Aún en los casos en que esto sea
@@ -85,9 +85,8 @@ lenguaje generado por los planes relajados y las acciones instanciadas.
 
 En resumen, la hipótesis inicial de este trabajo es investigar distintas
 codificaciones de nuestros datos que permitan al modelo de \emph{machine
-learning} reconocer la relación entre los planes relajados, acciones
-instanciadas, y los planes reales, de tal manera que guíen el proceso de
-\emph{grounding}.
+learning} reconocer la relación entre los planes relajados, acciones, y planes
+reales, de tal manera que guíen el proceso de \emph{grounding}.
 
 \section{Trabajos relacionados}
 
@@ -100,16 +99,16 @@ estado inicial, tal es el caso del planificador Fast Downward
 especificación de la tarea de planning para evitar trabajo redundante. Otra
 opción es reducir el tamaño de las interfaces de los esquemas de acción al
 dividirla en subpartes. De esta manera la explosión exponencial de acciones
-groundeadas se disminuye drasticamente. Esta técnica se denomina \emph{action
+groundeadas se disminuye drásticamente. Esta técnica se denomina \emph{action
 schema splitting} y es desarrollada en
 \citep{Areces_Bustos_Dominguez_Hoffmann_2014}. También existen métodos que
 evitan el proceso de grounding completamente y realizan la búsqueda del plan a
-partir de su especificación PDDL \citep{Penberthy-1992}
+partir de su especificación PDDL \citep{Penberthy-1992}.
 
 En particular, esta tesis sigue la continuación de un grupo de heurísticas
 desarrolladas en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} que proponen
 realizar la búsqueda de una solución a una tarea de planning por medio de un
-espacio reducido utilizando técnicas de machine learning pero con un material de
+espacio reducido utilizando técnicas de machine learning, pero con un material de
 entrenamiento generado por reglas o propiedades que un plan relajado posee en
 conjunto a los estados iniciales y finales del problema en cuestión.
 
@@ -123,13 +122,13 @@ campos.
 
 \section{Estructura de la tesis}
 
-Los capítulos 2 y 3 detallan los conceptos fundamentales de planning y
-aprendizaje automático que se utilizaran para unir estas dos áreas y sobre que
-problematica estamos trabajando.
+Los capítulos \ref{ch:lit_plannin} y \ref{ch:lit_ml} detallan los conceptos
+fundamentales de planning y aprendizaje automático que se utilizaran para unir
+estas dos áreas y sobre que problemática estamos trabajando.
 
 El capítulo 4 describe el conjunto de entrenamiento y test que se utilizaron,
-así como su preprocesamiento y codificación. También se dejará en evidencia
-la dificultad de los problemas que un planificador no puede resolver debido al
+así como su preprocesamiento y codificación. También se dejará en evidencia la
+dificultad de los problemas que un planificador no puede resolver debido al
 problema de grounding y sobre los cuales nos interesa aplicar grounding
 heurístico.
 
@@ -138,7 +137,7 @@ preprocesamiento de datos realizados, los algoritmos de machine learning, y los
 resultados obtenidos para finalmente compararlos entre sí. Además, se mencionan
 otros experimentos que fueron parte del proceso científico de este trabajo y que
 a pesar de no lograr un resultado esperado, fueron de gran utilidad para la
-re-evaluación de nuestros objetivos.
+reevaluación de nuestros objetivos.
 
-Por último, en el capítulo 6 se escriben las conclusiones obtenidas a partir de los
-experimentos junto a las líneas de trabajo a futuro.
+Por último, en el capítulo 6 se escriben las conclusiones obtenidas a partir de
+los experimentos junto a las líneas de trabajo a futuro.

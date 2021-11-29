@@ -1,39 +1,46 @@
 \chapter{Planning Clásico}
-\label{ch:lit_rev}
+\label{ch:lit_plannin}
 
-En este capítulo se detallaran una serie de definiciones teóricas, necesarias
+En este capítulo se detallan una serie de definiciones teóricas, necesarias
 para comprender el enfoque de esta tesis y sobre que parte de este campo
 aplicaremos técnicas de aprendizaje automático. Partiendo desde el área de
 \emph{planning}, detallando más concretamente que son los estados y acciones,
 representación STRIPS de un problema, el lenguaje PDDL, el proceso de
 \emph{grounding}, la complejidad de encontrar un plan que resuelva la tarea, y
-la necesidad de tomar ventaja de planes relajados.
+la necesidad de tomar ventaja de planes relajados. Gran parte del material de
+este capítulo fue basado en el trabajo ``Learning How to Ground a Plan`` llevado
+a cabo en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019}, el libro
+``Planning Theory \& Practice`` \citep{Nau-Ghallab-Malik-Traverso-2004}, y los
+artículos con el funcionamiento de Fast Downward y PDDL en \citep{Helmert-2011,
+McDermott1998}. Así mismo, se hizo referencia a detalles más específicos
+provenientes de otros artículos científicos que también fueron de gran
+importancia para comprender el enfoque de la tesis.
 
 \section{¿Qué se entiende por planning?}
 
 Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
-anticipando el resultado de nuestras decisiones, aún si no estamos completamente
-conciente de ello, o explícitamente planeando que hacer antes de realizar una
+anticipando el resultado de nuestras decisiones, aun si no estamos completamente
+conscientes de ello, o explícitamente planeando que hacer antes de realizar una
 acción. No obstante, una tarea que abarque objetivos nuevos y complejos requiere
-deliberación al consistir de acciones que uno no esta acostumbrado, tareas de
+deliberación al consistir de acciones que uno no está acostumbrado, tareas de
 alto riesgo, o cooperación con alguien más.
 
-\emph{Automated Planning} es el area de la inteligencia artificial que estudia
+\emph{Automated Planning} es el área de la inteligencia artificial que estudia
 la deliberación de los procesos computacionales. Su objetivo es facilitar la
 tarea de planificación por medio del razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
-acciones, y objetivos a ser satisfacidos. El modelo conceptual del dominio en el
+acciones, y objetivos a ser satisfechos. El modelo conceptual del dominio en el
 cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los
 requerimientos inicial y final son denominados \emph{estado inicial} y
-\emph{meta}. Estas 3 componentes definen un \emph{tarea de planning} cuyo
+\emph{meta}. Estas 3 componentes definen una \emph{tarea de planning} cuyo
 objetivo es encontrar alguna combinación de acciones que determinen un
 \emph{plan}.
 
 Algunos ejemplos de esto son la navegación de un robot, donde una acción altera
 su posición siendo necesarias aquellas que lo lleven de una habitación a otra;
-en el caso de un micro-procesador, una instrucción puede pensarse como una
+en el caso de un microprocesador, una instrucción puede pensarse como una
 acción que cambia el valor de sus registros y se busca que instrucciones son
-necesarias para ejecutar un programa; un servicio web de vuelos de avion que
+necesarias para ejecutar un programa; un servicio web de vuelos de avión que
 reciba un mensaje de reservación por un vuelo, siendo una acción que cambia su
 estado, siempre y cuando no se sobrepase el número de reservaciones máximo a
 partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
@@ -60,7 +67,7 @@ entorno. Por ejemplo, consideremos la siguiente acción $A$:
 \end{align*}
 
 $A$ no es aplicable en el estado $\{p, r\}$, ya que, no se cumple su
-precondición, pero si en el estado $\{p\}$ transformandolo en el estado $\{q\}$.
+precondición, pero si en el estado $\{p\}$ transformándolo en el estado $\{q\}$.
 Se puede interpretar las acciones como operadores de transformación de
 estados en el que su ejecución genera que ciertos símbolos proposicionales
 empiecen a valer o no según si estos ocurren positivamente o negativamente en el
@@ -68,11 +75,11 @@ efecto de la acción.
 
 El tipo de fórmula que se permite en la precondición y en el efecto de las
 acciones determina el tipo de la tarea de \emph{planning}. En particular, se
-utilizaron tareas de \emph{planning} STRIPS durante el desarrolo de esta tesis.
+utilizaron tareas de \emph{planning} STRIPS durante el desarrollo de esta tesis.
 
 \section{Tareas STRIPS}
 
-El tipo de una tarea de \emph{planning} está dada por la lógica de las formulas
+El tipo de una tarea de \emph{planning} está dada por la lógica de las fórmulas
 que ocurren en las acciones y en la meta. En STRIPS, las fórmulas son
 conjunciones de literales, es decir, de la forma $\bigwedge_i l_i$ con $l_i$
 un símbolo proposicional o su negación.
@@ -99,7 +106,7 @@ de la siguiente forma:
     & del : \{ p \}
 \end{align*}
 
-La interpretación de $A$ es similar a la que se dió anteriormente, la
+La interpretación de $A$ es similar a la que se dio anteriormente, la
 precondición contiene los símbolos proposicionales necesarios para que $A$ sea
 aplicable en un mundo. Mientras que $add$ y $del$ son los conjuntos de símbolos
 proposicionales que agrega y elimina la acción producto de su ejecución.
@@ -123,7 +130,7 @@ técnicas del área.
         símbolo proposicional $p \in F$ vale en un estado $s$ sii $p \in s$.
         
         \item Una acción STRIPS es una 3-upla $a = (pre, add, del)$, tal que,
-        $pre, add,$ y $del$ son subconjuntos de F, y los denotaremos como $pre(a)$,
+        $pre, add,$ y $del$ son subconjuntos de $F$, y los denotaremos como $pre(a)$,
         $add(a)$, y $del(a)$ respectivamente.
 
         \item Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq
@@ -144,7 +151,7 @@ técnicas del área.
 
 Para ejemplificar estas definiciones consideremos el problema de la Figura
 \ref{fig:agent_example} Tenemos único agente $a_1$ que se encuentra inicialmente
-en la posición $l_1$ marcada en azúl y desea ir hacia la ubicación $l_4$ en
+en la posición $l_1$ marcada en azul y desea ir hacia la ubicación $l_4$ en
 rojo. Los enlaces de la figura indican los posibles movimientos dentro del mapa.
 La tarea STRIPS en este caso estaría dada por:
 
@@ -174,18 +181,18 @@ la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
 
 Un dato de entrada necesario para cualquier algoritmo de planificación es una
 descripción del problema a ser resuelto. En la práctica, es usualmente imposible
-incluir una explicita enumeración de todos los estados y transiciones que se
+incluir una explícita enumeración de todos los estados y transiciones que se
 pueden realizar en el dominio a partir de una tarea STRIPS. Por lo tanto, es
 necesario una representación que permita computarlas dinámicamente.
 
 Consideremos el problema del ejemplo anterior donde se tiene el agente $a_1$
 pero esta vez $n$ ubicaciones. Para este caso, se va a necesitar $n$ símbolos
 proposicionales $p_i$ tal que representen la acción ``El agente $a_1$ está en la
-ubicación $i$``. Si en lugar de un solo agente hubiesen una cantidad $m$ de
-ellos. Se necesitarian $n \times m$ símbolos para modelar esta caracteristica de
+ubicación $i$``. Si en lugar de un solo agente hubiese una cantidad $m$ de
+ellos. Se necesitarían $n \times m$ símbolos para modelar esta característica de
 la tarea. Una forma más compacta de representar esta propiedad es por medio de
 un predicado de la forma $at(x, l)$ donde $x$ denota a un agente, y $l$ su
-ubicación, siendo mucho más flexible debido a su naturaleza esquematica.
+ubicación, siendo mucho más flexible debido a su naturaleza esquemática.
 
 De manera similar, si se quisiera modelar una acción de cambio de posición,
 haría falta describir una por cada agente y par de ubicaciones obteniendo un
@@ -194,7 +201,7 @@ esta transformación por medio de un esquema de acción de la forma $move(x, l,
 l')$ donde $x$ representa al agente, $l$ la ubicación actual, y $l'$ la ubicación
 a la cual moverse.
 
-De esta forma resulta más adecuado para la especificación utilizar predicados y
+De esta manera resulta más adecuado para la especificación utilizar predicados y
 esquemas de acción en lugar de símbolos proposicionales. Esto lleva a las
 siguientes definiciones:
 
@@ -222,7 +229,7 @@ siguientes definiciones:
 \end{mydef}
 
 Para la tarea STRIPS del problema del agente se tiene que su especificación está
-dada por
+dada por:
 
 \begin{align*}
     \mathcal{P} = \{&at(x, l)\} \\
@@ -242,7 +249,7 @@ Una diferencia importante es que ahora $move$ es un esquema de acción dado por:
 
 Por otro lado, las variables y objetos que se utilizaban para expresar todas las
 proposiciones lógicas se hicieron parte de la especificación logrando expresar
-predicados y acciones de manera esquematica.
+predicados y acciones de manera esquemática.
 
 \section{El lenguaje PDDL}
 
@@ -250,17 +257,17 @@ Para especificar una tarea de planning a una computadora se necesita definir un
 lenguaje que permita al usuario definir cada una de sus componentes. Para dar
 respuesta a esta necesidad surge el \emph{Planning Domain Specification
 Language} (PDDL), Propuesta por Drew Mc Dermott para la competencia de planning
-AIPS-98 \citep{McDermott1998} siendo la heramienta más conocida y usada dentro
+AIPS-98 \citep{McDermott1998} siendo la herramienta más conocida y usada dentro
 de la comunidad de planning.
 
 Una especificación en PDDL consiste de dos archivos, la definición del dominio,
 donde se aclaran los predicados y esquemas de acción disponibles; y la
 definición de la tarea donde se mencionan los objetos concretos a modelar, el
-estado inicial, y la meta. Esta separación resulta importante ya que diferentes
+estado inicial, y la meta. Esta separación resulta importante, ya que diferentes
 tareas de un mismo dominio comparten una estructura común.
 
 Los Listing \ref{lst:agent-domain} y \ref{lst:agent-task} muestran los archivos
-de dominio y tarea del ejemplo del agente escritas en PDDL.
+de dominio y tarea del ejemplo del agente escrita en PDDL.
 
 \begin{lstlisting}[
     float=!htb,

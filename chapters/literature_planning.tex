@@ -256,7 +256,7 @@ predicados y acciones de manera esquemática.
 Para especificar una tarea de planning a una computadora se necesita definir un
 lenguaje que permita al usuario definir cada una de sus componentes. Para dar
 respuesta a esta necesidad surge el \emph{Planning Domain Specification
-Language} (PDDL), Propuesta por Drew Mc Dermott para la competencia de planning
+Language} (PDDL), Propuesta por Drew Mc. Dermott para la competencia de planning
 AIPS-98 \citep{McDermott1998} siendo la herramienta más conocida y usada dentro
 de la comunidad de planning.
 
@@ -313,16 +313,16 @@ de dominio y tarea del ejemplo del agente escrita en PDDL.
 \section{Relajación por deletes}
 
 El problema de decidir si una tarea de planning STRIPS tiene un plan es
-PSPACE-completo, lo cual lo hace intratable para problemas complejos
-\citep{Nau-Ghallab-Malik-Traverso-2004}. Sin embargo, en ocasiones se suelen
+PSPACE-completo, lo cual lo hace intratable para problemas complejos. Sin embargo,
+en ocasiones se suelen
 realizar simplificaciones para obtener uno nuevo, a priori más sencillo de
 resolver, que aporte información para lidiar con el original. En particular, la
 \emph{relajación por deletes} es una simplificación de la tarea que consiste en
-eliminar los efectos negativos de una acción, es decir, su lista $del$. Esta
+eliminar los efectos negativos de las acciones, es decir, su lista $del$. Esta
 relajación es ampliamente utilizada en planning y su importancia subyace en la
 siguiente propiedad: en la \emph{relajación por deletes} si un \emph{fact} se
 vuelve válido, entonces permanecerá válido para siempre. Por ejemplo, en el
-problema del agente, si este se desplazó por varias ubicaciones, tendriamos que
+problema del agente, si este se desplazó por varias ubicaciones, tendríamos que
 se encuentra en más de un lugar al mismo tiempo ya que la proposición que
 indicaba su ubicación anterior no puede ser borrada.
 
@@ -359,8 +359,8 @@ $\mathcal{P}$ y esquemas de acción de $\mathcal{A}$ con objetos de $\Sigma^{C}$
 Es decir, $F$ contiene un \emph{fact} por cada posible asignación de objetos a
 los argumentos de cada predicado $P[X] \in \mathcal{P}$, y $A$ contiene una
 acción por cada posible asignación de objetos a los argumentos de cada esquema
-de acción $a[X] \in \mathcal{A}$. Este proceso se conoce como \emph{Grounding
-Cartesiano}.
+de acción $a[X] \in \mathcal{A}$. Este proceso se conoce como \emph{grounding
+cartesiano}.
 
 No obstante, en la práctica los planificadores no enumeran todos las posibles
 acciones y proposiciones, si no aquellas que son alcanzables relajadamente desde
@@ -434,37 +434,20 @@ se instancia y se agregan a $q$ todas las proposiciones (aún no procesadas) que
 ocurren positivamente en su efecto, es decir, su lista $add$.
 
 Este procedimiento se repite hasta que la cola se encuentre vacía o hasta que la
-tarea STRIPS resultante sea satisfacible relajadamente a partir de las
-instancias hasta el momento, esto es, si $G \subseteq F$. Un detalle a notar
+tarea STRIPS resultante sea satisfacible relajadamente a partir de los elementos procesados hasta el momento, esto es, si $G \subseteq F$. Un detalle a notar
 es que si la cola se encuentra vacía, entonces se obtiene el resultado de
-Grounding Cartesiano.
+grounding cartesiano.
 
 \section{Grounding heurístico}
 
 Mencionamos que un plan de una tarea es también un plan relajado de la misma.
 Sin embargo, el reciproco no se cumple. Es más, un hecho o una acción que es
 relajadamente alcanzable, puede no ser alcanzable en la tarea original o ser
-irrelevante al no pertenecer a ningun plan que la resuelva. Es justamente esta
+irrelevante al no pertenecer a ningún plan que la resuelva. Es justamente esta
 pérdida de información la que origina que computar en el mundo relajado sea
 polinomial. Es aquí donde surge el foco de este trabajo donde se intentará
 predecir cual de estos hechos y acciones son verdaderamente relevantes para
 alcanzar la meta, priorizando su instanciación por sobre el resto.
-
-El algoritmo de grounding heurístico que presentaremos es el mismo que se
-desarrolló en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} y está basado
-en el que se mostró en la sección anterior. Las principales diferencias son el
-criterio de parada, donde se procesan no más de $N$ acciones, y el orden en que
-lo hacen, según su nivel de relevancia. Debido a que el algoritmo puede
-terminar antes de que la cola se vacíe, se está obligado a procesar la totalidad
-de los facts existentes antes de considerar una siguiente acción. Esto garantiza
-que todos los facts que se encuentran en los efectos de las acciones ya
-procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
-
-\begin{mydef}
-    Sean $F$ y $A$ el conjunto de facts y acciones retornados por un algoritmo
-    de grounding. Decimos que este es fact consistente si para todo $a \in A$ se
-    cumple que, si $p \in pre(a) \cup add(a) \cup del(a)$ entonces $p \in F$.
-\end{mydef}
 
 \begin{algorithm}
     \caption{Grounding heurístico}\label{alg:grounding-heuristico}
@@ -493,6 +476,22 @@ procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
     \State \Return $(F, A, I, G)$
     \end{algorithmic}
 \end{algorithm}
+
+El algoritmo de grounding heurístico que presentaremos es el mismo que se
+desarrolló en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} y está basado
+en el que se mostró en la sección anterior. Las principales diferencias son el
+criterio de parada, donde se procesan no más de $N$ acciones, y el orden en que
+lo hacen, según su nivel de relevancia. Debido a que el algoritmo puede
+terminar antes de que la cola se vacíe, se está obligado a procesar la totalidad
+de los facts existentes antes de considerar una siguiente acción. Esto garantiza
+que todos los facts que se encuentran en los efectos de las acciones ya
+procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
+
+\begin{mydef}
+    Sean $F$ y $A$ el conjunto de facts y acciones retornados por un algoritmo
+    de grounding. Decimos que este es fact consistente si para todo $a \in A$ se
+    cumple que, si $p \in pre(a) \cup add(a) \cup del(a)$ entonces $p \in F$.
+\end{mydef}
 
 En grounding heurístico, el algoritmo puede detenerse mucho antes según el
 parámetro $N$ que indica la cantidad de instancias que puede realizar el proceso

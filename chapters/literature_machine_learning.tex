@@ -573,7 +573,21 @@ iniciativa de que se complementen entre sí. Por ejemplo, supongamos que queremo
 averiguar si una persona le gusta un videojuego de computadora. Los datos de
 entrada serían vectores cuyas componentes representen su edad y la frecuencia en
 la que utilizan el ordenador. Si mantenemos dos árboles para cada una de estas
-componentes podemos complementar sus respuestas como se muestra en la figura X.
+componentes podemos complementar sus respuestas figura (figura \ref{fig:xgboost_tree}) que en lugar de tener solo uno (figura \ref{fig:xgboost_two_tree}).
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.4]{figures/xgboost_tree.png}
+    \caption{Árbol que decide por edad de las personas si le interesa un videojuego de computadora. Imagen adaptada de \citep{Tianqi-2016}}
+    \label{fig:xgboost_tree}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.4]{figures/xgboost_two_tree.png}
+    \caption{Dos arboles que en base a la edad y uso de la computadora deciden si una persona le interesa un videojuego. Imagen adaptada de \citep{Tianqi-2016}}
+    \label{fig:xgboost_two_tree}
+\end{figure}
 
 Nuevamente consideremos un conjunto de datos etiquetados $\{(\vect{x}_1, y_1),
 ..., (\vect{x}_n, y_n)\}$ donde cada $\{\vect{x}_i \in \mathbb{R}^{D}\}$. Un

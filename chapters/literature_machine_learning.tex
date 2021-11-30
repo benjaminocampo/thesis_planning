@@ -119,13 +119,20 @@ Una posible función de decisión podría estar definida como $d(t) = c_1$ si $t
 \geq 0$, $d(t) = c_2$ caso contrario. Por lo tanto la frontera de decisión queda
 definida por la relación $h_{\vect{w}, w_0}\left( \vect{x} \right) = 0$ y
 corresponde a un hiperplano de ($D-1$ dimensiones) en uno de $D$ dimensiones. El
-sesgo $w_0$ desplaza el hiperplano del origen coordenados de $D$.
+sesgo $w_0$ desplaza el hiperplano del origen coordenados de $D$. Un ejemplo de pares de puntos separados por un hiperplano (en este caso una recta) se muestra en la figura \ref{fig:linear_model_boundary}.
 
 Algunas veces es conveniente usar una notación más compacta en la que
 introducimos una ``inocente`` componente de entrada más $x_0 = 1$ al vector
 $\vect{x}$ para luego definir $\vect{w}' = (w_0, \vect{w})$ y $\vect{x}' = (x_0,
 \vect{x})$. Luego las ecuaciones \ref{eq:linear_w_bias} y \ref{eq:linear_wo_bias}
 se pueden expresar como:
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{figures/decision_boundary.png}
+    \caption{Frontera de decisión de un modelo lineal separando los puntos que tienen etiqueta $c_1$ = 1 y $c_2$ = -1}.
+    \label{fig:linear_model_boundary}
+\end{figure}
 
 \begin{align}
     h_{\vect{w'}}\left( \vect{x'} \right) &= \vect{w'}^{\top} \vect{x'}\\
@@ -198,7 +205,7 @@ función de costo en base a cada ejemplar $i$.
 Un ejemplo clásico de función de costo es el error cuadrático medio:
 
 \begin{align}
-    J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}_{i}\right) - y \right)
+    J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}_{i}\right) - y_i \right)
 \end{align}
 
 Por lo tanto, al minimizar $J$ se estará reduciendo el error de estimación de $h$
@@ -224,10 +231,17 @@ $\alpha$ conocida como la \emph{taza de aprendizaje}.
     \vect{w} \leftarrow \vect{w} - \alpha \vect{\Delta J\left( w \right)}
 \end{align}
 
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{figures/gradient_descent_plot.png}
+    \caption{Intuición del método de descenso por el gradiente a partir del error cuadrático medio como función de costo $J$}
+    \label{fig:gradient_descent}
+\end{figure}
+
 En cada iteración se realiza la operación de la ecuación actualizando
 $\vect{w}$. Dado a que $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$ disminuirá
 y eventualmente la función de costo $J$ convergerá a su valor mínimo en $T$
-iteraciones. Algo a notar es que la ecuación \ref{eq:gradient_descent}, al ser una operación vectorial, cada componente se actualiza simultáneamente.
+iteraciones. Algo a notar es que la ecuación \ref{eq:gradient_descent}, al ser una operación vectorial, cada componente se actualiza simultáneamente. La figura \ref{fig:gradient_descent} muestra la intuición detrás de este método utilizando el error cuadrático medio como función de costo.
 
 El método de descenso por el gradiente es también llamado el
 optimizador de la función de costo. En la literatura hay varias variantes de
@@ -295,18 +309,17 @@ Luego los pesos $\vect{w}$ se obtienen a partir de un optimizador del tipo del
 descenso por el gradiente minimizando la función de costo definida como:
 
 \begin{align}
-    J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y^{i} | x^{i}) \\
-                             &= \sum_{i=1}^{n}
-                                    y^{i}\log\left( h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) +
-                                    (1 - y^{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right)
+    J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y_{i} | \vect{x}_{i}) \\
+                             &= -\sum_{i=1}^{n}
+                                    y_{i}\log\left( h_{\vect{w}}\left( \vect{x}_{i} \right) \right) +
+                                    (1 - y_{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}_{i} \right) \right)
 \end{align}
 
 Algo a notar es que la función de costo se puede expresar como suma de penalizaciones
 individuales:
 
 \begin{align}
-    J\left( \vect{w} \right) &= \sum_{i=1}^{n} p(y^{i} | x^{i}) \\
-                             &= \sum_{i=1}^{n} \ell\left( h_{\vect{w}}\left( \vect{x}^{(i)}\right), y^{(i)}\right)
+    J\left( \vect{w} \right) &= \sum_{i=1}^{n} \ell\left( h_{\vect{w}}\left( \vect{x}_{i}\right), y_{i}\right)
 \end{align}
 
 Donde $\ell$ es la penalización a nivel de ejemplo:
@@ -314,23 +327,30 @@ Donde $\ell$ es la penalización a nivel de ejemplo:
 \begin{align}
     \ell\left( \vect{x}, y \right) =
     \begin{cases}
-        y^{i}\log\left( h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) & y = 1 \\
-        (1 - y^{i})\log\left(1 - h_{\vect{w}}\left( \vect{x}^{(i)} \right) \right) & y = 0
+        - \log\left( h_{\vect{w}}\left( \vect{x} \right) \right) & y = 1 \\
+        - \log\left(1 - h_{\vect{w}}\left( \vect{x} \right) \right) & y = 0
     \end{cases}
 \end{align}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{figures/logistic_regression_loss.png}
+    \caption{Gráfica de $h_{\vect{w}}(\vect{x})$ vs $\ell(\vect{x})$ separando por etiqueta}
+    \label{fig:lgr_loss}
+\end{figure}
 
 Si analizamos la forma de $\ell$ para ambos casos podemos observar que, $J$
 captura la intuición de que mayores errores en la predicción deben recibir
 mayores penalizaciones.
 
 Para el caso $y = 1$. La función de costo a nivel de
-ejemplo es la curva que se marca en color azul de la figura X. En ella se puede ver
+ejemplo es la curva que se marca en color azul de la figura \ref{fig:lgr_loss}. En ella se puede ver
 que si $h_{\vect{w}}\left( \vect{x} \right) \rightarrow 0$ (la función de
 predicción asigna a $\vect{x}$ una probabilidad cercana a $0$), entonces el
 costo incrementa y por lo tanto $\ell(\vect{x}, y) \rightarrow \infty$. Si
 $h_{\vect{x}}\left( \vect{x} \right) \rightarrow 1$, entonces el costo disminuye
 y $\ell(\vect{x}, y) \rightarrow 0$. De manera similar ocurre para el caso $y =
-0$ y la curva marcada en rojo de la figura X'.
+0$ y la curva marcada en rojo.
 
 \subsection{Redes neuronales}
 
@@ -380,6 +400,13 @@ Donde $j = 0,..., M$. El supra-índice $(1)$ indica que los parámetros
 correspondientes $w_{ji}^{(1)}$ están en la primera capa de la red. Luego cada
 $a_j$ es transformado por una función de activación no lineal $g$.
 
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{figures/multilayer_perceptron.png}
+    \caption{Perceptrón multicapa de una sola capa oculta}
+    \label{fig:nn_multilayer_perceptron}
+\end{figure}
+
 \begin{equation}
     z_j = g(a_j)
 \end{equation}
@@ -420,7 +447,7 @@ de un ejemplo $\vect{x}$, que retorna un vector de salida $\vect{y}$, y que es
 controlado por un vector de parámetros $\vect{w}$, donde las dimensiones de
 estos vectores son $D + 1$, $K$, y $(D + 1 \times M + 1)$ respectivamente. Esta función
 también puede representarse a partir de un gráfico de red como el que se vé en
-la figura X. El proceso de evaluar un ejemplo puede interpretarse como una
+la figura \ref{fig:nn_multilayer_perceptron} . El proceso de evaluar un ejemplo puede interpretarse como una
 propagación hacia adelante (\emph{forward propagation} en inglés), que transmite
 la información a través de la red. Por último, algo a notar son las componentes
 $w_{j0}^{(1)}$ y $w_{k0}^{(2)}$ que se corresponden con el sesgo de los modelos
@@ -458,12 +485,12 @@ En resumen el algoritmo de aprendizaje de una red neuronal consiste en:
 
 Hasta el momento no mencionamos la forma de la función de activación $g$ siendo
 la protagonista para obtener un modelo no lineal. Algunas de las funciones más
-comunes es la \emph{sigmoide} introducida en la sección \ref{subch:prob_models}. Esta toma valores
+comunes es la \emph{sigmoide} (figura \ref{fig:nn_sigmoid}) introducida en la sección \ref{subch:prob_models}. Esta toma valores
 reales y los mapea al rango $[0, 1]$ siendo muy utilizada en procesos de
 clasificación.
 
-Otras funciones muy usadas son la \emph{tanh} (tangente hiperbólica) y
-\emph{ReLU} (unidad rectificadora lineal).
+Otras funciones muy usadas son la \emph{tanh} (tangente hiperbólica, figura \ref{fig:nn_tanh}) y
+\emph{ReLU} (unidad rectificadora lineal, figura \ref{fig:nn_relu}).
 
 \begin{equation}
     \tanh\left( x \right) = \frac{2}{1 + \exp(-2x)} - 1
@@ -472,6 +499,26 @@ Otras funciones muy usadas son la \emph{tanh} (tangente hiperbólica) y
 \begin{equation}
     ReLU\left( x \right) = \max(0, x)
 \end{equation}
+
+\begin{figure}
+    \centering
+    \begin{minipage}[b]{0.4\textwidth}
+      \includegraphics[scale=0.5]{figures/relu.png}
+      \caption{Función de activación $ReLU$.}
+      \label{fig:nn_relu}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.4\textwidth}
+      \includegraphics[scale=0.5]{figures/tanh.png}
+      \caption{Función de activación $tanh$.}
+      \label{fig:nn_tanh}
+    \end{minipage}
+    \begin{minipage}[b]{0.4\textwidth}
+      \includegraphics[scale=0.5]{figures/sigmoid.png}
+      \caption{Función de activación $\sigma$.}
+      \label{fig:nn_sigmoid}
+    \end{minipage}
+\end{figure}
 
 Notar que la tangente hiperbólica realiza un cambio de escala de la sigmoide
 mapeando valores reales al rango $[-1, 1]$ como se muestra en la ecuación \ref{eq:tanh_vs_sigmoid}.

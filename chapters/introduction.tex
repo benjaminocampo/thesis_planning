@@ -8,16 +8,13 @@ tales como, control de misiones espaciales \citep{RabideauG-et-al-2001}, manejo
 de crisis \citep{Bienkowki-1995}, generación de textos narrativos
 \citep{Goudoulakis-et-al-2016}, o robótica \citep{Munoz-et-al-2016}.
 
-El objetivo es definir un modelo que se asemeje a una tarea o problema de
-nuestro entorno por medio de una especificación donde se describan todos los
-detalles en que esta consiste. Estas son el estado inicial, la meta, y un
-conjunto de acciones. El estado inicial describe las propiedades válidas con las
-que se parte dentro del entorno. La meta o estado final representa cuáles son
-las propiedades deseables en él. Y el conjunto de acciones está compuesto de
-transformadores de estados que permiten alterar estas propiedades. Si se obtiene
+El objetivo es definir un modelo que se simule una tarea descripta por medio de una especificación que detalle sus componentes. Estas son el estado inicial, la meta, y un
+conjunto de acciones. El estado inicial describe las propiedades verdaderas iniciales del problema. La meta o estado final representa cuáles son
+las propiedades que deben ser verdaderas para finalizar la tarea. Y el conjunto de acciones está compuesto de
+transformadores alteran si una propiedad pasa a ser verdadera o deja de serlo. Este conjunto de propiedades recibe el nombre de estado, y modelan que propiedades son verdaderas y falsas, y a que estados puede cambiar por medio de alguna acción. Si se obtiene
 una secuencia de acciones que sea aplicable en el estado inicial, y que luego de
 su ejecución conlleve a la meta, entonces dicha secuencia es considerada un plan
-del problema. \citep{Georgievski-et-al-2016}
+del problema.
 
 Para hallar un plan que resuelva la tarea, se realizan técnicas de búsqueda y
 optimización, efectuadas por \emph{planificadores}, algoritmos que computan el
@@ -28,7 +25,6 @@ transformaciones por medio de esquemas de acción. Estas consisten en expresione
 parametrizadas que pueden ser instanciadas por un conjunto de objetos. El
 planificador por medio de la especificación, define un espacio de búsqueda sobre
 el cual encontrar un plan.
-\citep{Georgievski-et-al-2016}
 
 Sin embargo, la mayoría de los planificadores trabajan sobre una representación
 sin variables libres. Por consecuente, estos computan todas las instanciaciones
@@ -45,25 +41,13 @@ problema.
 
 Ahora bien, si se obtienen las acciones necesarias para confeccionar por lo
 menos un plan, entonces el proceso de búsqueda encontraría alguna de tales
-soluciones. Por ende, surge la siguiente pregunta ¿cómo determinamos que
+soluciones. Por ende, surge la siguiente pregunta, ¿Cómo determinamos que
 acciones son relevantes para algún plan de tal manera que puedan ser incluidas
-en el proceso de grounding? Más formalmente, ¿existe alguna función $F$
-que dada una acción $A$ y un problema $P$, determine que tan relevante es $A$
-para hallar un plan en $P$?
+en el proceso de grounding?
 
-Esta pregunta es las que nos llevó a considerar el uso de técnicas de
-\emph{aprendizaje automático}. La idea principal fue lograr encontrar un modelo
-que prediga la probabilidad de que una acción sea relevante a partir de planes
-de varios problemas y acciones etiquetadas. No obstante, dado que las tareas que
-nos interesan resolver son aquellas que no pueden ser groundeadas. Utilizar
-problemas equivalentes para construir el material de entrenamiento no es una
-posibilidad, ya que no podríamos computar algún plan de la tarea ni determinar
-que acciones son relevantes para anotarlas. Aún en los casos en que esto sea
-posible, hacerlo es realmente costoso en términos computacionales y de tiempo
-necesario. Estas son algunas de las dificultades que nos llevó a utilizar una
-aproximación del plan real, conocida como \emph{plan relajado}, y PDDL's de
-problemas más sencillos de resolver que permitan guiar el proceso de
-\emph{grounding} en otros más complejos.
+Esta pregunta es la que nos llevó a considerar el uso de técnicas de
+\emph{aprendizaje automático}. Los modelos de aprendizaje automático consisten en aproximar una función a partir de datos de entrenamiento, es decir, ejemplos a los cuales se conoce el valor de entrada y de salida de la función. La idea principal se basó en encontrar una función que prediga la probabilidad de que una acción sea relevante a partir de información del problema. No obstante, dado que las tareas que
+nos interesan resolver son aquellas que no pueden ser groundeadas, fue necesario recurrir a problemas equivalentes pero más sencillos durante la construcción del material de entrenamiento. Otro inconveniente fue la decisión de que información del problema se puede brindar al modelo de aprendizaje automático de tal manera que identifique si una acción es importante. Evidentemente no puede ser el plan de la tarea, ya que para aquellos problemas que fallan durante el proceso de grounding no se puede encontrar el plan que lo resuelve. No obstante debe ser una característica que brinde información, aunque sea aproximada, de la estructura del plan real y que pueda ser computada previamente al proceso de grounding. Esto fue lo que llevó a utilizar una simplificación del plan real conocida como \emph{plan relajado} que analizaremos con más detalle durante el desarrollo de esta tesis.
 
 Por otro lado, los modelos de aprendizaje automático dependen fuertemente de
 como se representan los datos que uno tiene disponible \citep{Heaton-2016-AnEA}.
@@ -90,8 +74,8 @@ reales, de tal manera que guíen el proceso de \emph{grounding}.
 
 \section{Trabajos relacionados}
 
-En la literatura de planning se pueden encontrar numerosas técnicas que intentan
-lidiar con el proceso de grounding efectuado por el planificador. Algunas se
+En la literatura de planning se pueden encontrar numerosas avances que intentan
+guiar con el proceso de grounding efectuado por el planificador. Algunas se
 basan en evitar procesar acciones que no son alcanzables relajadamente desde el
 estado inicial, tal es el caso del planificador Fast Downward
 \citep{Helmert-2011} utilizado en competencias de planning. En
@@ -105,8 +89,8 @@ schema splitting} y es desarrollada en
 evitan el proceso de grounding completamente y realizan la búsqueda del plan a
 partir de su especificación PDDL \citep{Penberthy-1992}.
 
-En particular, esta tesis sigue la continuación de un grupo de heurísticas
-desarrolladas en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} que proponen
+En particular, esta tesis continua con la linea de investigación
+desarrollada en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} donde proponen
 realizar la búsqueda de una solución a una tarea de planning por medio de un
 espacio reducido utilizando técnicas de machine learning, pero con un material de
 entrenamiento generado por reglas o propiedades que un plan relajado posee en
@@ -124,7 +108,7 @@ campos.
 
 Los capítulos \ref{ch:lit_planning} y \ref{ch:lit_ml} detallan los conceptos
 fundamentales de planning y aprendizaje automático que se utilizaran para unir
-estas dos áreas y sobre que problemática estamos trabajando.
+estas dos áreas.
 
 El capítulo 4 describe el conjunto de entrenamiento y test que se utilizaron,
 así como su preprocesamiento y codificación. También se dejará en evidencia la

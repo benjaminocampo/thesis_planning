@@ -2,7 +2,7 @@
 \label{ch:lit_planning}
 
 En este capítulo se detallan una serie de definiciones teóricas, necesarias
-para comprender el enfoque de esta tesis y sobre que parte de este campo
+para comprender el enfoque de esta tesis y sobre qué parte de este campo
 aplicaremos técnicas de aprendizaje automático. Partiendo desde el área de
 \emph{planning}, detallando más concretamente que son los estados y acciones,
 representación STRIPS de un problema, el lenguaje PDDL, el proceso de
@@ -14,7 +14,7 @@ a cabo en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019}, el libro
 artículos con el funcionamiento de Fast Downward y PDDL en \citep{Helmert-2011,
 McDermott1998}. Así mismo, se hizo referencia a detalles más específicos
 provenientes de otros artículos científicos que también fueron de gran
-importancia para comprender el enfoque de la tesis.
+importancia para comprender los fundamentos de planning clásico.
 
 \section{¿Qué se entiende por planning?}
 
@@ -29,7 +29,7 @@ alto riesgo, o cooperación con alguien más.
 la deliberación de los procesos computacionales. Su objetivo es facilitar la
 tarea de planificación por medio del razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
-acciones, y objetivos a ser satisfechos. El modelo conceptual del dominio en el
+acciones, y objetivos a ser cumplidos. El modelo conceptual del dominio en el
 cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los
 requerimientos inicial y final son denominados \emph{estado inicial} y
 \emph{meta}. Estas 3 componentes definen una \emph{tarea de planning} cuyo
@@ -39,7 +39,7 @@ objetivo es encontrar alguna combinación de acciones que determinen un
 Algunos ejemplos de esto son la navegación de un robot, donde una acción altera
 su posición siendo necesarias aquellas que lo lleven de una habitación a otra;
 en el caso de un microprocesador, una instrucción puede pensarse como una
-acción que cambia el valor de sus registros y se busca que instrucciones son
+acción que cambia el valor de sus registros y se busca qué instrucciones son
 necesarias para ejecutar un programa; un servicio web de vuelos de avión que
 reciba un mensaje de reservación por un vuelo, siendo una acción que cambia su
 estado, siempre y cuando no se sobrepase el número de reservaciones máximo a
@@ -48,12 +48,12 @@ partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
 \section{Estados y acciones}
 
 Un mundo o estado  posible de una tarea de \emph{planning} se representa a
-partir de un conjunto de símbolos proposicionales que modelan un aspecto del
+partir de un conjunto de símbolos proposicionales que modelan aspectos del
 entorno. Por ejemplo, el símbolo proposicional $p$ puede modelar la situación
 ``el agente $a_1$ se encuentra en la ubicación $l_1$``. Aquellos símbolos  que
-no están mencionados en un estado, se asumen como no válidos en dicho mundo. De
+no están mencionados en un estado, se asumen como falsos en dicho mundo. De
 esta manera, si se tienen los símbolos proposicionales $p,q,r$, $\{p, q\}$
-representa el estado en el que vale $p$ y $q$ pero no $r$.
+representa el estado en el que $p$ y $q$ son verdaderos, pero no $r$.
 
 Las acciones son representadas en términos de una precondición y un efecto. La
 precondición es una fórmula proposicional que representa la condición necesaria
@@ -63,14 +63,14 @@ entorno. Por ejemplo, consideremos la siguiente acción $A$:
 \begin{align*}
     & Action : A \\
     & pre : p \land \neg r \\
-    & eff : \neg p \land q
+    & \mathit{eff} : \neg p \land q
 \end{align*}
 
 $A$ no es aplicable en el estado $\{p, r\}$, ya que, no se cumple su
 precondición, pero si en el estado $\{p\}$ transformándolo en el estado $\{q\}$.
 Se puede interpretar las acciones como operadores de transformación de
 estados en el que su ejecución genera que ciertos símbolos proposicionales
-empiecen a valer o no según si estos ocurren positivamente o negativamente en el
+se hagan verdaderos o falsos según si estos ocurren positivamente o negativamente en el
 efecto de la acción.
 
 El tipo de fórmula que se permite en la precondición y en el efecto de las
@@ -80,8 +80,7 @@ utilizaron tareas de \emph{planning} STRIPS durante el desarrollo de esta tesis.
 \section{Tareas STRIPS}
 
 El tipo de una tarea de \emph{planning} está dada por la lógica de las fórmulas
-que ocurren en las acciones y en la meta. En STRIPS, las fórmulas son
-conjunciones de literales, es decir, de la forma $\bigwedge_i l_i$ con $l_i$
+que ocurren en las acciones y en la meta. En STRIPS, las fórmulas están en primera forma normal conjuntiva \emph{1-CNF}, es decir, son de la forma $\bigwedge_i l_i$ con $l_i$
 un símbolo proposicional o su negación.
 
 \begin{mydef}
@@ -92,7 +91,7 @@ un símbolo proposicional o su negación.
 
 Una forma más conveniente de trabajar sobre esta representación es utilizando
 únicamente conjuntos de símbolos proposicionales. Vimos que en el caso de los
-estados, solo se mantienen aquellos que son válidos en el mundo, es decir, los
+estados, solo se mantienen aquellos que son verdaderos en el estado, es decir, los
 literales positivos. De manera similar, ocurre con la precondición de una
 acción. Sin embargo, en el caso de su efecto se mantienen dos conjuntos, uno
 con los símbolos proposicionales positivos, y otro con los negativos.
@@ -108,12 +107,28 @@ de la siguiente forma:
 
 La interpretación de $A$ es similar a la que se dio anteriormente, la
 precondición contiene los símbolos proposicionales necesarios para que $A$ sea
-aplicable en un mundo. Mientras que $add$ y $del$ son los conjuntos de símbolos
+aplicable en un estado. Mientras que $add$ y $del$ son los conjuntos de símbolos
 proposicionales que agrega y elimina la acción producto de su ejecución.
 
 Esta nueva representación permite abstraer fórmulas y operadores
 proposicionales, lo cual ayudará para introducir de manera más natural algunas
 técnicas del área.
+
+Algo importante a recalcar es el orden en que se ejecuta una acción. Para un estado aplicable de $A$ optaremos por primero eliminar los símbolos que sean verdaderos a partir de su lista $del$ para luego agregar los de la lista $add$ con el fin de garantizar de que el estado resultante contenga todos los símbolos de esta última lista.
+Para ejemplificar esto, supongamos que tenemos la siguiente acción $A'$ pero eligiendo está vez el orden contrario de aplicación.
+
+\begin{align*}
+    & Action : A' \\
+    & pre : \{ p \}\\
+    & add : \{ q \}\\
+    & del : \{ p, q \}
+\end{align*}
+\begin{align*}
+    (\{p\} \cup add(A')) - del(A') = \{p, q\} - del(A') = \emptyset
+\end{align*}
+
+Notar que de esta manera, no tenemos ninguna garantía de que los objetos que agrega $A'$ efectivamente pertenezcan
+al estado resultante de su ejecución.
 
 \begin{mydef}
     Una tarea de planning STRIPS es una 4-upla $\Pi = (F, A, I, G)$ donde $F$ es
@@ -140,7 +155,7 @@ técnicas del área.
         \xrightarrow{\vec{a}} t$ si estos pueden ser iterativamente aplicados a
         $s$, resultando en $t$.
 
-        \item Un plan para $\Pi$ es una secuencia $\vec{a}$ con $I
+        \item Un plan para $\Pi$ es una secuencia $\vec{a}$ en $A^{*}$ con $I
         \xrightarrow{\vec{a}} s_G$ si $G \subseteq s_G$.
         
         \item Una tarea $\Pi$ es satisfacible si un plan para $\Pi$ existe. El
@@ -165,23 +180,22 @@ La tarea STRIPS en este caso estaría dada por:
 \end{align*}
 
 Para cada agente $x$ y ubicaciones $l, l'$ se tiene que $move(x, l, l') =
-({at(a, l)}, {at(a, l')}, {at(a, l)})$. Un posible plan de la tarea podría ser
+(\{at(a, l)\}, \{at(a, l')\}, \{at(a, l)\})$. Un posible plan de la tarea podría ser
 la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{figures/agent_example.png}
     \caption{Ejemplo del problema del agente. Su posición inicial es la ubicación
-             $l1$ en azúl queriendo llegar a la posición $l4$ marcada con rojo.}
+             $l1$ en azul queriendo llegar a la posición $l4$ marcada con rojo.}
     \label{fig:agent_example}
 \end{figure}
-
 
 \section{Representaciones STRIPS}
 
 Un dato de entrada necesario para cualquier algoritmo de planificación es una
 descripción del problema a ser resuelto. En la práctica, es usualmente imposible
-incluir una explícita enumeración de todos los estados y transiciones que se
+incluir una enumeración explícita de todos los estados y transiciones que se
 pueden realizar en el dominio a partir de una tarea STRIPS. Por lo tanto, es
 necesario una representación que permita computarlas dinámicamente.
 
@@ -209,8 +223,9 @@ siguientes definiciones:
     Una especificación de una tarea STRIPS es una 6-upla $(\mathcal{P},
     \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$  donde $\mathcal{P}$ es un
     conjunto de predicados, $\mathcal{A}$ es un conjunto de esquemas de acción,
-    $\Sigma^{C}$ es un conjunto de constantes, $\Sigma^{O}$ es un conjunto de
-    objetos no constantes, $I$ es el estado inicial, y $G$ es la meta.
+    $\Sigma^{C}$ es un conjunto de símbolos constantes, $\Sigma^{O}$ es un conjunto de 
+    variables, $I \subseteq 2^{\mathcal{P}}$ es el estado inicial, y $G \subseteq 2^{\mathcal{P}}$
+    es la meta.
 \end{mydef}
 
 \begin{mydef}
@@ -256,8 +271,8 @@ predicados y acciones de manera esquemática.
 Para especificar una tarea de planning a una computadora se necesita definir un
 lenguaje que permita al usuario definir cada una de sus componentes. Para dar
 respuesta a esta necesidad surge el \emph{Planning Domain Specification
-Language} (PDDL), Propuesta por Drew Mc. Dermott para la competencia de planning
-AIPS-98 \citep{McDermott1998} siendo la herramienta más conocida y usada dentro
+Language} (PDDL), Propuesta para la competencia de planning
+AIPS-98 \citep{McDermott1998} siendo el lenguaje de especificación de dominios y problemas de planning más usado dentro
 de la comunidad de planning.
 
 Una especificación en PDDL consiste de dos archivos, la definición del dominio,
@@ -266,7 +281,7 @@ definición de la tarea donde se mencionan los objetos concretos a modelar, el
 estado inicial, y la meta. Esta separación resulta importante, ya que diferentes
 tareas de un mismo dominio comparten una estructura común.
 
-Los Listing \ref{lst:agent-domain} y \ref{lst:agent-task} muestran los archivos
+Los listing \ref{lst:agent-domain} y \ref{lst:agent-task} muestran los archivos
 de dominio y tarea del ejemplo del agente escrita en PDDL.
 
 \begin{lstlisting}[
@@ -310,18 +325,19 @@ de dominio y tarea del ejemplo del agente escrita en PDDL.
   )
 \end{lstlisting}
 
+Observar que tanto los predicados como las acciones están parametrizados con variables de un cierto
+tipo. Por ejemplo para el predicato $at(x, y)$, $x$ es de tipo \emph{AGENT} e $y$ del tipo \emph{LOCATION} ambos previamente listados en la linea 6 del listing \ref{lst:agent-domain}. Luego en la linea 7 del listing \ref{lst:agent-task} se especifican todos los objetos disponibles y el tipo al cual corresponden.
+
 \section{Relajación por deletes}
 
 El problema de decidir si una tarea de planning STRIPS tiene un plan es
-PSPACE-completo, lo cual lo hace intratable para problemas complejos. Sin embargo,
-en ocasiones se suelen
-realizar simplificaciones para obtener uno nuevo, a priori más sencillo de
-resolver, que aporte información para lidiar con el original. En particular, la
-\emph{relajación por deletes} es una simplificación de la tarea que consiste en
+PSPACE-completo. Es por eso que las implementaciones que lo resuelven son a partir de algoritmos de búsqueda de orden exponencial. Esta búsqueda es guiada a partir de una \emph{función heurística} informada por \emph{planes relajados}.
+
+Los planes relajados son secuencias de acciones cuyos efectos negativos son eliminados, son aplicables en el estado inicial, y su estado resultante contiene a la meta. Estos proviene de la \emph{relajación por deletes}, una simplificación de la tarea de planning que consiste en
 eliminar los efectos negativos de las acciones, es decir, su lista $del$. Esta
 relajación es ampliamente utilizada en planning y su importancia subyace en la
-siguiente propiedad: en la \emph{relajación por deletes} si un \emph{fact} se
-vuelve válido, entonces permanecerá válido para siempre. Por ejemplo, en el
+siguiente propiedad: en la \emph{relajación por deletes} si un \emph{fact} $p$ se
+vuelve verdadero en un estado $s$, entonces todos los estados que se puedan formar a partir de sucesivas aplicaciones de acciones también harán verdadero $p$. Por ejemplo, en el
 problema del agente, si este se desplazó por varias ubicaciones, tendríamos que
 se encuentra en más de un lugar al mismo tiempo ya que la proposición que
 indicaba su ubicación anterior no puede ser borrada.

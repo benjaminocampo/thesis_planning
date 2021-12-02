@@ -715,6 +715,7 @@ En particular pondremos nuestro foco en la codificación de características
 desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
 
 \subsection{One-hot encoding}
+\label{method:ohe}
 
 A menudo los datos disponibles presentan características que no están dadas en
 un espacio continuo si no más bien categórico. Por ejemplo, se podría describir
@@ -737,17 +738,6 @@ tenemos un variable que puede tomar una serie de valores categóricos, entonces 
 Otra opción es usar un esquema \emph{one-of-K} que
 transforma una característica categórica con $N$ clases, en $N$ categorias
 binarias con una de ellas 1 y el resto 0. Para el ejemplo anterior tendríamos:
-
-\begin{equation*}
-\begin{bmatrix}
-    & inAsia & inAfrica & inEurope & inSouthAmerica & inNorthAmerica \\
-    Argentina & 0 & 0 & 0 & 1 & 0 \\
-    Brasil & 0 & 1 & 0 & 1 & 0 \\
-    España & 0 & 0 & 1 & 0 & 0 \\
-    USA & 0 & 0 & 0 & 0 & 1 \\
-    Italia & 0 & 0 & 1 & 0 & 0
-\end{bmatrix}
-\end{equation*}
 
 La misma técnica es válida si se quisiera representar oraciones o documentos del
 lenguaje natural. Supongamos que tenemos los documentos.
@@ -772,69 +762,8 @@ dimensiones.
 Observar que para este caso una codificación ordinal no sería adecuada dado que
 se deberían enumerar todas las palabras del vocabulario.
 
-Sin embargo, tomemos una oración dada en el contexto de planning (en particular
-del dominio \emph{satellite} descripto en apéndice \ref{appn:A}). La siguiente secuencia
-muestra un plan relajado de largo 4 asociado a una tarea STRIPS cuyos esquemas
-de acción son $calibrate, switch\_on, take\_image,$ y $turn\_to$. El resto de
-expresiones son objetos concretos del dominio. También es importante mencionar
-que cada objeto de un cierto tipo está enumerado. Por ejemplo el objeto
-$instrument1$ es del tipo $instrument$ cuyo índice es $1$. 
-
-\begin{align*}
-    & (calibrate\ satellite0\ instrument1\ groundstation0) \\
-    & (switch\_on\ instrument1\ satellite0) \\
-    & (take\_image\ satellite0\ planet5\ instrument1\ image1) \\
-    & (turn\_to\ satellite0\ groundstation0\ planet5) \\
-\end{align*}
-
-La primera dificultad para codificarla surge bajo la pregunta de a que se
-identifica como una palabra de la oración. Una primera iniciativa es definir una
-acción como tal y utilizar un one hot encoding. No obstante, por lo general
-una acción no suele ocurrir más de una vez en un plan de la tarea lo cual se
-perdería la información de la frecuencia en que ocurren los objetos en la
-secuencia. No solo es clave capturar los objetos si no también el índice del
-cual se trata. Por lo tanto respetar su numeración es igual de relevante. Por
-último cada acción debe mantener la misma cantidad de componentes en su
-representación vectorial, independientemente del esquema o el número de
-parámetros que reciba, y se debe asegurar el orden de la secuencia.
-
-Para solventar estas dificultades se mantuvo una codificación one hot ordinal que
-consiste en:
-
-\begin{itemize}
-    \item Cada elemento en la interfaz de una acción junto a su esquema son
-    definidos como palabras. Eso incluye la numeración de los objetos.
-    \item Cada vector que representa a una acción tiene dimensión $2 \times N +
-    1$ siendo $N$ la longitud de la interfaz más larga de un esquema. Aquellas
-    acciones con una interfaz más chica se les agrega un margen de $0's$ hasta
-    completar el largo requerido.
-    \item Los esquemas de acción son enumerados en el rango $1, ..., M$ con $M$
-    la cantidad de esquemas.
-    \item El tipo de los objetos son enumerados en el rango de $1, ..., K$. con
-    $K$ la cantidad de tipos.
-    \item Si un objeto tiene el índice $i$ se lo incrementa en 1 (para evitar que
-    aquellos objetos que empiecen con índice 0 se malinterpreten como margenes).
-\end{itemize}
-
-Por ejemplo si la enumeración de las esquemas y tipos fuesen los siguientes:
-
-\begin{align*}
-    &\{calibrate: 1,\ turn\_to: 2,\ switch\_on:3,\ take\_image:4 \} \\
-    &\{satellite: 1,\ instrument: 2,\ planet: 3,\ groundstation: 4,\ image: 5\}
-\end{align*}
-
-En este la longitud de la interfaz más larga es 4, entonces cada acción tendrá
-asociado un vector de dimensión $2 \times 4 + 1 = 9$ y la codificación
-resultante sería:
-
-\begin{align*}
-    (calibrate\ satellite0\ instrument1\ groundstation0) &: (1\ 1\ 1\ 2\ 2\ 4\ 1\ 0\ 0) \\
-    (switch\_on\ instrument1\ satellite0) &: (3\ 2\ 2\ 1\ 1\ 0\ 0\ 0\ 0) \\
-    (take\_image\ satellite0\ planet5\ instrument1\ image1) &: (4\ 1\ 1\ 3\ 6\ 2\ 2\ 5\ 2) \\
-    (turn\_to\ satellite0\ groundstation0\ planet5) &: (2\ 1\ 1\ 4\ 1\ 3\ 6\ 0\ 0) \\
-\end{align*}
-
 \subsection{Vectores de palabras (Word embeddings)}
+\label{method:wb}
 
 Un vector denso de palabras (comúnmente conocido como word embedding, en inglés)
 es una de las técnicas de representación de vocabulario más popular en el área
@@ -1062,12 +991,7 @@ experimentos de esta tesis en la tarea de codificación de planes relajados.
 
 \subsubsection{Representación vectorial de oraciones}
 
-En \citep{Iacobacci-2016} se explican como utilizar word embeddings para
-desambiguación de sentidos, proponiendo distintos métodos de codificación de
-instancias de entrenamiento a partir de un modelo de lenguaje, con el fin
-de incluirlos en una arquitectura supervisada.
-
-Por último, presentaremos algunos métodos sencillos de codificación de oraciones a partir de los embeddings orientadas a tareas de clasificación que involucren manipulación de texto.
+Como cierre de esta sección presentaremos algunos métodos sencillos de codificación de oraciones a partir de los embeddings orientadas a tareas de clasificación que involucren manipulación de texto.
 
 \textbf{Concatenación}. Este método consiste en concatenar los vectores de las
 palabras que conforman la oración a codificar obteniendo un vector de largo
@@ -1085,6 +1009,11 @@ representativas pero que tengan mucho peso en la suma debido a la frecuencia en 
 \textbf{Promedio normalizado}. Por último, una mejora de la representación
 anterior es la normalización por norma L2 de cada vector previo a realizar el
 promedio.
+
+Pueden encontrarse otras maneras de codificar los datos a través de \citep{Iacobacci-2016}
+donde se explican como utilizar word embeddings para desambiguación de sentidos,
+proponiendo distintos métodos de codificación de instancias de entrenamiento a partir
+de un modelo de lenguaje. Esto muestra que el uso de representaciones a nivel de palabra en la codificación de oraciones suelen ser patrones comunes al momento de incluirlo en una arquitectura supervisada.
 
 \section{Métricas de clasificación}
 

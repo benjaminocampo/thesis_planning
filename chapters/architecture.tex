@@ -1,16 +1,238 @@
-\chapter{Arquitectura y pipeline de ejecución}
+\chapter{Etapas de preparación y ejecución de modelos}
 \label{ch:method}
 
-\section{Conjunto de datos utilizados y preprocesamiento}
+Inferir si una hipótesis brindará resultados positivos o negativos en un proyecto de investigación
+es una de las tareas más complicadas de conocer con antelación. Aún investigadores experimentados prueban decenas de ideas antes de obtener algún descubrimiento concreto. Construir sistemas de aprendizaje automático usualmente requieren de:
 
-\subsection{Dificultad de los problemas}
+\begin{enumerate}
+    \item Una hipótesis inicial la cual construir el sistema.
+    \item Una implementación en algún lenguaje de programación.
+    \item Ejecución de experimentos que permitan concluir si la idea original funciona de acuerdo a lo esperado.
+\end{enumerate}
 
-\subsection{Codificación de planes relajados}
+Basado en lo aprendido en esos 3 pasos, se vuelven a plantear nuevas ideas e iterar sobre este proceso. Mientras más rápido se pueda finalizar un ciclo, mayor será el progreso en la investigación. Debido
+a la larga lista de posibles hipótesis para verificar, se deben obtener resultados prontamente, por lo general, en a lo sumo una semana de haber iniciado el ciclo. Es por eso que una prueba de concepto a partir de una implementación prototipo es más importante que construir un sistema complejo en una etapa temprana de investigación.
 
-\subsection{Construcción de ventanas para planes largos}
+No obstante, una vez validadas varias de las hipótesis, empezar nuevas implementaciones a partir de los prototipos puede llegar a relentizar el proceso de desarrollo ya que ciertos estándares de código no son tenidos en cuenta. Tales como manejo de excepciones, documentación adecuada, o herramientas de monitoreo y mantenimiento de código. El objetivo de estas pruebas de concepto es la de otorgar experiencia a los investigadores para identificar los requerimientos y resultados iniciales. Esto para luego construir un entorno de desarrollo en esa dirección.
+
+Durante las pruebas de concepto realizadas durante esta tesis se analizó la factibilidad de la premisa inicial, encontrar un modelo de aprendizaje automático a partir de una codificación de datos de planes relajados y acciones etiquetadas que permitan guiar el proceso de grounding. Sin embargo, a medida que el proyecto fue necesitando de experimentos más complejos, se agregaron funcionalidades hasta construir un sistema de experimentación completo, configurable, adecuado a nuestras necesidades, y que permita otorgar resultados en el corto plazo de iniciado el ciclo de experimentación. Es por eso que en este capítulo se describirán los detalles de implementación de cada uno de los módulos que integran
+el flujo de ejecución de un experimento, abarcando el dominio de planning utilizado, especificaciones de tareas STRIPS que se pueden obtener a partir del dominio, persistencia de datos, preprocesamiento, entrenamiento, evaluación de modelos, y registro y visualización de resultados. Esto con el fin de describir los experimentos con mucha más claridad en el capítulo \ref{ch:results}.
+\section{Dominio de planning: Satellite}
+
+\subsection{Descripción del dominio}
+
+Para la construcción del conjunto de datos nos centramos en el dominio de planning \emph{Satellite}, siendo parte del learninig track de la competencia internacional de planning (IPC) del año 2011. Este dominio es un modelo del problema de programación de observación satelital. Este implica el uso de uno o más satélites para hacer observaciones, recopilar datos, y descenderlos a una estación terrestre. Los satélites están equipados con diferentes instrumentos, cada uno con características en términos de objetivos de calibración, producción de datos, consumo de energía, y requisitos para el calentamiento y enfriamiento. Los satélites pueden apuntar a diferentes objetivos con el fin de obtener información de tal objeto. Existen restricciones sobre qué objetivos son accesibles para un satélite debido a las capacidades de oclusión y rotación. Los datos que generan los instrumentos de un satélite deben ser enviados a tierra una vez ocurra una ventana de comunicación terrestre. La meta consiste en hallar la cobertura (más eficiente) de las observaciones dadas las capacidades de los satélites.
+
+La tabla \ref{} resume los esquemas de acción del dominio con su correspondiente tamaño de interfaz, cantidad de precondiciones atómicas, y cantidad de efectos atómicos. El Listing \ref{} muestra la especificación del dominio en PDDL.
+
+\section{Manejo de datos}
+
+\subsection{Generación de tareas de planning}
+\label{method:data_generation}
+
+Las instancias de problemas a partir del dominio Satellite se obtuvieron automáticamente mediante un generador de problemas configurable de acuerdo a las características que deseamos que tenga. Estas son la cantidad de satélites, la cantidad máxima de instrumentos, el número de modos, el número de objetivos, y el número de observaciones. A mayor sea algunos de estos parámetros, mayor el número de acciones y facts necesarios para resolverlos. Una vez definida una parametrización que represente las características de la tarea a modelar, el generador devuelve su representación STRIPS especificada en PDDL.
+
+% \url{https://github.com/AI-Planning/pddl-generators/tree/master/satellite}
+
+Sean $\Pi^{PDDL} = (\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ la representación STRIPS en PDDL dada por el generador de problemas, y $\Pi = (F, A, I, G)$ su tarea STRIPS asociada. La información que necesitamos recolectar es:
+
+\begin{enumerate}
+    \item Un plan relajado $\vec{a}^{+}$ para $\Pi^{+}$.
+    \item Un plan (en lo posible el óptimo) $\vec{a}$ para $\Pi$.
+    \item El conjunto de objetos $\Sigma^{O}$.
+    \item El conjunto de acciones instanciadas $A$ de $\Pi$.
+\end{enumerate}
+
+Los puntos 3, y 5 pueden obtenerse a partir de los archivos PDDL devueltos por el generador. En cambio 1, 2, y 4 requieren resolver la tarea por medio del planificador de Fast Downward para ser obtenidos. Dado que $\Pi$ se obtiene a partir de Fast Downward, el conjunto $A$ de acciones instanciadas contiene únicamente aquellas que son alcanzables relajadamente desde el estado inicial $I$. A su vez, en la medida de lo posible, se intentará obtener el plan óptimo que resuelve $\Pi$. Esto se debe a la noción de relevancia de una acción para resolver una tarea STRIPS. En un plan óptimo, las acciones que lo componen son todas necesarias en la secuencia. Si una acción es eliminada, la secuencia resultante no puede ser un plan de la tarea debido a que se obtendrías un plan con menos acciones que el plan óptimo y por lo tanto una contradicción (Lo cual no es el caso para un plan genérico).
+
+La información asociada a un problema obtenida por el generador y el planificador se almacenan en directorios que contienen los siguientes archivos
+
+\begin{itemize}
+    \item \emph{all\_operators.bz2}: Archivo comprimido del conjunto de acciones instanciadas.
+    \item \emph{objects}: Conjunto de objetos del problema.
+    \item \emph{problem.pddl}: Especificación en PDDL del problema.
+    \item \emph{relaxed\_plan}: Plan relajado que resuelve la tarea relajada.
+    \item \emph{optimal\_plan} o \emph{sas\_plan}: Plan (óptimo) que resuelve la tarea.
+\end{itemize}
+
+Por último, queda mencionar que tipo de problemas se generaron. Se dividieron en 3 grupos principales de acuerdo a su dificultad. X problemas a los cuales pueden resolverse de manera óptima por el planificador, X' a los cuales solo un plan fue encontrado, y X'' que no pudieron resolverse debido a una falla en el proceso de grounding. Sobre este último grupo nos interesa tener un grado de inferencia sobre las acciones que puedan ser relevantes para resolverlo y sobre los cuales el modelo de aprendizaje automático debe guiar durante el proceso de grounding. Es por eso que estos X'' problemas fueron elegidos para formar parte de los problemas de test. Mientras que aquellos que si logran resolverse (de manera óptima o no) forman parte del de entrenamiento.
+
+Sin embargo, como veremos en la sección Y, requeriremos de los planes reales para etiquetar estos datos. Por lo que es necesario encontrarles alguna solución a los problemas de test. Afortunadamente, satellite es uno de los dominios trabajados en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} de los cuales ya se encontraron solución a estos problemas (TODO: en realidad es la tesis de nahuel esto de que manera se lo podria citar?).
+
+Otro inconveniente en los problemas de test, es la ausencia de las acciones instanciadas para resolverlo. Aún habiendo logrado calcular un plan de la tarea, la cantidad de instancias alcanzables relajadamente en $A$ es muy grande por la cual no son dadas por el planificador al terminar el proceso de grounding como si es el caso de los datos entrenamiento. Para solventar esto, solo se generó una muestra aleatoria de acciones instanciadas obtenidas a partir de grounding cartesiano por fuera del planificador.
+
+Por lo tanto, tomaremos provecho de estas soluciones como una manera de verificar que el modelo de aprendizaje logra desempeñarse correctamente antes de probarlo con planificador en conjunto con otras tareas que no puedan instanciarse.
+
+\subsection{Preservación de datos}
+
+Una vez identificado que problemas son utilizados como entrenamiento y otros como test, es necesario preservar estos datos de manera organizada y de fácil acceso. Si bien los datos se encuentran en archivos manteniendo en una cierta estructura, no pueden ser extraido de manera programática. Por tal razón se tabularon los datos y almacenaron en una base de datos relacional para su posterior acceso por medio de una herramienta de consultas.
+
+Para el almacenamiento utilizamos una base de datos relacional del tipo SQL. La siguiente imagen refleja el diagrama de entidad relación.
+
+La tabla principal \emph{Problem} representa el conjunto de problemas. Algunas de las propiedades de un problema reflejadas en la tabla son, el nombre del problema (nombre dado por el generador), y el grupo al cual pertenece. Para representar en la base de datos tanto los planes relajados, como los planes que resuelven la tarea, se utilizan relaciones many-to-many a la tabla de acciones, manteniendo una tabla intermedia que mantendrá cada relación.
+La tabla de acciones almacena todas las acciones instanciables relajadamente que hayan ocurrido en cualquier problema. Para evitar repreticiones se agregó como clave primaria el nombre del esquema junto con el de sus parámetros.
+
+Para realizar una consulta a la base de datos utilizamos un \emph{object relational mapping} (ORM) que permite gestionar el acceso por medio de un lenguaje de programación. El ORM considera cada tabla como una clase y elementos de la tabla como objetos de tal clase. Por lo tanto al realizar una consulta se dispone de todo el material de programación a objetos para su posterior uso. Eso inclye cualquier cualquier otra relación u objeto que este involucrado en la consulta de manera directa o indirecta cono son el caso del plan relajado, y el plan que resuelve la tarea.
+
+Algo a notar es que cada plan relajado, sas plan, u optimal plan se almacenan como relaciones de instancias a las cuales se asegura que el orden se mantenga. Las tablas intermedias entre \emph{Problem} y \emph{Action} mantienen estas propiedades.
+
+\subsection{Etiquetado de ejemplos}
+
+A partir de la base de datos es necesario generar una \emph{matriz de entrenamiento} que será dada como entrada al modelo de aprendizaje automático. En particular, mencionamos que problemas se van a usar para entrenar los modelos y cuales para evaluarlos. Pero aún nos queda explicar cual es la estructura explicita de los pares $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$ de los conjuntos de entrenamiento y test que recibirán como entrada los modelos mencionados en el capítulo \ref{ch:lit_ml}.
+
+Dado que buscamos aprender un modelo que prediga si una acción es relevante para el plan real de un problema, necesitamos incluir en $\vect{x}$ información de tal problema y la acción a cual querramos averiguar su relevancia. Además, debe ser fácil de calcular tanto para las tareas de entrenamiento como las de test. Como mencionamos en la sección X, para una tarea especificada en PDDL, el planificador instancia el problema y realiza una búsqueda exhaustiva guiada por medio de una función heurística definida usando planes relajados. Si los planes relajados permiten guiar la búsqueda para encontrar un plan de la tarea, entonces también podría ser usado para guiar el proceso de grounding. Por lo tanto la estructura de los vectores de entrada incluirán tanto el plan relajado como la acción que queremos estimar.
+
+Por otro lado, en la sección \ref{method:data_generation} no solo obtuvimos el plan relajado de cada tarea generada, sino además el plan que lo resuelve junto a las instancias de las acciones alcanzables relajadamente durante el proceso de grounding. Por lo tanto, para una tarea en particular (y por ende un plan relajado), se pueden identificar dos clases distintas de acciones generadas:
+
+\begin{enumerate}
+    \item Las acciones que pertenecen a la solución (óptima o no).
+    \item Las acciones que no pertenece a la solución, pero que si fueron generadas por el proceso de grounding por alcanzabilidad relajada de Fast Downward.
+\end{enumerate}
+
+A las acciones de 1 las denominamos \emph{good operators} de la tarea, y las de 2 \emph{bad operators} de la tarea. A estos dos conjuntos los denotaremos con $A^{good}$ y $A^{bad}$ respectivamente.
+
+\begin{algorithm}
+    \caption{}\label{alg:training_data}
+    \begin{algorithmic}
+    \Require Plan relajado $\vec{a}^{+}$, $A^{good}$, y $A^{bad}$ de una tarea de la sección \ref{method:data_generation}
+    \Ensure Matriz de ejemplos $M$ de tamaño $(|A^{good}| + |A^{bad}|) \times 3$
+    \State $M \gets [\ ]$
+    \For{$a \in A^{good} $}
+        \State $M.push\_back((\vec{a}^{+}, a, 1))$
+    \EndFor
+    
+    \For{$a \in A^{bad} $}
+        \State $M.push\_back((\vec{a}^{+}, a, 0))$
+    \EndFor
+    
+    \State \Return $M.to\_array()$
+    \end{algorithmic}
+\end{algorithm}
+
+Luego el algoritmo \ref{alg:training_data}, dado el plan relajado de un problema y los conjuntos $A^{good}$ y $A^{bad}$, genera los datos etiquetados de una sola tarea obteniendo una matriz como se muestra en el cuadro \ref{tb:matrix_shape}.
+
+\begin{table}[h!]
+\centering
+\scalebox{0.9}{
+ \begin{tabular}{||c | c | c||} 
+ \hline
+ Plan relajado & Acción & Etiqueta \\ [0.5ex] 
+ \hline\hline
+ {}[switch\_on instrument0 satellite0, ...] & calibrate satellite0 instrument0 star4 & 1 \\
+ {}[switch\_on instrument0 satellite0, ...] & switch\_on instrument0 satellite0 & 1 \\
+ {}[switch\_on instrument0 satellite0, ...] & switch\_on instrument3 satellite1 & 1  \\
+ ... & ... & ...  \\
+ {}[switch\_on instrument0 satellite0, ...] & turn\_to satellite0 planet5 planet5 & 0 \\
+ {}[switch\_on instrument0 satellite0, ...] & switch\_off instrument0 satellite0 & 0 \\
+ {}[switch\_on instrument0 satellite0, ...] & switch\_on instrument3 satellite1 & 0 \\ [1ex] 
+ \hline
+ \end{tabular}}
+ \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
+ \label{tb:matrix_shape}
+\end{table}
+
+La primera columna contienen una lista de acciones ordenadas y representan el plan relajado de un problema, la segunda columna es la acción a consultar por su relevancia, y la tercera columna es la etiqueta de si pertenece al plan de la tarea.
+
+Para generar los ejemplos de los problemas de entrenamiento y test, solo basta con ejecutar el algoritmo \ref{alg:training_data} con cada uno de los problemas y apilar las matrices resultantes.
+
+Un inconveniente de esta representación es que la información del plan relajado se multiplica $|A^{good}| + |A^{bad}|$ veces. Esto por cada terna plan relajado, good operators, y bad operators.
+Veremos luego en la etapa de preprocesamiento que el tamaño de la matriz además dependerá del largo de los planes relajados, siendo una dificultad a superar durante los experimentos.
+
+Por otro lado, notar que las matrices de los problemas de entrenamiento y de test contienen información de todos los esquemas de acción de los problemas. En la sección de experimentos veremos que nos interesará filtrar las filas por esquemas de acción. Es decir, si tenemos un total de 5 esquemas en satellite, dividir la matriz del cuadro \ref{tb:matrix_shape} en 5 submatrices donde la acción objetivo corresponda a un solo esquema.
+
+Esto refleja una ventaja de haber utilizado una base de datos para preservar la información. En lugar de almacenar los datos de todos los problemas tanto de entrenamiento como de test ya etiquetados. Podemos realizar consultas sobre información específica de los problemas haciendo lecturas al disco únicamente de aquello que sea necesario reduciendo de esta manera el uso en memoria.
+
+A partir de ahora, distinguiremos la noción de problemas de entrenamiento (test) y conjunto de entrenamiento (test). Los problemas de entrenamiento (test) serán aquellos que fueron separados en la sección \ref{method:data_generation}, mientras que el conjunto de entrenamiento (test) serán las matrices resultantes de la forma del cuadro \ref{tb:matrix_shape} que se obtienen a partir de los problemas.
+
+\subsection{Exploración de datos}
+
+Es importante conocer de que manera está compuesto los conjuntos de entrenamiento y test. Algunas propiedades que se lograron registrar son la cantidad de entradas por esquema de acción.
+
+TODO: Concluir algo sobre la tabla de esquema de acción
+
+Otro dato interesante para medir la dificultad de los problemas es conocer la distribución del largo de los planes relajados de ambos conjuntos.
+
+TODO: Concluir algo sobre los largos.
+
+\subsection{Preprocesamiento}
+
+Como mencionamos en el capítulo \ref{ch:lit_ml} los conjuntos de entrenamiento y de test deben ser codificados en algún valor numérico previamente a ser dados como entrada a un modelo de aprendizaje automático. En particular se trabajó con dos tipos de codificación para representar los planes relajados y las acciones de una tarea, una codificación ad-hoc basándonos en los métodos de tipo one-hot y one-hot ordinal que describimos en la sección \ref{method:ohe}, y otra codificación usando word embeddings descriptos en la sección \ref{method:wb}.
+
+\subsubsection{Codificación ad-hoc de acciones y planes relajados}
+
+En la sección \ref{method:ohe} vimos que una de las codificación más sencillas para una oración del lenguaje natural es por medio de una bolsa de palabras. Lo cual daría cierta iniciativa para obtener una representación similar para los planes relajados.
+
+Sin embargo, tomemos una oración dada en el contexto de planning. La siguiente secuencia muestra un plan relajado de largo 4 asociado a una tarea STRIPS cuyos esquemas de acción son \verb|calibrate|, \verb|switch_on|, \verb|take_image| y \verb|turn_to|. El resto de
+expresiones son objetos concretos del dominio. También es importante mencionar
+que cada objeto de un cierto tipo está enumerado. Por ejemplo el objeto
+\verb|instrument1| es del tipo \verb|instrument| cuyo índice es $1$. 
+
+\begin{center}
+    [\verb|calibrate satellite0 instrument1 groundstation0|, \\
+    \verb|switch_on instrument1 satellite0|, \\
+    \verb|take_image satellite0 planet5 instrument1 image1|, \\
+    \verb|turn_to satellite0 groundstation0 planet5|] \\
+\end{center}
+
+La primera dificultad para codificarla surge bajo la pregunta de a que se
+identifica como una palabra de la oración. Una primera iniciativa es definir una
+acción como palabra y utilizar un one hot encoding. No obstante, por lo general
+una acción no suele ocurrir más de una vez en un plan de la tarea lo cual se
+perdería la información de la frecuencia en que ocurren los objetos en la
+secuencia. No solo es clave capturar los objetos si no también el índice del
+cual se trata. Por lo tanto, respetar su numeración es igual de relevante. Por
+último, cada acción debe mantener la misma cantidad de componentes en su
+representación vectorial, independientemente del esquema o el número de
+parámetros que reciba, y se debe asegurar el orden de la secuencia.
+
+Para solventar estas dificultades se definió la siguiente codificación ad-hoc:
+
+\begin{itemize}
+    \item Cada elemento en la interfaz de una acción junto a su esquema son
+    definidos como palabras. Eso incluye la numeración de los objetos.
+    \item Cada vector que representa a una acción tiene dimensión $2 \times N +
+    1$ siendo $N$ la longitud de la interfaz más larga de un esquema. Aquellas
+    acciones con una interfaz más chica se les agrega un margen de $0's$ hasta
+    completar el largo requerido.
+    \item Los esquemas de acción son enumerados en el rango $1, ..., M$ con $M$
+    la cantidad de esquemas.
+    \item El tipo de los objetos son enumerados en el rango de $1, ..., K$. con
+    $K$ la cantidad de tipos.
+    \item Si un objeto tiene el índice $i$ se lo incrementa en 1 (para evitar que
+    aquellos objetos que empiecen con índice 0 se malinterpreten como margenes).
+\end{itemize}
+
+Por ejemplo si la enumeración de las esquemas y tipos fuesen los siguientes:
+
+\begin{center}
+    \{\verb|calibrate|: 1, \verb|turn_to|: 2, \verb|switch_on|: 3, \verb|take_image|: 4 \} \\
+    \{\verb|satellite|: 1, \verb|instrument|: 2, \verb|planet|: 3, \verb|groundstation|: 4, \verb|image|: 5\}
+\end{center}
+
+Como la longitud de la interfaz más larga es 4, entonces cada acción tendrá
+asociado un vector de dimensión $2 \times 4 + 1 = 9$ y la codificación
+resultante sería dada por el cuadro \ref{tab:ohe_plan}
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c|c}
+        \verb|calibrate satellite0 instrument1 groundstation0| &: (1 1 1 2 2 4 1 0 0) \\
+        \verb|switch_on instrument1 satellite0| &: (3 2 2 1 1 0 0 0 0) \\
+        \verb|take_image satellite0 planet5 instrument1 image1| &: (4 1 1 3 6 2 2 5 2) \\
+        \verb|turn_to satellite0 groundstation0 planet5| &: (2 1 1 4 1 3 6 0 0) \\
+    \end{tabular}
+    \caption{Codificación ad-hoc de las acciones que conforman un plan relajado}
+    \label{tab:ohe_plan}
+\end{table}
 
 \section{Selección de modelos}
 
-\subsection{Validación cruzada y métrica a optimizar}
+\subsection{Entrenamiento}
 
-\subsection{Agregación por ventanas}
+\subsection{Evaluación}
+
+\section{Registro de resultados}
+
+\subsection{Preservación de modelos, métricas, e imágenes}
+
+\subsection{Monitoreo y visualización}

@@ -958,6 +958,7 @@ entrenamiento, la matriz de embeddings contiene las representaciones finales.
 \end{figure}
 
 \subsubsection{Modelos de lenguaje a nivel de subpalabra}
+\label{method:wb_subwords}
 
 El modelo de skipgrams al usar vectores representación por cada palabra se
 ignora su estructura interna. Esto fue lo que inspiró el estudio de modelos a
@@ -990,6 +991,7 @@ una confiable codificación a palabras poco comunes siendo útil para los
 experimentos de esta tesis en la tarea de codificación de planes relajados.
 
 \subsubsection{Representación vectorial de oraciones}
+\label{lit:sentence_vector}
 
 Como cierre de esta sección presentaremos algunos métodos sencillos de codificación de oraciones a partir de los embeddings orientadas a tareas de clasificación que involucren manipulación de texto.
 
@@ -1016,6 +1018,7 @@ proponiendo distintos métodos de codificación de instancias de entrenamiento a
 de un modelo de lenguaje. Esto muestra que el uso de representaciones a nivel de palabra en la codificación de oraciones suelen ser patrones comunes al momento de incluirlo en una arquitectura supervisada.
 
 \section{Métricas de clasificación}
+\label{lit:metrics}
 
 Con el fin de evaluar que tan bien se desempeña el modelo se contrastan
 resultados predichos por el clasificador contra otros previamente anotados que

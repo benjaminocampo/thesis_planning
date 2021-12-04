@@ -36,6 +36,11 @@
 \usepackage{amsthm}
 \newtheorem{mydef}{Definición}
 \newtheorem{mytherm}{Theorem}
+\newenvironment{conditions}
+  {\par\vspace{\abovedisplayskip}\noindent\begin{tabular}{>{$}l<{$} @{${}={}$} l}}
+  {\end{tabular}\par\vspace{\belowdisplayskip}}
+
+\usepackage{multicol}
 
 %%-------------------------------------
 %% Algorithms/Code Listing environment settings  - % Please do not change these
@@ -190,9 +195,5 @@
     % -------------------------------------------------------------------
     % Appendices
     % -------------------------------------------------------------------
-    
-    \begin{appendices}
-        \input{chapters/appendix_A.tex}
-    \end{appendices}
     
 \end{document}

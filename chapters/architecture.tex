@@ -156,7 +156,7 @@ Otro dato interesante para medir la dificultad de los problemas es conocer la di
 TODO: Concluir algo sobre los largos.
 
 \subsection{Preprocesamiento}
-\ref{method:preprocessing}
+\label{method:preprocessing}
 
 Como mencionamos en el capítulo \ref{ch:lit_ml} los conjuntos de entrenamiento y de test deben ser codificados en algún valor numérico previamente a ser dados como entrada a un modelo de aprendizaje automático. En particular se trabajó con dos tipos de codificación para representar los planes relajados y las acciones de una tarea, una codificación ad-hoc basándonos en los métodos de tipo one-hot y one-hot ordinal que describimos en la sección \ref{method:ohe}, y otra codificación usando word embeddings descriptos en la sección \ref{method:wb}.
 
@@ -362,22 +362,11 @@ Una vez generada las ventanas de planes relajados, obtenemos sus codificaciones 
 \end{table}
 
 \section{Selección de modelos}
+\label{method:model_selection}
 
 \subsection{Entrenamiento}
 
-En la sección \ref{method:preprocessing} se puso mucho énfasis en la generación de los datos de esta tesis, así como los pasos de preprocesamiento y exploración. Cada una de estas etapas son:
-
-\begin{enumerate}
-    \item Generación de especifiaciones de problemas del dominio Satellite.
-    \item Extracción de planes relajados, acciones instanciadas, y soluciones de los problemas a partir del planificador de Fast Downward.
-    \item Separación en problemas de entrenamiento y test.
-    \item Almacenamiento y preservación en una base de datos.
-    \item Generación de conjuntos de entrenamiento y test.
-    \item Transformación de los conjuntos de entrenamiento utilizando ventanas de planes relajados.
-    \item Codificación de ventanas y acciones.
-\end{enumerate}
-
-Por lo tanto, los pares de entrenamiento \{$(\vect{x}_1, y_1), ..., (\vect{x_n}, y_n)$\} que se utilizaron para entrenar un modelo de aprendizaje automático están compuestos por, una representación de una ventana perteneciente al plan relajado de un problema, y la representación de una acción a estimar. Esto conforma el vector de características $\vect{x}_i$. Las etiquetas reciben una codificación binaria de 1 o 0. Una etiqueta de 1 representa que la acción es relevante para el plan dado esa ventana del plan relajado y una etiqueta de 0 indica lo contrario.
+Una vez realizado el preprocesamiento estamos en condiciones de entrenar los clasificadores que estudiamos en la sección \ref{lit:algorithms}. Los pares de entrenamiento \{$(\vect{x}_1, y_1), ..., (\vect{x_n}, y_n)$\} para entrenar un modelo de aprendizaje automático están compuestos por, una representación de una ventana perteneciente al plan relajado de un problema, y la representación de una acción a estimar. Esto conforma el vector de características $\vect{x}_i$. Las etiquetas reciben una codificación binaria de 1 o 0. Una etiqueta de 1 representa que la acción es relevante para el plan dado esa ventana del plan relajado y una etiqueta de 0 indica lo contrario.
 
 Para una configuración de parámetros, se entrena un clasificador utilizando con el conjunto de entrenamiento. A eso se agregan $k$ entrenamientos realizando validación cruzada en $k$ grupos distintos. La única diferencia es que las particiones son sobre los problemas de entrenamiento y no sobre el conjunto de entrenamiento. Agrupar sobre este último puede llevar a que ventanas de un mismo problema pertenezcan a grupos distintos y por lo tanto el problema esté incompleto.
 
@@ -401,3 +390,21 @@ Para el registro de métricas e imágenes se utilizó la librería \emph{MLFlow}
 
 TODO: Poner imágenes
 
+\section{Adaptación de modelos y transformadores}
+
+En las sección \ref{method:preprocessing}, y \ref{method:model_selection} se puso mucho énfasis en la generación de los datos de esta tesis, así como los pasos de exploración, preprocesamiento, entrenamiento y evaluación. Cada una de estas etapas requirieron:
+
+\begin{enumerate}
+    \item Generación de especificaciones de problemas del dominio Satellite.
+    \item Extracción de planes relajados, acciones instanciadas, y soluciones de los problemas a partir del planificador de Fast Downward.
+    \item Separación en problemas de entrenamiento y test.
+    \item Almacenamiento y preservación en una base de datos.
+    \item Generación de conjuntos de entrenamiento y test.
+    \item Transformación de los conjuntos de entrenamiento utilizando ventanas de planes relajados.
+    \item Codificación de ventanas y acciones.
+    \item Entrenamiento
+    \item Evaluación
+    \item Registro de resultados
+\end{enumerate}
+
+Para la implementación de estos pasos se utilizó como lenguaje de programación \emph{Python}. No obstante las librerías y herramientas principales requirieron ser adaptadas a una interfaz común de tal manera que puedan ejecutarse de manera sitemática. Esto se debió a que cada proceso sigue sus propias convenciones, e inversión de control. Por ejemplo, la extracción de datos y lectura de archivos necesitó de librerias que trabajen sobre el sistema de archivos, la persistencia de datos fue por medio de \emph{SQL}, las consultas de bases de datos fueron realizadas por medio del ORM \emph{SqlAlchemy}, las etapas de preprocesamiento en mayor parte fueron con herramientas de \emph{Numpy} y \emph{Pandas}. La regresión logística y XGBoost proveian una interfaz a través de \emph{Scikit-learn}, pero las redes neuronales fueron implementadas en \emph{Pytorch}. La validación cruzada, evaluación y obtención de métricas también se hicieron con \emph{Scikit-learn}. Y el registro de datos con \emph{MLflow}. Al momento de usar estas librerías claramente fue necesario implementar una interfaz en común que minimice su acoplamiento lo cual fue también un desafío de este trabajo.

@@ -11,7 +11,7 @@ de crisis \citep{Bienkowki-1995}, generación de textos narrativos
 El objetivo es definir un modelo que se simule una tarea descripta por medio de una especificación que detalle sus componentes. Estas son el estado inicial, la meta, y un
 conjunto de acciones. El estado inicial describe las propiedades verdaderas iniciales del problema. La meta o estado final representa cuáles son
 las propiedades que deben ser verdaderas para finalizar la tarea. Y el conjunto de acciones está compuesto de
-transformadores alteran si una propiedad pasa a ser verdadera o deja de serlo. Este conjunto de propiedades recibe el nombre de estado, y modelan que propiedades son verdaderas y falsas, y a que estados puede cambiar por medio de alguna acción. Si se obtiene
+transformadores que alteran si una propiedad pasa a ser verdadera o deja de serlo. Este conjunto de propiedades recibe el nombre de estado, y modelan que propiedades son verdaderas y falsas, y a que estados puede cambiar por medio de alguna acción. Si se obtiene
 una secuencia de acciones que sea aplicable en el estado inicial, y que luego de
 su ejecución conlleve a la meta, entonces dicha secuencia es considerada un plan
 del problema.
@@ -46,8 +46,10 @@ acciones son relevantes para algún plan de tal manera que puedan ser incluidas
 en el proceso de grounding?
 
 Esta pregunta es la que nos llevó a considerar el uso de técnicas de
-\emph{aprendizaje automático}. Los modelos de aprendizaje automático consisten en aproximar una función a partir de datos de entrenamiento, es decir, ejemplos a los cuales se conoce el valor de entrada y de salida de la función. La idea principal se basó en encontrar una función que prediga la probabilidad de que una acción sea relevante a partir de información del problema. No obstante, dado que las tareas que
-nos interesan resolver son aquellas que no pueden ser groundeadas, fue necesario recurrir a problemas equivalentes pero más sencillos durante la construcción del material de entrenamiento. Otro inconveniente fue la decisión de que información del problema se puede brindar al modelo de aprendizaje automático de tal manera que identifique si una acción es importante. Evidentemente no puede ser el plan de la tarea, ya que para aquellos problemas que fallan durante el proceso de grounding no se puede encontrar el plan que lo resuelve. No obstante debe ser una característica que brinde información, aunque sea aproximada, de la estructura del plan real y que pueda ser computada previamente al proceso de grounding. Esto fue lo que llevó a utilizar una simplificación del plan real conocida como \emph{plan relajado} que analizaremos con más detalle durante el desarrollo de esta tesis.
+\emph{aprendizaje automático}. Los modelos de aprendizaje automático consisten en aproximar una función a partir de datos de entrenamiento, es decir, ejemplos a los cuales se conoce el valor de entrada y de salida de la función. La idea principal se basó en encontrar una función que prediga la probabilidad de que una acción sea relevante a partir de información del problema. Dado que las tareas que
+nos interesan resolver son aquellas que no pueden ser groundeadas, es necesario recurrir a problemas equivalentes pero más sencillos durante la construcción del material de entrenamiento.
+
+Otro inconveniente es la decisión de que información del problema se puede brindar al modelo de aprendizaje automático de tal manera que identifique si una acción es importante. Evidentemente no puede ser el plan de la tarea, ya que para aquellos problemas que fallan durante el proceso de grounding no se puede encontrar el plan que lo resuelve. Debe ser una característica que brinde información, aunque sea aproximada, de la estructura del plan real y que pueda ser computada previamente al proceso de grounding. En \citep{hoffman-2001} se estudia el uso de funciones heurísticas definidas a partir de \emph{planes relajados} que permiten guiar el proceso de búsqueda de un plan. Si los planes relajados son capaces de guiar el proceso de búsqueda, entonces también existe una posibilidad de que pueda ser usado para guiar el proceso de grounding. Esta relajación del plan real conocida como \emph{plan relajado} es la característica principal de los modelos entrenados durante nuestros experimentos y que analizaremos con más detalle durante el desarrollo de esta tesis.
 
 Por otro lado, los modelos de aprendizaje automático dependen fuertemente de
 como se representan los datos que uno tiene disponible \citep{Heaton-2016-AnEA}.
@@ -57,13 +59,13 @@ un plan relajado y una acción. Una opción es proyectar los ejemplos a un espac
 vectorial a partir de una codificación del tipo \emph{one-hot}, donde enumeramos
 los posibles esquemas de acción, y objetos de un problema para representar
 numéricamente una acción y por consecuente una secuencia de ellas. Otra
-posibilidad es utilizar el concepto de \emph{word embeddings} proveniente del
+posibilidad es utilizar el concepto de \emph{word embeddings} \citep{Mikolov-Ilya-Kai-Greg-Jeffrey-2013,
+Pennington-Jeffrey-Socher-Richard-Manning-Christopher-2014,
+Bojanowski-Grave-Joulin-Mikolov-2016} proveniente del
 procesamiento del lenguaje natural. Estos tienen como objetivo proyectar
 palabras y oraciones a un espacio $N$ dimensional que preserve su semántica, es
 decir, expresiones con un significado similar, son dispuestas cerca en el
-espacio. \citep{Mikolov-Ilya-Kai-Greg-Jeffrey-2013,
-Pennington-Jeffrey-Socher-Richard-Manning-Christopher-2014,
-Bojanowski-Grave-Joulin-Mikolov-2016}. La intuición principal es obtener un
+espacio. La intuición principal es obtener un
 modelo de lenguaje, pensando un plan como una oración, que caracterice el
 lenguaje generado por los planes relajados y las acciones instanciadas. 
 
@@ -74,8 +76,8 @@ reales, de tal manera que guíen el proceso de \emph{grounding}.
 
 \section{Trabajos relacionados}
 
-En la literatura de planning se pueden encontrar numerosas avances que intentan
-guiar con el proceso de grounding efectuado por el planificador. Algunas se
+En la literatura de planning se pueden encontrar numerosos avances que intentan
+guiar el proceso de grounding efectuado por el planificador. Algunas se
 basan en evitar procesar acciones que no son alcanzables relajadamente desde el
 estado inicial, tal es el caso del planificador Fast Downward
 \citep{Helmert-2011} utilizado en competencias de planning. En
@@ -90,19 +92,9 @@ evitan el proceso de grounding completamente y realizan la búsqueda del plan a
 partir de su especificación PDDL \citep{Penberthy-1992}.
 
 En particular, esta tesis continua con la linea de investigación
-desarrollada en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} donde proponen
-realizar la búsqueda de una solución a una tarea de planning por medio de un
-espacio reducido utilizando técnicas de machine learning, pero con un material de
-entrenamiento generado por reglas o propiedades que un plan relajado posee en
-conjunto a los estados iniciales y finales del problema en cuestión.
+desarrollada en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} donde también proponen guiar el proceso de grounding por medio de aprendizaje automático. La diferencia radica en las características usadas para entrenar los modelos, en lugar de planes relajados y acciones, se codifica una acción por medio de reglas relacionales que capturan propiedades significativas de una acción.
 
-Salvo esta última heurística, todas utilizan información de la tarea totalmente
-procesada para luego determinar el subconjunto de acciones sobre el cual
-realizar la búsqueda. Es por eso que resultan descartadas en aquellas
-situaciones donde grounding total es inviable. Tampoco se han vistos muchos
-estudios sobre el uso de técnicas de aprendizaje automático en el área de
-planning, lo cual es una fuerte iniciativa para empezar a combinar estos dos
-campos.
+Salvo esta última heurística no se han vistos muchos estudios sobre el uso de técnicas de aprendizaje automático en el área de planning, lo cual es una fuerte iniciativa para empezar a combinar estos dos campos.
 
 \section{Estructura de la tesis}
 
@@ -110,18 +102,9 @@ Los capítulos \ref{ch:lit_planning} y \ref{ch:lit_ml} detallan los conceptos
 fundamentales de planning y aprendizaje automático que se utilizaran para unir
 estas dos áreas.
 
-El capítulo 4 describe el conjunto de entrenamiento y test que se utilizaron,
-así como su preprocesamiento y codificación. También se dejará en evidencia la
-dificultad de los problemas que un planificador no puede resolver debido al
-problema de grounding y sobre los cuales nos interesa aplicar grounding
-heurístico.
+El capítulo \ref{ch:method} describe que problemas de planning utilizaremos para entrenar los modelos de aprendizaje automático, junto a la exploración de los datos, preprocesamiento, separáción en entrenamiento y test, y evaluación de modelos. A su vez, se presentarán los 2 métodos principales de codificación de planes relajados y acciones que trabajamos durante la tesis.
 
-El capítulo 5 presenta los experimentos desarrollados, especificando el
-preprocesamiento de datos realizados, los algoritmos de machine learning, y los
-resultados obtenidos para finalmente compararlos entre sí. Además, se mencionan
-otros experimentos que fueron parte del proceso científico de este trabajo y que
-a pesar de no lograr un resultado esperado, fueron de gran utilidad para la
-reevaluación de nuestros objetivos.
+El capítulo \ref{ch:results} presenta los experimentos realizados, mostrando el desempeño varios modelos predictivos a partir de las codificaciones propuestas. Posteriormente la comparación de los mejores modelos tanto en calidad de predicción como el tiempo necesario para realizarla. Además, se mencionan otros experimentos que fueron parte del proceso científico y que a pesar no lograr un resultado esperado, fueron de gran utilidad para re-evaluar nuestro objetivos.
 
-Por último, en el capítulo 6 se escriben las conclusiones obtenidas a partir de
+Por último, en el capítulo \ref{ch:con} se escriben las conclusiones obtenidas a partir de
 los experimentos junto a las líneas de trabajo a futuro.

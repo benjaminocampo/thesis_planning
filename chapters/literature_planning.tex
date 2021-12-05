@@ -19,10 +19,11 @@ importancia para comprender los fundamentos de planning clásico.
 \section{¿Qué se entiende por planning?}
 
 Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
-anticipando el resultado de nuestras decisiones, aun de manera inconsciente cuando, o sin estar explícitamente planeando que hacer antes de realizar una
-acción. Por otro lado, una tarea que abarque objetivos nuevos y complejos necesita de ser planeada conscientemente al consistir de acciones que uno no está acostumbrado, tareas de alto riesgo, o cooperación con alguien más. Hay otras tareas en las que incluso no pueden ser planeadas por una persona, sino que se deben determinar de manera automática, tal es el caso de un robot en el espacio que no tiene contacto alguno con la superficie terrestre o recibir instrucciones para su accionar resulta realmente costoso.
+anticipando el resultado de nuestras decisiones, aun de manera inconsciente, sin estar explícitamente planeando que hacer antes de realizar una
+acción. Por otro lado, una tarea que abarque objetivos nuevos y complejos necesita de ser planeada conscientemente al consistir de acciones que uno no está acostumbrado, tareas de alto riesgo, o cooperación con alguien más. Hay otras tareas en las que incluso no pueden ser planeadas por una persona, sino que se deben determinar de manera automática, tal es el caso por ejemplo 
+de una operación de rescate después de algún desastre natural, por ejemplo un terremoto o inundación. La operación podría necesitar de una gran cantidad de rescatistas, sistemas de comunicación con una base general, y actividades de logística. Todos dependiendo de una planificación cuidadosa y evaluación de varias alternativas en un tiempo de rescate limitado pero con una urgencia de una inmediata decisión. Este tipo de tareas justifican el uso de herramientas de planificación automática y son la principal motivación de \emph{Automated Planning}.
 
-\emph{Automated Planning} es el área de la inteligencia artificial que busca automatizar tareas de planificación, en particular, tareas que resulta inviable ser planificadas por un humano, ya sea, por razones de costos, riesgos, o recursos. Esto se logra en base al razonamiento sobre representaciones
+Automated Planning es el área de la inteligencia artificial que busca automatizar tareas de planificación, en particular, tareas que resulta inviable ser planificadas por un humano, ya sea, por razones de costos, riesgos, o recursos. Esto se logra en base al razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
 acciones, y objetivos a ser cumplidos. El modelo conceptual del dominio en el
 cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los
@@ -30,15 +31,6 @@ requerimientos inicial y final son denominados \emph{estado inicial} y
 \emph{meta}. Estas 3 componentes definen una \emph{tarea de planning} cuyo
 objetivo es encontrar alguna combinación de acciones que determinen un
 \emph{plan}.
-
-Algunos ejemplos de esto son la navegación de un robot, donde una acción altera
-su posición siendo necesarias aquellas que lo lleven de una habitación a otra;
-en el caso de un microprocesador, una instrucción puede pensarse como una
-acción que cambia el valor de sus registros y se busca qué instrucciones son
-necesarias para ejecutar un programa; un servicio web de vuelos de avión que
-reciba un mensaje de reservación por un vuelo, siendo una acción que cambia su
-estado, siempre y cuando no se sobrepase el número de reservaciones máximo a
-partir de una cantidad inicial disponible. \citep{Sandewall-2008-HandbookOK}
 
 \section{Estados y acciones}
 
@@ -274,6 +266,10 @@ Por otro lado, está especificación de la tarea STRIPS, instancia más acciones
           & is\_connected(l_1, l_3), is\_connected(l_3, l_1), \\
           & is\_connected(l_3, l_4), is\_connected(l_4, l_3)\}
 \end{align*}
+\begin{align*}
+    move(x, l, l') &= (pre(move), add(move), del(move)) \\
+                   &= (\{at(x, l), is\_connected(l, l')\}, \{at(x, l')\},\{at(x, l)\})
+\end{align*}
 
 Un detalle de esta especificación es que es no tipada. Por ejemplo $move(a_1, a_1, a_1)$ es una acción instanciable. Lo cual deja en claro la necesidad de una representación de tareas que preserve los tipos de los esquemas de acción y predicados, y así evitar preprocesar acciones innecesarias durante el proceso de grounding.
 
@@ -309,11 +305,13 @@ de dominio y tarea del ejemplo del agente escrita en PDDL.
 
     (:types AGENT LOCATION)
 
-    (:predicates (at ?x - AGENT ?y - LOCATION))
+    (:predicates (at ?x - AGENT ?l - LOCATION)
+                 (is_connected ?l - LOCATION ?l' - LOCATION)
+    )
 
     (:action move
         :parameters (?x - AGENT ?s - LOCATION ?d - LOCATION)
-        :precondition (and (at ?x ?s))
+        :precondition (and (at ?x ?s) (is_connected ?l ?l'))
         :effect (and (not (at ?x ?s)) (at ?x ?d))
     )
   )
@@ -332,9 +330,37 @@ de dominio y tarea del ejemplo del agente escrita en PDDL.
 
     (:objects a1 - AGENT l1 l2 l3 l4 - LOCATION)
 
-    (:init at(a1, l1))
+    (:init at(a1, l1)
+           (is_connected l1 l2)
+           (is_connected l2 l1)
+           (is_connected l1 l3)
+           (is_connected l3 l1)
+           (is_connected l3 l4)
+           (is_connected l4 l3)
+           (is_connected l1 l2)
+           (is_connected l2 l1)
+           (is_connected l1 l3)
+           (is_connected l3 l1)
+           (is_connected l3 l4)
+           (is_connected l4 l3)
+    )
     
-    (:goal (and at(a1, l4)))
+    (:goal (and 
+           (at a1 l4)
+           (is_connected l1 l2)
+           (is_connected l2 l1)
+           (is_connected l1 l3)
+           (is_connected l3 l1)
+           (is_connected l3 l4)
+           (is_connected l4 l3)
+           (is_connected l1 l2)
+           (is_connected l2 l1)
+           (is_connected l1 l3)
+           (is_connected l3 l1)
+           (is_connected l3 l4)
+           (is_connected l4 l3)
+           )
+    )
   )
 \end{lstlisting}
 
@@ -405,9 +431,7 @@ No obstante, en la práctica los planificadores no instancian todas las posibles
 acciones y proposiciones, sino aquellas que son alcanzables relajadamente desde
 el estado inicial debido al lemma \ref{lit:delete_relaxed_property}. 
 
-Este proceso de grounding es el implementado por el planificador \emph{Fast
-Downward} \citep{Helmert-2011} y es sobre el cual se adaptará para utilizar
-técnicas de aprendizaje automático.
+Este proceso de grounding es el implementado por \emph{Fast Downward} \citep{Helmert-2011}, el sistema de planning clásico basado en búsqueda heúristica más popular por la comunidad debido a su excelente desempeño en benchmarks, competencias internacionales de planning, e implementaciones eficientes de algoritmos genéricos de búsqueda. Estas implementaciones son altamente configurables por Fast Downward permitiendo ajustarse a distintos dominios de planning. Su popularidad y versatilidad fue la motivación que nos llevó a utilizarlo en esta tesis en comparación a otros sistemas.
 
 \begin{mydef}
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.    
@@ -433,16 +457,16 @@ técnicas de aprendizaje automático.
 \begin{algorithm}
     \caption{Grounding por alcanzabilidad
     relajada}\label{alg:grounding_delete_relaxed}
-    \begin{algorithmic}
+    \begin{algorithmic}[1]
     \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
     \Sigma^{C}, \Sigma^{O}, I, G)$
     \Ensure Tarea STRIPS $(F, A, I, G)$ 
-    \State $q \gets I$
+    \State $q \gets Queue(I)$
     \State $F \gets \emptyset$
     \State $A \gets \emptyset$
     \While{$ \lnot q.empty()$}
     \State $e \gets q.pop()$
-    \If{e is fact}
+    \If{$e.isFact()$}
         \State $F \gets F \cup \{e\}$
         \For{$a \notin A \land pre(a) \subseteq F$}
             \State $q.insert(a)$
@@ -485,12 +509,10 @@ alcanzar la meta, priorizando su instanciación por sobre el resto.
 
 \begin{algorithm}
     \caption{Grounding heurístico}\label{alg:grounding-heuristico}
-    \begin{algorithmic}
-    \Require 
-        \\Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ \\
-        Número máximo de instanciaciones permitidas $N$
+    \begin{algorithmic}[1]
+    \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$. Número máximo de instanciaciones permitidas $N$
     \Ensure Tarea STRIPS $(F, A, I, G)$
-    \State $q \gets I$
+    \State $q \gets PriorityQueue(I)$
     \State $F \gets \emptyset$
     \State $A \gets \emptyset$
     \While{$ \lnot (q.empty() \lor G \subseteq F) \land |A| \leq N$}    
@@ -518,9 +540,9 @@ en el que se mostró en la sección anterior. Las principales diferencias son el
 criterio de parada, donde se procesan no más de $N$ acciones, y el orden en que
 lo hacen, según su nivel de relevancia. Debido a que el algoritmo puede
 terminar antes de que la cola se vacíe, se está obligado a procesar la totalidad
-de los facts existentes antes de considerar una siguiente acción. Esto garantiza
+de los facts existentes en la cola antes de considerar una siguiente acción. Esto garantiza
 que todos los facts que se encuentran en los efectos de las acciones ya
-procesadas están en $F$ siendo el algoritmo \emph{fact consistente}.
+procesadas están en $F$, siendo el algoritmo \emph{fact consistente}.
 
 \begin{mydef}
     Sean $F$ y $A$ el conjunto de facts y acciones retornados por un algoritmo

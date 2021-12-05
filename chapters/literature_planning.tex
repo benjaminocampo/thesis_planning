@@ -19,15 +19,10 @@ importancia para comprender los fundamentos de planning clásico.
 \section{¿Qué se entiende por planning?}
 
 Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
-anticipando el resultado de nuestras decisiones, aun si no estamos completamente
-conscientes de ello, o explícitamente planeando que hacer antes de realizar una
-acción. No obstante, una tarea que abarque objetivos nuevos y complejos requiere
-deliberación al consistir de acciones que uno no está acostumbrado, tareas de
-alto riesgo, o cooperación con alguien más.
+anticipando el resultado de nuestras decisiones, aun de manera inconsciente cuando, o sin estar explícitamente planeando que hacer antes de realizar una
+acción. Por otro lado, una tarea que abarque objetivos nuevos y complejos necesita de ser planeada conscientemente al consistir de acciones que uno no está acostumbrado, tareas de alto riesgo, o cooperación con alguien más. Hay otras tareas en las que incluso no pueden ser planeadas por una persona, sino que se deben determinar de manera automática, tal es el caso de un robot en el espacio que no tiene contacto alguno con la superficie terrestre o recibir instrucciones para su accionar resulta realmente costoso.
 
-\emph{Automated Planning} es el área de la inteligencia artificial que estudia
-la deliberación de los procesos computacionales. Su objetivo es facilitar la
-tarea de planificación por medio del razonamiento sobre representaciones
+\emph{Automated Planning} es el área de la inteligencia artificial que busca automatizar tareas de planificación, en particular, tareas que resulta inviable ser planificadas por un humano, ya sea, por razones de costos, riesgos, o recursos. Esto se logra en base al razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
 acciones, y objetivos a ser cumplidos. El modelo conceptual del dominio en el
 cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los
@@ -80,18 +75,18 @@ utilizaron tareas de \emph{planning} STRIPS durante el desarrollo de esta tesis.
 \section{Tareas STRIPS}
 
 El tipo de una tarea de \emph{planning} está dada por la lógica de las fórmulas
-que ocurren en las acciones y en la meta. En STRIPS, las fórmulas están en primera forma normal conjuntiva \emph{1-CNF}, es decir, son de la forma $\bigwedge_i l_i$ con $l_i$
+que ocurren en las acciones y en la meta. En STRIPS, las fórmulas son conjunciones de literales, es decir, son de la forma $\bigwedge_i l_i$ con $l_i$
 un símbolo proposicional o su negación.
 
 \begin{mydef}
-    Una fórmula STRIPS es una fórmula $\phi$ tal que $\phi$ está en forma 1-CNF.
+    Una fórmula STRIPS es una fórmula $\phi$ tal que $\phi$ es de la forma $\bigwedge_i l_i$ con $l_i$ un literal.
     Una acción $a$ es del tipo STRIPS si su precondición y su efecto son fórmulas
     STRIPS.
 \end{mydef}
 
 Una forma más conveniente de trabajar sobre esta representación es utilizando
 únicamente conjuntos de símbolos proposicionales. Vimos que en el caso de los
-estados, solo se mantienen aquellos que son verdaderos en el estado, es decir, los
+estados, solo se mantienen aquellos que son verdaderos, es decir, los
 literales positivos. De manera similar, ocurre con la precondición de una
 acción. Sin embargo, en el caso de su efecto se mantienen dos conjuntos, uno
 con los símbolos proposicionales positivos, y otro con los negativos.
@@ -114,7 +109,7 @@ Esta nueva representación permite abstraer fórmulas y operadores
 proposicionales, lo cual ayudará para introducir de manera más natural algunas
 técnicas del área.
 
-Algo importante a recalcar es el orden en que se ejecuta una acción. Para un estado aplicable de $A$ optaremos por primero eliminar los símbolos que sean verdaderos a partir de su lista $del$ para luego agregar los de la lista $add$ con el fin de garantizar de que el estado resultante contenga todos los símbolos de esta última lista.
+Algo importante a recalcar es el orden en que se ejecuta una acción. Para un estado aplicable de $A$ optaremos por primero eliminar los símbolos que sean verdaderos a partir de su lista $del$ para luego agregar los de la lista $add$. Esto con el fin de garantizar de que el estado resultante contenga todos los símbolos de esta última lista.
 Para ejemplificar esto, supongamos que tenemos la siguiente acción $A'$ pero eligiendo está vez el orden contrario de aplicación.
 
 \begin{align*}
@@ -179,9 +174,12 @@ La tarea STRIPS en este caso estaría dada por:
     G = \{&at(a_1, l_4)\}
 \end{align*}
 
-Para cada agente $x$ y ubicaciones $l, l'$ se tiene que $move(x, l, l') =
-(\{at(a, l)\}, \{at(a, l')\}, \{at(a, l)\})$. Un posible plan de la tarea podría ser
-la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
+Para cada agente $x$ y ubicaciones $l, l'$ se tiene que:
+\begin{center}
+    $move(x, l, l') = (\{at(x, l)\}, \{at(x, l')\}, \{at(x, l)\})$
+\end{center}
+
+Un posible plan de la tarea podría ser la secuencia $\vec{a} = move(a_1, l_1, l_3)move(a_1, l_3, l_4)$.
 
 \begin{figure}
     \centering
@@ -243,8 +241,7 @@ siguientes definiciones:
     \end{itemize}
 \end{mydef}
 
-Para la tarea STRIPS del problema del agente se tiene que su especificación está
-dada por:
+Para la tarea STRIPS del problema del agente una primera especificación podría ser definida de la siguiente manera:
 
 \begin{align*}
     \mathcal{P} = \{&at(x, l)\} \\
@@ -254,17 +251,33 @@ dada por:
     I = \{&at(a_1, l_1)\} \\
     G = \{&at(a_1, l_4)\}
 \end{align*}
-
-Una diferencia importante es que ahora $move$ es un esquema de acción dado por:
-
 \begin{align*}
     move(x, l, l') &= (pre(move), add(move), del(move)) \\
                    &= (\{at(x, l)\}, \{at(x, l')\},\{at(x, l)\})
 \end{align*}
 
-Por otro lado, las variables y objetos que se utilizaban para expresar todas las
-proposiciones lógicas se hicieron parte de la especificación logrando expresar
-predicados y acciones de manera esquemática.
+Una diferencia importante es que ahora $move(x, l, l')$ es un esquema de acción donde $x$, $l$, $l'$ son variables libres pertenecientes a $\Sigma^{O}$. De esta manera, las variables se hicieron parte de la especificación, logrando expresar predicados y acciones de manera esquemática.
+
+Por otro lado, está especificación de la tarea STRIPS, instancia más acciones que las del problema anterior, en particular, $move(a_1, l_2, l_4)$ está especificada como un movimiento posible. Por lo tanto, para representar exactamente el grafo de la figura \ref{fig:agent_example} es necesario agregar a la especificación un predicado extra, $is\_connected(l, l')$, que represente la existencia de un camino entre $l$ y $l'$. Luego, la estructura del grafo de la figura \ref{fig:agent_example} debe incluirse en el estado inicial. Además, el esquema de acción $move(x, l, l')$ debe poder aplicarse en un estado siempre y cuando exista un camino entre $l$ y $l'$.
+
+\begin{align*}
+    \mathcal{P} = \{&at(x, l)\} \\
+    \mathcal{A} = \{&move(x, l, l')\} \\
+    \Sigma^{C} = \{&a_1, l_1, l_2, l_3, l_4\} \\
+    \Sigma^{O} = \{&x, l, l'\} \\
+    I = \{& at(a_1, l_1), \\
+          & is\_connected(l_1, l_2), is\_connected(l_2, l_1), \\
+          & is\_connected(l_1, l_3), is\_connected(l_3, l_1), \\
+          & is\_connected(l_3, l_4), is\_connected(l_4, l_3)\} \\
+    G = \{& at(a_1, l_4), \\
+          & is\_connected(l_1, l_2), is\_connected(l_2, l_1), \\
+          & is\_connected(l_1, l_3), is\_connected(l_3, l_1), \\
+          & is\_connected(l_3, l_4), is\_connected(l_4, l_3)\}
+\end{align*}
+
+Un detalle de esta especificación es que es no tipada. Por ejemplo $move(a_1, a_1, a_1)$ es una acción instanciable. Lo cual deja en claro la necesidad de una representación de tareas que preserve los tipos de los esquemas de acción y predicados, y así evitar preprocesar acciones innecesarias durante el proceso de grounding.
+
+Por último, un plan que resuelve la tarea STRIPS instanciada, es a su vez un plan para la especificación siendo está relación la que permite vincular ambas representaciones.
 
 \section{El lenguaje PDDL}
 
@@ -331,20 +344,16 @@ tipo. Por ejemplo para el predicato $at(x, y)$, $x$ es de tipo \emph{AGENT} e $y
 \section{Relajación por deletes}
 
 El problema de decidir si una tarea de planning STRIPS tiene un plan es
-PSPACE-completo. Es por eso que las implementaciones que lo resuelven son a partir de algoritmos de búsqueda de orden exponencial. Esta búsqueda es guiada a partir de una \emph{función heurística} informada por \emph{planes relajados}.
+PSPACE-completo. Es por eso que las implementaciones que lo resuelven son a partir de algoritmos de búsqueda de orden exponencial. El planificador instancia un problema y realiza una búsqueda exhaustiva guiada por medio de una función heurística definida a partir de \emph{planes relajados}. Un plan relajado es un plan en un dominio donde a todas las acciones se les eliminaron los efectos negativos. Es decir su lista $del$. Si bien no es exactamente el dominio sobre el cual se desea resolver la tarea original, brinda información relevante para hallar una solución. En particular, si los planes relajados permiten guiar la búsqueda para encontrar un plan de la tarea, entonces también podría ser usado para guiar el proceso de grounding.
 
-Los planes relajados son secuencias de acciones cuyos efectos negativos son eliminados, son aplicables en el estado inicial, y su estado resultante contiene a la meta. Estos proviene de la \emph{relajación por deletes}, una simplificación de la tarea de planning que consiste en
-eliminar los efectos negativos de las acciones, es decir, su lista $del$. Esta
+Los planes relajados son secuencias de acciones cuyos efectos negativos son eliminados, son aplicables en el estado inicial, y su estado resultante contiene a la meta. Esto proviene de la \emph{relajación por deletes}, una simplificación de la tarea de planning que consiste en
+eliminar los efectos negativos de las acciones. Esta
 relajación es ampliamente utilizada en planning y su importancia subyace en la
 siguiente propiedad: en la \emph{relajación por deletes} si un \emph{fact} $p$ se
-vuelve verdadero en un estado $s$, entonces todos los estados que se puedan formar a partir de sucesivas aplicaciones de acciones también harán verdadero $p$. Por ejemplo, en el
+vuelve verdadero en un estado $s$, entonces para toda secuencia de acciones $\vec{a} \in A^{*}$ aplicables en $s$, el estado resultante también hará verdadero $p$. Por ejemplo, en el
 problema del agente, si este se desplazó por varias ubicaciones, tendríamos que
 se encuentra en más de un lugar al mismo tiempo ya que la proposición que
-indicaba su ubicación anterior no puede ser borrada.
-
-Claramente es una modelización no realista, no obstante, encontrar un plan en una
-tarea relajada puede ser computada en tiempo polinomial, y en la práctica
-resulta ser una buena aproximación a un plan del problema inicial.
+indicaba su ubicación anterior no puede ser borrada. Esta propiedad es la que permite que computar un plan en el dominio relajado sea polinomial en comparación al dominio original.
 
 \begin{mydef}
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.
@@ -366,7 +375,21 @@ resulta ser una buena aproximación a un plan del problema inicial.
     \end{itemize}
 \end{mydef}
 
+Claramente es una modelización no realista, no obstante, relajar una tarea STRIPS provee información importante sobre la tarea original, en particular:
+
+\begin{lemma}
+\label{lit:delete_relaxed_property}
+Sea $\Pi = (F, A, I, G)$ Una tarea STRIPS
+\begin{itemize}
+    \item Si una secuencia de acciones $\vec{a}$ es un plan de $\Pi$, entonces $\vec{a}^{+}$ es un plan relajado de $\Pi$.
+    \item Si no existe un plan para $\Pi^{+}$ entonces no existe un plan para $\Pi$.
+\end{itemize}
+\end{lemma}
+
+Estas propiedades serán muy relevantes al introducir los algoritmos de grounding en las secciones \ref{lit:relaxed_grounding}, y \ref{lit:heuristic_grounding}. La primera de ellas nos dice que un plan de una tarea STRIPS, es a la vez un plan de la tarea relajada. No obstante el reciproco no se cumple. Por lo general, un plan en la tarea relajada no es un plan de la tarea original. La segunda de ellas menciona que si no existe un plan para la tarea relajada, entonces no hay un plan para la tarea original. Esto también es importante ya que todo plan en la tarea relajada puede encontrarse con solo instanciar aquellas acciones que sean alcanzables. Si no se encuentra un plan de la tarea relajada para ese conjunto de acciones, entonces sabremos que no existirá solución en la tarea original.
+
 \section{Proceso de grounding}
+\label{lit:relaxed_grounding}
 
 Dada una especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
 \Sigma^{C}, \Sigma^{O}, I, G)$ se puede obtener su correspondiente tarea $\Pi =
@@ -378,12 +401,9 @@ acción por cada posible asignación de objetos a los argumentos de cada esquema
 de acción $a[X] \in \mathcal{A}$. Este proceso se conoce como \emph{grounding
 cartesiano}.
 
-No obstante, en la práctica los planificadores no enumeran todos las posibles
-acciones y proposiciones, si no aquellas que son alcanzables relajadamente desde
-el estado inicial. Esto viene de la premisa de que un plan de una tarea también
-es solución de su contraparte relajada, garantizando de esta manera que
-cualquier otra solución se puede formar con aquellas instanceas groundeadas
-relajadamente.
+No obstante, en la práctica los planificadores no instancian todas las posibles
+acciones y proposiciones, sino aquellas que son alcanzables relajadamente desde
+el estado inicial debido al lemma \ref{lit:delete_relaxed_property}. 
 
 Este proceso de grounding es el implementado por el planificador \emph{Fast
 Downward} \citep{Helmert-2011} y es sobre el cual se adaptará para utilizar
@@ -393,7 +413,7 @@ técnicas de aprendizaje automático.
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.    
     \begin{itemize}
         \item Un estado $s \subseteq F$ es alcanzable en $\Pi$ si existe una
-        secuencia $\vec{a}$ de acciones tal que $I \xrightarrow{\vec{a}} s$.
+        secuencia $\vec{a}$ en $A^{*}$ tal que $I \xrightarrow{\vec{a}} s$.
     
         \item Un proposición $p \in F$ es alcanzable en $\Pi$ si existe un estado
         $s$ alcanzable en $\Pi$ tal que $p \in s$.
@@ -420,7 +440,7 @@ técnicas de aprendizaje automático.
     \State $q \gets I$
     \State $F \gets \emptyset$
     \State $A \gets \emptyset$
-    \While{$ \lnot (q.empty() \lor G \subseteq F)$}
+    \While{$ \lnot q.empty()$}
     \State $e \gets q.pop()$
     \If{e is fact}
         \State $F \gets F \cup \{e\}$
@@ -440,21 +460,19 @@ técnicas de aprendizaje automático.
 
 El algoritmo \ref{alg:grounding_delete_relaxed} implementado por Fast Downward
 parte de una cola $q$ que almacena todos los símbolos proposicionales del estado
-inicial. A partir de allí, se remueve elemento a elemento de $q$ consultando si
-es un hecho o una acción.
+inicial. Luego la cola $q$ almacena elementos a preprocesar que pueden ser tanto facts como acciones. A partir de allí, se remueve elemento a elemento de $q$ consultando si
+es un fact o una acción.
 
-En el caso de encontrarse con un hecho, se lo instancia y se agregan a $q$ todas
+En el caso de encontrarse con un fact, se lo instancia y se agregan a $q$ todas
 las acciones aplicables (aún no procesadas) a partir de las proposiciones
 groundeadas hasta el momento. Caso contrario, se obtiene una acción que también
 se instancia y se agregan a $q$ todas las proposiciones (aún no procesadas) que
 ocurren positivamente en su efecto, es decir, su lista $add$.
 
-Este procedimiento se repite hasta que la cola se encuentre vacía o hasta que la
-tarea STRIPS resultante sea satisfacible relajadamente a partir de los elementos procesados hasta el momento, esto es, si $G \subseteq F$. Un detalle a notar
-es que si la cola se encuentra vacía, entonces se obtiene el resultado de
-grounding cartesiano.
+Este procedimiento se repite hasta que la cola se encuentre vacía, obteniendo de esta manera todas las acciones y facts alcanzables relajadamente.
 
 \section{Grounding heurístico}
+\label{lit:heuristic_grounding}
 
 Mencionamos que un plan de una tarea es también un plan relajado de la misma.
 Sin embargo, el reciproco no se cumple. Es más, un hecho o una acción que es
@@ -468,9 +486,10 @@ alcanzar la meta, priorizando su instanciación por sobre el resto.
 \begin{algorithm}
     \caption{Grounding heurístico}\label{alg:grounding-heuristico}
     \begin{algorithmic}
-    \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},
-    \Sigma^{C}, \Sigma^{O}, I, G)$
-    \Ensure Tarea STRIPS $(F, A, I, G)$ 
+    \Require 
+        \\Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ \\
+        Número máximo de instanciaciones permitidas $N$
+    \Ensure Tarea STRIPS $(F, A, I, G)$
     \State $q \gets I$
     \State $F \gets \emptyset$
     \State $A \gets \emptyset$
@@ -529,7 +548,7 @@ acciones un nivel de relevancia por la cual son ordenadas. La relevancia de una
 acción está directamente relacionada con la probabilidad de que esta pertenezca
 a un plan de la tarea. Notar que una estimación ideal sería una probabilidad de
 1 para las acciones que ocurren en algún plan de la tarea y 0 para las
-restantes. Pero computar esto es a la vez tan difı́cil como obtener una solución
+restantes. Pero computar esto es tan difı́cil como obtener una solución
 y sabemos que es PSPACE-completo. Es por eso que para estimar la relevancia se
 utilizaron técnicas de aprendizaje automático y serán el foco del siguiente
 capítulo.

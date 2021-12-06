@@ -1,7 +1,7 @@
 \chapter{Planning Clásico}
 \label{ch:lit_planning}
 
-En este capítulo se detallan una serie de definiciones teóricas, necesarias
+En este capítulo se detallan las definiciones teóricas, necesarias
 para comprender el enfoque de esta tesis y sobre qué parte de este campo
 aplicaremos técnicas de aprendizaje automático. Partiendo desde el área de
 \emph{planning}, detallando más concretamente que son los estados y acciones,
@@ -19,11 +19,25 @@ importancia para comprender los fundamentos de planning clásico.
 \section{¿Qué se entiende por planning?}
 
 Durante nuestras actividades de la vida cotidiana, siempre estamos actuando y
-anticipando el resultado de nuestras decisiones, aun de manera inconsciente, sin estar explícitamente planeando que hacer antes de realizar una
-acción. Por otro lado, una tarea que abarque objetivos nuevos y complejos necesita de ser planeada conscientemente al consistir de acciones que uno no está acostumbrado, tareas de alto riesgo, o cooperación con alguien más. Hay otras tareas en las que incluso no pueden ser planeadas por una persona, sino que se deben determinar de manera automática, tal es el caso por ejemplo 
-de una operación de rescate después de algún desastre natural, por ejemplo un terremoto o inundación. La operación podría necesitar de una gran cantidad de rescatistas, sistemas de comunicación con una base general, y actividades de logística. Todos dependiendo de una planificación cuidadosa y evaluación de varias alternativas en un tiempo de rescate limitado pero con una urgencia de una inmediata decisión. Este tipo de tareas justifican el uso de herramientas de planificación automática y son la principal motivación de \emph{Automated Planning}.
+anticipando el resultado de nuestras decisiones, aun de manera inconsciente, sin
+estar explícitamente planeando que hacer antes de realizar una acción. Por otro
+lado, una tarea que abarque objetivos nuevos y complejos necesita de ser
+planeada conscientemente al consistir de acciones que uno no está acostumbrado,
+tareas de alto riesgo, o cooperación con alguien más. Hay otras tareas en las
+que incluso no pueden ser planeadas por una persona, sino que se deben
+determinar de manera automática, tal es el caso por ejemplo de una operación de
+rescate después de algún desastre natural, como un terremoto o
+inundación. La operación podría necesitar de una gran cantidad de rescatistas,
+sistemas de comunicación con una base general, y actividades de logística. Todos
+dependiendo de una planificación cuidadosa y evaluación de varias alternativas
+en un tiempo de rescate limitado y por ende una urgencia inmediata de toma de
+decisión. Este tipo de tareas justifican el uso de herramientas de planificación
+automática y son la principal motivación de \emph{Automated Planning}.
 
-Automated Planning es el área de la inteligencia artificial que busca automatizar tareas de planificación, en particular, tareas que resulta inviable ser planificadas por un humano, ya sea, por razones de costos, riesgos, o recursos. Esto se logra en base al razonamiento sobre representaciones
+Automated Planning es el área de la inteligencia artificial que busca
+automatizar tareas de planificación, en particular, tareas que resulta inviable
+ser planificadas por un humano, ya sea, por razones de costos, riesgos, o
+recursos. Esto se logra en base al razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
 acciones, y objetivos a ser cumplidos. El modelo conceptual del dominio en el
 cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los

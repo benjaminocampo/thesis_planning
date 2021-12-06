@@ -9,12 +9,7 @@ supervisado, modelos de clasificación, y métricas. Este capítulo se baso en m
 \section{Orígenes y evolución}
 
 El aprendizaje automático es el campo de la inteligencia artificial que busca
-desarrollar programas que mejoren en base a la experiencia. Estos métodos
-difieren del típico paradigma de implementación donde en lugar de ser
-``programado`` es ``entrenado``. Tal entrenamiento consiste en disponerle al
-algoritmo información en forma de ejemplos con el fin de reconocer patrones
-estadísticos y eventualmente determinar reglas que sirvan para automatizar una
-tarea.
+desarrollar programas que mejoren en base a la experiencia, automatizar el reconocimiento de patrones estadísticos sobre volúmenes de datos, y utilizar algoritmos de computación que tomen acción sobre datos no aprendidos.
 
 Por moderno que pueda parecer este campo, tuvo sus comienzos en los años 50 a
 partir del famoso \emph{Test de Turing}, una máquina cuyo objetivo era engañar a
@@ -31,7 +26,7 @@ la intervención del conductor \citep{Sorin-2019}. Al mismo tiempo, una importan
 avances teóricos y algorítmicos se fueron realizando formando las bases de este
 campo.
 
-Aún con estos increíbles logros, no se conoce aún como crear computadoras que
+Aún con estos increíbles logros, no se conoce como crear computadoras que
 aprendan al nivel que las personas lo hacen. No obstante, se han desarrollado
 algoritmos que se han aproximado a este objetivo siendo efectivos para varios
 tipos de problemas.
@@ -42,7 +37,7 @@ El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
 objetivo es deducir un modelo a partir de datos anotados que permita mapear
 ejemplos no vistos previamente. Esta información está compuesta por un conjunto
 de ejemplares y sus correspondientes etiquetas, en ocasiones dada por un
-anotador humano, la cual indica el resultado esperado del modelo a partir del dato como
+anotador humano, que indica el resultado esperado del modelo a partir del dato como
 entrada. Las etiquetas pueden ser categóricas o continuas determinando un
 problema de clasificación o regresión. Algunas tareas más frecuentes de
 clasificación son la categorización de documentos, reconocimiento de lenguaje
@@ -51,29 +46,26 @@ estimaciones de precios de artículos, objetos, o viviendas.
 
 El resultado de ejecutar un algoritmo de machine learning supervisado se puede
 expresar como una función $f(\vect{x})$ que recibe un ejemplar $\vect{x}$ como
-entrada y genera un valor $y$ de salida codificado de la misma manera
-que las etiquetas. Las muestras utilizadas para ajustar $f$ están dadas por
+entrada y genera su predicción $y$ de salida. Las muestras utilizadas para ajustar $f$ están dadas por
 pares (vector, etiqueta) $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$
 conformando el \emph{conjunto de entrenamiento}.
 
 La forma precisa de $f$ es determinada durante la fase de entrenamiento. Una vez
-transcurrida, se puede estimar la identidad de nuevos datos etiquetados
-pertenecientes al \emph{conjunto de test} con el fin de evaluar la performance
-del modelo. En el caso que la predicción se aproxime a la esperada para estas
+transcurrida, se puede estimar la etiqueta de nuevos datos que no pertenezcan al conjunto de entrenamiento. En particular, se suele medir la performance del modelo comparando las predicciones con la etiqueta real de nuevos datos que no fueron parte utilizados en la fase de entrenamiento. En el caso que la predicción se aproxime a la esperada para estas
 nuevas entradas, entonces el modelo habría logrado generalizar la tarea.
 
 Sin embargo, los modelos de aprendizaje supervisado están limitados por la
 disponibilidad de las anotaciones y la dificultad para obtenerlas.
 Algunas tareas son relativamente sencillas de etiquetar por cualquier
-persona, (e.g. como determinar si en una foto aparece un gato), mientras que en
-otros puede llegar a requerir humanos que sean expertos de dominio (e.g.
+persona, (e.g., como determinar si en una foto aparece un gato), mientras que en
+otros puede llegar a requerir humanos que sean expertos de dominio (e.g.,
 abogados, médicos, lingüistas, etc).
 
 \section{Aprendizaje no supervisado}
 
 En contraste al método anterior, el aprendizaje no supervisado consiste en
 descubrir automáticamente patrones sobre los datos de entrenamiento que permitan
-explicarlos sin depender de datos de anotados. Es considerada como parte del
+explicarlos sin depender de datos anotados. Es considerada como parte del
 área del análisis y exploración. Es por eso que no pueden ser evaluados
 basándose en exactitud o precisión, si no más bien en la cantidad de información
 que podamos extraer de los datos a partir del uso de estas técnicas. Algo a

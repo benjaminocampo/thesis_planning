@@ -1,40 +1,95 @@
 \chapter{Etapas de preparación y ejecución de modelos}
 \label{ch:method}
 
-Inferir si una hipótesis brindará resultados positivos o negativos en un proyecto de investigación
-es una de las tareas más complicadas de conocer con antelación. Aún investigadores experimentados prueban decenas de ideas antes de obtener algún descubrimiento concreto. Construir sistemas de aprendizaje automático usualmente requieren de:
+Inferir si una hipótesis brindará resultados positivos o negativos en un
+proyecto de investigación es una de las tareas más complicadas de conocer con
+antelación. Aún investigadores experimentados prueban decenas de ideas antes de
+obtener algún descubrimiento concreto. Construir sistemas de aprendizaje
+automático usualmente requieren de:
 
 \begin{enumerate}
     \item Una hipótesis inicial la cual construir el sistema.
     \item Una implementación en algún lenguaje de programación.
-    \item Ejecución de experimentos que permitan concluir si la idea original funciona de acuerdo a lo esperado.
+    \item Ejecución de experimentos que permitan concluir si la idea original
+    funciona de acuerdo a lo esperado.
 \end{enumerate}
 
-Basado en lo aprendido en esos 3 pasos, se vuelven a plantear nuevas ideas e iterar sobre este proceso. Mientras más rápido se pueda finalizar un ciclo, mayor será el progreso en la investigación. Debido
-a la larga lista de posibles hipótesis para verificar, se deben obtener resultados prontamente, por lo general, en a lo sumo una semana de haber iniciado el ciclo. Es por eso que una prueba de concepto a partir de una implementación prototipo es más importante que construir un sistema complejo en una etapa temprana de investigación.
+Basado en lo aprendido en esos 3 pasos, se vuelven a plantear nuevas ideas e
+iterar sobre este proceso. Mientras más rápido se pueda finalizar un ciclo,
+mayor será el progreso en la investigación. Debido a la larga lista de posibles
+hipótesis para verificar, se deben obtener resultados prontamente, por lo
+general, en a lo sumo una semana de haber iniciado el ciclo. Es por eso que una
+prueba de concepto a partir de una implementación prototipo es más importante
+que construir un sistema complejo en una etapa temprana de investigación.
 
-No obstante, una vez validadas varias de las hipótesis, empezar nuevas implementaciones a partir de los prototipos puede llegar a relentizar el proceso de desarrollo ya que ciertos estándares de código no son tenidos en cuenta. Tales como manejo de excepciones, documentación adecuada, o herramientas de monitoreo y mantenimiento de código. El objetivo de estas pruebas de concepto es la de otorgar experiencia a los investigadores para identificar los requerimientos y resultados iniciales. Esto para luego construir un entorno de desarrollo en esa dirección.
+No obstante, una vez validadas varias de las hipótesis, empezar nuevas
+implementaciones a partir de los prototipos puede llegar a relentizar el proceso
+de desarrollo ya que ciertos estándares de código no son tenidos en cuenta.
+Tales como manejo de excepciones, documentación adecuada, o herramientas de
+monitoreo y mantenimiento de código. El objetivo de estas pruebas de concepto es
+la de otorgar experiencia a los investigadores para identificar los
+requerimientos y resultados iniciales. Esto para luego construir un entorno de
+desarrollo en esa dirección.
 
-Durante las pruebas de concepto realizadas durante esta tesis se analizó la factibilidad de la premisa inicial, encontrar un modelo de aprendizaje automático a partir de una codificación de datos de planes relajados y acciones etiquetadas que permitan guiar el proceso de grounding. Sin embargo, a medida que el proyecto fue necesitando de experimentos más complejos, se agregaron funcionalidades hasta construir un sistema de experimentación completo, configurable, adecuado a nuestras necesidades, y que permita otorgar resultados en el corto plazo de iniciado el ciclo de experimentación. Es por eso que en este capítulo se describirán los detalles de implementación de cada uno de los módulos que integran
-el flujo de ejecución de un experimento, abarcando el dominio de planning utilizado, especificaciones de tareas STRIPS que se pueden obtener a partir del dominio, persistencia de datos, preprocesamiento, entrenamiento, evaluación de modelos, y registro y visualización de resultados. Esto con el fin de describir los experimentos con mucha más claridad en el capítulo \ref{ch:results}.
+Durante las pruebas de concepto realizadas durante esta tesis se analizó la
+factibilidad de la premisa inicial, encontrar un modelo de aprendizaje
+automático a partir de una codificación de datos de planes relajados y acciones
+etiquetadas que permitan guiar el proceso de grounding. Sin embargo, a medida
+que el proyecto fue necesitando de experimentos más complejos, se agregaron
+funcionalidades hasta construir un sistema de experimentación completo,
+configurable, adecuado a nuestras necesidades, y que permita otorgar resultados
+en el corto plazo de iniciado el ciclo de experimentación. Es por eso que en
+este capítulo se describirán los detalles de implementación de cada uno de los
+módulos que integran el flujo de ejecución de un experimento, abarcando el
+dominio de planning utilizado, especificaciones de tareas STRIPS que se pueden
+obtener a partir del dominio, persistencia de datos, preprocesamiento,
+entrenamiento, evaluación de modelos, y registro y visualización de resultados.
+Esto con el fin de describir los experimentos con mucha más claridad en el
+capítulo \ref{ch:results}.
 \section{Dominio de planning: Satellite}
 
 \subsection{Descripción del dominio}
 
-Para la construcción del conjunto de datos nos centramos en el dominio de planning \emph{Satellite}, siendo parte del learninig track de la competencia internacional de planning (IPC) del año 2011. Este dominio es un modelo del problema de programación de observación satelital. Este implica el uso de uno o más satélites para hacer observaciones, recopilar datos, y descenderlos a una estación terrestre. Los satélites están equipados con diferentes instrumentos, cada uno con características en términos de objetivos de calibración, producción de datos, consumo de energía, y requisitos para el calentamiento y enfriamiento. Los satélites pueden apuntar a diferentes objetivos con el fin de obtener información de tal objeto. Existen restricciones sobre qué objetivos son accesibles para un satélite debido a las capacidades de oclusión y rotación. Los datos que generan los instrumentos de un satélite deben ser enviados a tierra una vez ocurra una ventana de comunicación terrestre. La meta consiste en hallar la cobertura (más eficiente) de las observaciones dadas las capacidades de los satélites.
+Para la construcción del conjunto de datos nos centramos en el dominio de
+planning \emph{Satellite}, siendo parte del learninig track de la competencia
+internacional de planning (IPC) del año 2011. Este dominio es un modelo del
+problema de programación de observación satelital. Este implica el uso de uno o
+más satélites para hacer observaciones, recopilar datos, y descenderlos a una
+estación terrestre. Los satélites están equipados con diferentes instrumentos,
+cada uno con características en términos de objetivos de calibración, producción
+de datos, consumo de energía, y requisitos para el calentamiento y enfriamiento.
+Los satélites pueden apuntar a diferentes objetivos con el fin de obtener
+información de tal objeto. Existen restricciones sobre qué objetivos son
+accesibles para un satélite debido a las capacidades de oclusión y rotación. Los
+datos que generan los instrumentos de un satélite deben ser enviados a tierra
+una vez ocurra una ventana de comunicación terrestre. La meta consiste en hallar
+la cobertura (más eficiente) de las observaciones dadas las capacidades de los
+satélites.
 
-La tabla \ref{} resume los esquemas de acción del dominio con su correspondiente tamaño de interfaz, cantidad de precondiciones atómicas, y cantidad de efectos atómicos. El Listing \ref{} muestra la especificación del dominio en PDDL.
+La tabla \ref{} resume los esquemas de acción del dominio con su correspondiente
+tamaño de interfaz, cantidad de precondiciones atómicas, y cantidad de efectos
+atómicos. El Listing \ref{} muestra la especificación del dominio en PDDL.
 
 \section{Manejo de datos}
 
 \subsection{Generación de tareas de planning}
 \label{method:data_generation}
 
-Las instancias de problemas a partir del dominio Satellite se obtuvieron automáticamente mediante un generador de problemas configurable de acuerdo a las características que deseamos que tenga. Estas son la cantidad de satélites, la cantidad máxima de instrumentos, el número de modos, el número de objetivos, y el número de observaciones. A mayor sea algunos de estos parámetros, mayor el número de acciones y facts necesarios para resolverlos. Una vez definida una parametrización que represente las características de la tarea a modelar, el generador devuelve su representación STRIPS especificada en PDDL.
+Las instancias de problemas a partir del dominio Satellite se obtuvieron
+automáticamente mediante un generador de problemas configurable de acuerdo a las
+características que deseamos que tenga. Estas son la cantidad de satélites, la
+cantidad máxima de instrumentos, el número de modos, el número de objetivos, y
+el número de observaciones. A mayor sea algunos de estos parámetros, mayor el
+número de acciones y facts necesarios para resolverlos. Una vez definida una
+parametrización que represente las características de la tarea a modelar, el
+generador devuelve su representación STRIPS especificada en PDDL.
 
 % \url{https://github.com/AI-Planning/pddl-generators/tree/master/satellite}
 
-Sean $\Pi^{PDDL} = (\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ la representación STRIPS en PDDL dada por el generador de problemas, y $\Pi = (F, A, I, G)$ su tarea STRIPS asociada. La información que necesitamos recolectar es:
+Sean $\Pi^{PDDL} = (\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ la
+representación STRIPS en PDDL dada por el generador de problemas, y $\Pi = (F,
+A, I, G)$ su tarea STRIPS asociada. La información que necesitamos recolectar
+es:
 
 \begin{enumerate}
     \item Un plan relajado $\vec{a}^{+}$ para $\Pi^{+}$.
@@ -43,132 +98,257 @@ Sean $\Pi^{PDDL} = (\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ la 
     \item El conjunto de acciones instanciadas $A$ de $\Pi$.
 \end{enumerate}
 
-Los puntos 3, y 5 pueden obtenerse a partir de los archivos PDDL devueltos por el generador. En cambio 1, 2, y 4 requieren resolver la tarea por medio del planificador de Fast Downward para ser obtenidos. Dado que $\Pi$ se obtiene a partir de Fast Downward, el conjunto $A$ de acciones instanciadas contiene únicamente aquellas que son alcanzables relajadamente desde el estado inicial $I$. A su vez, en la medida de lo posible, se intentará obtener el plan óptimo que resuelve $\Pi$. Esto se debe a la noción de relevancia de una acción para resolver una tarea STRIPS. En un plan óptimo, las acciones que lo componen son todas necesarias en la secuencia. Si una acción es eliminada, la secuencia resultante no puede ser un plan de la tarea debido a que se obtendrías un plan con menos acciones que el plan óptimo y por lo tanto una contradicción (Lo cual no es el caso para un plan genérico).
+Los puntos 3, y 5 pueden obtenerse a partir de los archivos PDDL devueltos por
+el generador. En cambio 1, 2, y 4 requieren resolver la tarea por medio del
+planificador de Fast Downward para ser obtenidos. Dado que $\Pi$ se obtiene a
+partir de Fast Downward, el conjunto $A$ de acciones instanciadas contiene
+únicamente aquellas que son alcanzables relajadamente desde el estado inicial
+$I$. A su vez, en la medida de lo posible, se intentará obtener el plan óptimo
+que resuelve $\Pi$. Esto se debe a la noción de relevancia de una acción para
+resolver una tarea STRIPS. En un plan óptimo, las acciones que lo componen son
+todas necesarias en la secuencia. Si una acción es eliminada, la secuencia
+resultante no puede ser un plan de la tarea debido a que se obtendrías un plan
+con menos acciones que el plan óptimo y por lo tanto una contradicción (Lo cual
+no es el caso para un plan genérico).
 
-La información asociada a un problema obtenida por el generador y el planificador se almacenan en directorios que contienen los siguientes archivos
+La información asociada a un problema obtenida por el generador y el
+planificador se almacenan en directorios que contienen los siguientes archivos
 
 \begin{itemize}
-    \item \emph{all\_operators.bz2}: Archivo comprimido del conjunto de acciones instanciadas.
+    \item \emph{all\_operators.bz2}: Archivo comprimido del conjunto de acciones
+    instanciadas.
     \item \emph{objects}: Conjunto de objetos del problema.
     \item \emph{problem.pddl}: Especificación en PDDL del problema.
     \item \emph{relaxed\_plan}: Plan relajado que resuelve la tarea relajada.
-    \item \emph{optimal\_plan} o \emph{sas\_plan}: Plan (óptimo) que resuelve la tarea.
+    \item \emph{optimal\_plan} o \emph{sas\_plan}: Plan (óptimo) que resuelve la
+    tarea.
 \end{itemize}
 
-Por último, queda mencionar que tipo de problemas se generaron. Se dividieron en 3 grupos principales de acuerdo a su dificultad. X problemas a los cuales pueden resolverse de manera óptima por el planificador, X' a los cuales solo un plan fue encontrado, y X'' que no pudieron resolverse debido a una falla en el proceso de grounding. Sobre este último grupo nos interesa tener un grado de inferencia sobre las acciones que puedan ser relevantes para resolverlo y sobre los cuales el modelo de aprendizaje automático debe guiar durante el proceso de grounding. Es por eso que estos X'' problemas fueron elegidos para formar parte de los problemas de test. Mientras que aquellos que si logran resolverse (de manera óptima o no) forman parte del de entrenamiento.
+Por último, queda mencionar que tipo de problemas se generaron. Se dividieron en
+3 grupos principales de acuerdo a su dificultad. X problemas a los cuales pueden
+resolverse de manera óptima por el planificador, X' a los cuales solo un plan
+fue encontrado, y X'' que no pudieron resolverse debido a una falla en el
+proceso de grounding. Sobre este último grupo nos interesa tener un grado de
+inferencia sobre las acciones que puedan ser relevantes para resolverlo y sobre
+los cuales el modelo de aprendizaje automático debe guiar durante el proceso de
+grounding. Es por eso que estos X'' problemas fueron elegidos para formar parte
+de los problemas de test. Mientras que aquellos que si logran resolverse (de
+manera óptima o no) forman parte del de entrenamiento.
 
-Sin embargo, como veremos en la sección Y, requeriremos de los planes reales para etiquetar estos datos. Por lo que es necesario encontrarles alguna solución a los problemas de test. Afortunadamente, satellite es uno de los dominios trabajados en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} de los cuales ya se encontraron solución a estos problemas (TODO: en realidad es la tesis de nahuel esto de que manera se lo podria citar?).
+Sin embargo, como veremos en la sección Y, requeriremos de los planes reales
+para etiquetar estos datos. Por lo que es necesario encontrarles alguna solución
+a los problemas de test. Afortunadamente, satellite es uno de los dominios
+trabajados en \citep{Gnad_Torralba_Dominguez_Areces_Bustos_2019} de los cuales
+ya se encontraron solución a estos problemas (TODO: en realidad es la tesis de
+nahuel esto de que manera se lo podria citar?).
 
-Otro inconveniente en los problemas de test, es la ausencia de las acciones instanciadas para resolverlo. Aún habiendo logrado calcular un plan de la tarea, la cantidad de instancias alcanzables relajadamente en $A$ es muy grande por la cual no son dadas por el planificador al terminar el proceso de grounding como si es el caso de los datos entrenamiento. Para solventar esto, solo se generó una muestra aleatoria de acciones instanciadas obtenidas a partir de grounding cartesiano por fuera del planificador.
+Otro inconveniente en los problemas de test, es la ausencia de las acciones
+instanciadas para resolverlo. Aún habiendo logrado calcular un plan de la tarea,
+la cantidad de instancias alcanzables relajadamente en $A$ es muy grande por la
+cual no son dadas por el planificador al terminar el proceso de grounding como
+si es el caso de los datos entrenamiento. Para solventar esto, solo se generó
+una muestra aleatoria de acciones instanciadas obtenidas a partir de grounding
+cartesiano por fuera del planificador.
 
-Por lo tanto, tomaremos provecho de estas soluciones como una manera de verificar que el modelo de aprendizaje logra desempeñarse correctamente antes de probarlo con planificador en conjunto con otras tareas que no puedan instanciarse.
+Por lo tanto, tomaremos provecho de estas soluciones como una manera de
+verificar que el modelo de aprendizaje logra desempeñarse correctamente antes de
+probarlo con planificador en conjunto con otras tareas que no puedan
+instanciarse.
 
 \subsection{Preservación de datos}
 
-Una vez identificado que problemas son utilizados como entrenamiento y otros como test, es necesario preservar estos datos de manera organizada y de fácil acceso. Si bien los datos se encuentran en archivos manteniendo en una cierta estructura, no pueden ser extraido de manera programática. Por tal razón se tabularon los datos y almacenaron en una base de datos relacional para su posterior acceso por medio de una herramienta de consultas.
+Una vez identificado que problemas son utilizados como entrenamiento y otros
+como test, es necesario preservar estos datos de manera organizada y de fácil
+acceso. Si bien los datos se encuentran en archivos manteniendo en una cierta
+estructura, no pueden ser extraido de manera programática. Por tal razón se
+tabularon los datos y almacenaron en una base de datos relacional para su
+posterior acceso por medio de una herramienta de consultas.
 
-Para el almacenamiento utilizamos una base de datos relacional del tipo SQL. La siguiente imagen refleja el diagrama de entidad relación.
+Para el almacenamiento utilizamos una base de datos relacional del tipo SQL. La
+siguiente imagen refleja el diagrama de entidad relación.
 
-La tabla principal \emph{Problem} representa el conjunto de problemas. Algunas de las propiedades de un problema reflejadas en la tabla son, el nombre del problema (nombre dado por el generador), y el grupo al cual pertenece. Para representar en la base de datos tanto los planes relajados, como los planes que resuelven la tarea, se utilizan relaciones many-to-many a la tabla de acciones, manteniendo una tabla intermedia que mantendrá cada relación.
-La tabla de acciones almacena todas las acciones instanciables relajadamente que hayan ocurrido en cualquier problema. Para evitar repreticiones se agregó como clave primaria el nombre del esquema junto con el de sus parámetros.
+La tabla principal \emph{Problem} representa el conjunto de problemas. Algunas
+de las propiedades de un problema reflejadas en la tabla son, el nombre del
+problema (nombre dado por el generador), y el grupo al cual pertenece. Para
+representar en la base de datos tanto los planes relajados, como los planes que
+resuelven la tarea, se utilizan relaciones many-to-many a la tabla de acciones,
+manteniendo una tabla intermedia que mantendrá cada relación. La tabla de
+acciones almacena todas las acciones instanciables relajadamente que hayan
+ocurrido en cualquier problema. Para evitar repreticiones se agregó como clave
+primaria el nombre del esquema junto con el de sus parámetros.
 
-Para realizar una consulta a la base de datos utilizamos un \emph{object relational mapping} (ORM) que permite gestionar el acceso por medio de un lenguaje de programación. El ORM considera cada tabla como una clase y elementos de la tabla como objetos de tal clase. Por lo tanto al realizar una consulta se dispone de todo el material de programación a objetos para su posterior uso. Eso inclye cualquier cualquier otra relación u objeto que este involucrado en la consulta de manera directa o indirecta cono son el caso del plan relajado, y el plan que resuelve la tarea.
+Para realizar una consulta a la base de datos utilizamos un \emph{object
+relational mapping} (ORM) que permite gestionar el acceso por medio de un
+lenguaje de programación. El ORM considera cada tabla como una clase y elementos
+de la tabla como objetos de tal clase. Por lo tanto al realizar una consulta se
+dispone de todo el material de programación a objetos para su posterior uso. Eso
+inclye cualquier cualquier otra relación u objeto que este involucrado en la
+consulta de manera directa o indirecta cono son el caso del plan relajado, y el
+plan que resuelve la tarea.
 
-Algo a notar es que cada plan relajado, sas plan, u optimal plan se almacenan como relaciones de instancias a las cuales se asegura que el orden se mantenga. Las tablas intermedias entre \emph{Problem} y \emph{Action} mantienen estas propiedades.
+Algo a notar es que cada plan relajado, sas plan, u optimal plan se almacenan
+como relaciones de instancias a las cuales se asegura que el orden se mantenga.
+Las tablas intermedias entre \emph{Problem} y \emph{Action} mantienen estas
+propiedades.
 
 \subsection{Etiquetado de ejemplos}
 
-A partir de la base de datos es necesario generar una \emph{matriz de entrenamiento} que será dada como entrada al modelo de aprendizaje automático. En particular, mencionamos que problemas se van a usar para entrenar los modelos y cuales para evaluarlos. Pero aún nos queda explicar cual es la estructura explicita de los pares $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$ de los conjuntos de entrenamiento y test que recibirán como entrada los modelos mencionados en el capítulo \ref{ch:lit_ml}.
+A partir de la base de datos es necesario generar una \emph{matriz de
+entrenamiento} que será dada como entrada al modelo de aprendizaje automático.
+En particular, mencionamos que problemas se van a usar para entrenar los modelos
+y cuales para evaluarlos. Pero aún nos queda explicar cual es la estructura
+explicita de los pares $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$ de los
+conjuntos de entrenamiento y test que recibirán como entrada los modelos
+mencionados en el capítulo \ref{ch:lit_ml}.
 
-Dado que buscamos aprender un modelo que prediga si una acción es relevante para el plan real de un problema, necesitamos incluir en $\vect{x}$ información de tal problema y la acción a cual querramos averiguar su relevancia. Además, debe ser fácil de calcular tanto para las tareas de entrenamiento como las de test. Como mencionamos en la sección X, para una tarea especificada en PDDL, el planificador instancia el problema y realiza una búsqueda exhaustiva guiada por medio de una función heurística definida usando planes relajados. Si los planes relajados permiten guiar la búsqueda para encontrar un plan de la tarea, entonces también podría ser usado para guiar el proceso de grounding. Por lo tanto la estructura de los vectores de entrada incluirán tanto el plan relajado como la acción que queremos estimar.
+Dado que buscamos aprender un modelo que prediga si una acción es relevante para
+el plan real de un problema, necesitamos incluir en $\vect{x}$ información de
+tal problema y la acción a cual querramos averiguar su relevancia. Además, debe
+ser fácil de calcular tanto para las tareas de entrenamiento como las de test.
+Como mencionamos en la sección X, para una tarea especificada en PDDL, el
+planificador instancia el problema y realiza una búsqueda exhaustiva guiada por
+medio de una función heurística definida usando planes relajados. Si los planes
+relajados permiten guiar la búsqueda para encontrar un plan de la tarea,
+entonces también podría ser usado para guiar el proceso de grounding. Por lo
+tanto la estructura de los vectores de entrada incluirán tanto el plan relajado
+como la acción que queremos estimar.
 
-Por otro lado, en la sección \ref{method:data_generation} no solo obtuvimos el plan relajado de cada tarea generada, sino además el plan que lo resuelve junto a las instancias de las acciones alcanzables relajadamente durante el proceso de grounding. Por lo tanto, para una tarea en particular (y por ende un plan relajado), se pueden identificar dos clases distintas de acciones generadas:
+Por otro lado, en la sección \ref{method:data_generation} no solo obtuvimos el
+plan relajado de cada tarea generada, sino además el plan que lo resuelve junto
+a las instancias de las acciones alcanzables relajadamente durante el proceso de
+grounding. Por lo tanto, para una tarea en particular (y por ende un plan
+relajado), se pueden identificar dos clases distintas de acciones generadas:
 
 \begin{enumerate}
     \item Las acciones que pertenecen a la solución (óptima o no).
-    \item Las acciones que no pertenece a la solución, pero que si fueron generadas por el proceso de grounding por alcanzabilidad relajada de Fast Downward.
+    \item Las acciones que no pertenece a la solución, pero que si fueron
+    generadas por el proceso de grounding por alcanzabilidad relajada de Fast
+    Downward.
 \end{enumerate}
 
-A las acciones de 1 las denominamos \emph{good operators} de la tarea, y las de 2 \emph{bad operators} de la tarea. A estos dos conjuntos los denotaremos con $A^{good}$ y $A^{bad}$ respectivamente.
+A las acciones de 1 las denominamos \emph{good operators} de la tarea, y las de
+2 \emph{bad operators} de la tarea. A estos dos conjuntos los denotaremos con
+$A^{good}$ y $A^{bad}$ respectivamente.
 
 \begin{algorithm}
     \caption{}\label{alg:training_data}
     \begin{algorithmic}
-    \Require Plan relajado $\vec{a}^{+}$, $A^{good}$, y $A^{bad}$ de una tarea de la sección \ref{method:data_generation}
-    \Ensure Matriz de ejemplos $M$ de tamaño $(|A^{good}| + |A^{bad}|) \times 3$
-    \State $M \gets [\ ]$
-    \For{$a \in A^{good} $}
-        \State $M.push\_back((\vec{a}^{+}, a, 1))$
-    \EndFor
+    \Require Plan relajado $\vec{a}^{+}$, $A^{good}$, y $A^{bad}$ de una tarea
+    de la sección \ref{method:data_generation} \Ensure Matriz de ejemplos $M$ de
+    tamaño $(|A^{good}| + |A^{bad}|) \times 3$ \State $M \gets [\ ]$ \For{$a \in
+    A^{good} $} \State $M.push\_back((\vec{a}^{+}, a, 1))$ \EndFor
     
-    \For{$a \in A^{bad} $}
-        \State $M.push\_back((\vec{a}^{+}, a, 0))$
-    \EndFor
+    \For{$a \in A^{bad} $} \State $M.push\_back((\vec{a}^{+}, a, 0))$ \EndFor
     
     \State \Return $M.to\_array()$
     \end{algorithmic}
 \end{algorithm}
 
-Luego el algoritmo \ref{alg:training_data}, dado el plan relajado de un problema y los conjuntos $A^{good}$ y $A^{bad}$, genera los datos etiquetados de una sola tarea obteniendo una matriz como se muestra en el cuadro \ref{tb:matrix_shape}.
+Luego el algoritmo \ref{alg:training_data}, dado el plan relajado de un problema
+y los conjuntos $A^{good}$ y $A^{bad}$, genera los datos etiquetados de una sola
+tarea obteniendo una matriz como se muestra en el cuadro \ref{tb:matrix_shape}.
 
 \begin{table}[h!]
 \centering
 \scalebox{0.9}{
  \begin{tabular}{||c | c | c||} 
  \hline
- Plan relajado & Acción & Etiqueta \\ [0.5ex] 
- \hline\hline
+ Plan relajado & Acción & Etiqueta \\ [0.5ex] \hline\hline
  %(take_image satellite0 planet5 instrument1 image1)
- {}[switch\_on instrument0 satellite0, take\_image ...] & calibrate satellite0 instrument0 star4 & 1 \\
- {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_on instrument0 satellite0 & 1 \\
- {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_on instrument3 satellite1 & 1  \\
+ {}[switch\_on instrument0 satellite0, take\_image ...] & calibrate satellite0
+ instrument0 star4 & 1 \\
+ {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_on instrument0
+ satellite0 & 1 \\
+ {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_on instrument3
+ satellite1 & 1  \\
  ... & ... & ...  \\
- {}[switch\_on instrument0 satellite0, take\_image ...] & turn\_to satellite0 planet5 planet5 & 0 \\
- {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_off instrument0 satellite0 & 0 \\
- {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_on instrument3 satellite1 & 0 \\ [1ex] 
+ {}[switch\_on instrument0 satellite0, take\_image ...] & turn\_to satellite0
+ planet5 planet5 & 0 \\
+ {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_off
+ instrument0 satellite0 & 0 \\
+ {}[switch\_on instrument0 satellite0, take\_image ...] & switch\_on instrument3
+ satellite1 & 0 \\ [1ex] 
  \hline
  \end{tabular}}
  \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
  \label{tb:matrix_shape}
 \end{table}
 
-La primera columna contienen una lista de acciones ordenadas y representan el plan relajado de un problema, la segunda columna es la acción a consultar por su relevancia, y la tercera columna es la etiqueta que indica de si pertenece o no al plan de la tarea.
+La primera columna contienen una lista de acciones ordenadas y representan el
+plan relajado de un problema, la segunda columna es la acción a consultar por su
+relevancia, y la tercera columna es la etiqueta que indica de si pertenece o no
+al plan de la tarea.
 
-Para generar los ejemplos de los problemas de entrenamiento y test, solo basta con ejecutar el algoritmo \ref{alg:training_data} con cada uno de los problemas y apilar las matrices resultantes.
+Para generar los ejemplos de los problemas de entrenamiento y test, solo basta
+con ejecutar el algoritmo \ref{alg:training_data} con cada uno de los problemas
+y apilar las matrices resultantes.
 
-Un inconveniente de esta representación es que la información del plan relajado se multiplica $|A^{good}| + |A^{bad}|$ veces. Esto por cada terna plan relajado, good operators, y bad operators.
-Veremos luego en la etapa de preprocesamiento que el tamaño de la matriz además dependerá del largo de los planes relajados, siendo una dificultad a superar durante los experimentos.
+Un inconveniente de esta representación es que la información del plan relajado
+se multiplica $|A^{good}| + |A^{bad}|$ veces. Esto por cada terna plan relajado,
+good operators, y bad operators. Veremos luego en la etapa de preprocesamiento
+que el tamaño de la matriz además dependerá del largo de los planes relajados,
+siendo una dificultad a superar durante los experimentos.
 
-Por otro lado, notar que las matrices de los problemas de entrenamiento y de test contienen información de todos los esquemas de acción de los problemas. En la sección de experimentos veremos que nos interesará filtrar las filas por esquemas de acción. Es decir, si tenemos un total de 5 esquemas en satellite, dividir la matriz del cuadro \ref{tb:matrix_shape} en 5 submatrices donde la acción objetivo corresponda a un solo esquema.
+Por otro lado, notar que las matrices de los problemas de entrenamiento y de
+test contienen información de todos los esquemas de acción de los problemas. En
+la sección de experimentos veremos que nos interesará filtrar las filas por
+esquemas de acción. Es decir, si tenemos un total de 5 esquemas en satellite,
+dividir la matriz del cuadro \ref{tb:matrix_shape} en 5 submatrices donde la
+acción objetivo corresponda a un solo esquema.
 
-Esto refleja una de las ventajas de haber utilizado una base de datos para preservar la información. En lugar de almacenar los datos de todos los problemas tanto de entrenamiento como de test ya etiquetados. Podemos realizar consultas sobre información específica de los problemas haciendo lecturas al disco únicamente de aquello que sea necesario para construir la matriz reduciendo de esta manera el uso en memoria.
+Esto refleja una de las ventajas de haber utilizado una base de datos para
+preservar la información. En lugar de almacenar los datos de todos los problemas
+tanto de entrenamiento como de test ya etiquetados. Podemos realizar consultas
+sobre información específica de los problemas haciendo lecturas al disco
+únicamente de aquello que sea necesario para construir la matriz reduciendo de
+esta manera el uso en memoria.
 
-A partir de ahora, distinguiremos la noción de problemas de entrenamiento (test) y conjunto de entrenamiento (test). Los problemas de entrenamiento (test) serán aquellos que fueron separados en la sección \ref{method:data_generation}, mientras que el conjunto de entrenamiento (test) serán las matrices resultantes de la forma del cuadro \ref{tb:matrix_shape} que se obtienen a partir de los problemas.
+A partir de ahora, distinguiremos la noción de problemas de entrenamiento (test)
+y conjunto de entrenamiento (test). Los problemas de entrenamiento (test) serán
+aquellos que fueron separados en la sección \ref{method:data_generation},
+mientras que el conjunto de entrenamiento (test) serán las matrices resultantes
+de la forma del cuadro \ref{tb:matrix_shape} que se obtienen a partir de los
+problemas.
 
 \subsection{Exploración de datos}
 
-Es importante conocer de que manera está compuesto los conjuntos de entrenamiento y test. Algunas propiedades que se lograron registrar son la cantidad de entradas por esquema de acción.
+Es importante conocer de que manera está compuesto los conjuntos de
+entrenamiento y test. Algunas propiedades que se lograron registrar son la
+cantidad de entradas por esquema de acción.
 
 TODO: Concluir algo sobre la tabla de esquema de acción
 
-Otro dato interesante para medir la dificultad de los problemas es conocer la distribución del largo de los planes relajados de ambos conjuntos.
+Otro dato interesante para medir la dificultad de los problemas es conocer la
+distribución del largo de los planes relajados de ambos conjuntos.
 
 TODO: Concluir algo sobre los largos.
 
 \subsection{Preprocesamiento}
 \label{method:preprocessing}
 
-Como mencionamos en el capítulo \ref{ch:lit_ml} los conjuntos de entrenamiento y de test deben ser codificados en algún valor numérico previamente a ser dados como entrada a un modelo de aprendizaje automático. En particular se trabajó con dos tipos de codificación para representar los planes relajados y las acciones de una tarea, una codificación ad-hoc basándonos en los métodos de tipo one-hot y one-hot ordinal que describimos en la sección \ref{method:ohe}, y otra codificación usando word embeddings descriptos en la sección \ref{method:wb}.
+Como mencionamos en el capítulo \ref{ch:lit_ml} los conjuntos de entrenamiento y
+de test deben ser codificados en algún valor numérico previamente a ser dados
+como entrada a un modelo de aprendizaje automático. En particular se trabajó con
+dos tipos de codificación para representar los planes relajados y las acciones
+de una tarea, una codificación ad-hoc basándonos en los métodos de tipo one-hot
+y one-hot ordinal que describimos en la sección \ref{method:ohe}, y otra
+codificación usando word embeddings descriptos en la sección \ref{method:wb}.
 
 \subsubsection{Codificación ad-hoc de acciones y planes relajados}
 \label{method:vectorization}
 
-En la sección \ref{method:ohe} vimos que una de las codificación más sencillas para una oración del lenguaje natural es por medio de una bolsa de palabras. Lo cual daría cierta iniciativa para obtener una representación similar para los planes relajados.
+En la sección \ref{method:ohe} vimos que una de las codificación más sencillas
+para una oración del lenguaje natural es por medio de una bolsa de palabras. Lo
+cual daría cierta iniciativa para obtener una representación similar para los
+planes relajados.
 
-Sin embargo, tomemos una oración dada en el contexto de planning. La siguiente secuencia muestra un plan relajado de largo 4 asociado a una tarea STRIPS cuyos esquemas de acción son \verb|calibrate|, \verb|switch_on|, \verb|take_image| y \verb|turn_to|. El resto de
-expresiones son objetos concretos del dominio. También es importante mencionar
-que cada objeto de un cierto tipo está enumerado. Por ejemplo el objeto
-\verb|instrument1| es del tipo \verb|instrument| cuyo índice es $1$. 
+Sin embargo, tomemos una oración dada en el contexto de planning. La siguiente
+secuencia muestra un plan relajado de largo 4 asociado a una tarea STRIPS cuyos
+esquemas de acción son \verb|calibrate|, \verb|switch_on|, \verb|take_image| y
+\verb|turn_to|. El resto de expresiones son objetos concretos del dominio.
+También es importante mencionar que cada objeto de un cierto tipo está
+enumerado. Por ejemplo el objeto \verb|instrument1| es del tipo
+\verb|instrument| cuyo índice es $1$. 
 
 \begin{center}
     [\verb|calibrate satellite0 instrument1 groundstation0|, \\
@@ -182,7 +362,8 @@ identifica como una palabra de la oración. Una primera iniciativa es definir un
 acción como palabra y utilizar un one hot encoding. No obstante, por lo general
 una acción no suele ocurrir más de una vez en un plan de la tarea lo cual se
 perdería la información de la frecuencia en que ocurren los objetos en la
-secuencia. No solo es clave capturar los objetos si no también el índice que tiene asociado. Por lo tanto, respetar su numeración es igual de relevante. Por
+secuencia. No solo es clave capturar los objetos si no también el índice que
+tiene asociado. Por lo tanto, respetar su numeración es igual de relevante. Por
 último, cada acción debe mantener la misma cantidad de componentes en su
 representación vectorial, independientemente del esquema o el número de
 parámetros que reciba, y se debe asegurar el orden de la secuencia.
@@ -200,15 +381,19 @@ Para solventar estas dificultades se definió la siguiente codificación ad-hoc:
     la cantidad de esquemas.
     \item El tipo de los objetos son enumerados en el rango de $1, ..., K$. con
     $K$ la cantidad de tipos.
-    \item Si un objeto tiene el índice $i$ se lo incrementa en 1 (para evitar que
-    aquellos objetos que empiecen con índice 0 se malinterpreten como margenes).
+    \item Si un objeto tiene el índice $i$ se lo incrementa en 1 (para evitar
+    que aquellos objetos que empiecen con índice 0 se malinterpreten como
+    margenes).
 \end{itemize}
 
-Por ejemplo si la enumeración de las esquemas de acción y tipos fuesen los siguientes:
+Por ejemplo si la enumeración de las esquemas de acción y tipos fuesen los
+siguientes:
 
 \begin{center}
-    \{\verb|calibrate|: 1, \verb|turn_to|: 2, \verb|switch_on|: 3, \verb|take_image|: 4, \verb|switch_off|: 5\} \\
-    \{\verb|satellite|: 1, \verb|instrument|: 2, \verb|planet|: 3, \verb|groundstation|: 4, \verb|image|: 5, \verb|star|: 6\}
+    \{\verb|calibrate|: 1, \verb|turn_to|: 2, \verb|switch_on|: 3,
+    \verb|take_image|: 4, \verb|switch_off|: 5\} \\
+    \{\verb|satellite|: 1, \verb|instrument|: 2, \verb|planet|: 3,
+    \verb|groundstation|: 4, \verb|image|: 5, \verb|star|: 6\}
 \end{center}
 
 Como la longitud de la interfaz más larga es 4, entonces cada acción tendrá
@@ -218,30 +403,34 @@ resultante sería dada por el cuadro \ref{tab:ohe_plan}
 \begin{table}[h!]
     \centering
     \begin{tabular}{c|c}
-        \verb|calibrate satellite0 instrument1 groundstation0| &: {} [1 1 1 2 2 4 1 0 0] \\
+        \verb|calibrate satellite0 instrument1 groundstation0| &: {} [1 1 1 2 2
+        4 1 0 0] \\
         \verb|switch_on instrument1 satellite0| &: {} [3 2 2 1 1 0 0 0 0] \\
-        \verb|take_image satellite0 planet5 instrument1 image1| &: {} [4 1 1 3 6 2 2 5 2] \\
-        \verb|turn_to satellite0 groundstation0 planet5| &: {} [2 1 1 4 1 3 6 0 0] \\
+        \verb|take_image satellite0 planet5 instrument1 image1| &: {} [4 1 1 3 6
+        2 2 5 2] \\
+        \verb|turn_to satellite0 groundstation0 planet5| &: {} [2 1 1 4 1 3 6 0
+        0] \\
     \end{tabular}
     \caption{Codificación ad-hoc de las acciones que conforman un plan relajado}
     \label{tab:ohe_plan}
 \end{table}
 
-Luego la codificación del plan relajado es la concatenación de los cuatro vectores.
+Luego la codificación del plan relajado es la concatenación de los cuatro
+vectores.
 
 \begin{center}
     [1 1 1 2 2 4 1 0 0 3 2 2 1 1 0 0 0 0 4 1 1 3 6 2 2 5 2 2 1 1 4 1 3 6 0 0]
 \end{center}
 
-Por lo tanto, la matriz del cuadro \ref{tb:matrix_shape} estaría codificada de la siguiente manera:
+Por lo tanto, la matriz del cuadro \ref{tb:matrix_shape} estaría codificada de
+la siguiente manera:
 
 \begin{table}[h!]
 \centering
 \scalebox{0.9}{
  \begin{tabular}{||c | c | c||} 
  \hline
- Plan relajado & Acción & Etiqueta \\ [0.5ex] 
- \hline\hline
+ Plan relajado & Acción & Etiqueta \\ [0.5ex] \hline\hline
  {}[3 2 1 1 1 0 0 0 0 4 ...] & {} [1 1 1 2 1 6 5 0 0] & 1 \\
  {}[3 2 1 1 1 0 0 0 0 4 ...] & {} [3 2 1 1 1 0 0 0 0] & 1 \\
  {}[3 2 1 1 1 0 0 0 0 4 ...] & {} [3 2 4 1 2 0 0 0 0] & 1  \\
@@ -257,19 +446,60 @@ Por lo tanto, la matriz del cuadro \ref{tb:matrix_shape} estaría codificada de 
 
 \subsubsection{Codificación por word embeddings de acciones y planes relajados}
 
-Para esta codificación nuevamente surge la pregunta de qué consideramos una palabra en un plan relajado. Para el caso de la codificación ad-hoc una palabra estaba dada por cada una de las partes de una acción incluyendo la numeración de los objetos. Para este caso, podríamos utilizar una interpretación similar para las palabras ya que cada una de esas componentes son parte importante de una acción. Sin embargo, está vez optamos por considerar como una palabra al esquema de acción y a las instancias de objetos en su interfaz, sin distinguir la numeración como una palabra.
+Para esta codificación nuevamente surge la pregunta de qué consideramos una
+palabra en un plan relajado. Para el caso de la codificación ad-hoc una palabra
+estaba dada por cada una de las partes de una acción incluyendo la numeración de
+los objetos. Para este caso, podríamos utilizar una interpretación similar para
+las palabras ya que cada una de esas componentes son parte importante de una
+acción. Sin embargo, está vez optamos por considerar como una palabra al esquema
+de acción y a las instancias de objetos en su interfaz, sin distinguir la
+numeración como una palabra.
 
-Recordemos que los word embeddings tienen la propiedad de que palabras semánticamente similares, son proyectadas cercas en un espacio N-dimensional. Sin embargo, ¿Cual es el significado de similitud en nuestro corpus de planes relajados? ¿Cual es el comportamiento que deseamos que aprenda el modelo del lenguaje? Las propiedades que nos interesan capturar son:
+Recordemos que los word embeddings tienen la propiedad de que palabras
+semánticamente similares, son proyectadas cercas en un espacio N-dimensional.
+Sin embargo, ¿Cual es el significado de similitud en nuestro corpus de planes
+relajados? ¿Cual es el comportamiento que deseamos que aprenda el modelo del
+lenguaje? Las propiedades que nos interesan capturar son:
 
 \begin{enumerate}
-    \item Las palabras de los esquemas de acción \verb|take_image|, \verb|turn_to|, \verb|calibrate|, \verb|switch_on|, \verb|switch_off|, y la de los objetos que las utilizan, sean proyectadas cerca en el espacio vectorial. Es decir, si \verb|switch_on| usualmente se instancia con los objetos de tipo \verb|instrument| y \verb|satellite|. Entonces las palabras \verb|switch_on|, \verb|instrumentX|, \verb|satelliteY| esten cerca vectorialmente para toda numeración de los objetos \verb|X|, \verb|Y|.
-    \item En la codificación ad-hoc, distinguiamos la numeración de los objetos como una dimensión más en el espacio vectorial al cual proyectamos los datos. Como contraste a este último, al utilizar word embeddings a nivel de subpalabras, buscamos que todos los objetos numerados de un mismo tipo se proyecten cerca en el espacio. Es decir, si consideramos el tipo \verb|instrument|, entonces para toda numeración \verb|X|, los vectores representación de \verb|instrumentX| están cerca.
-    %Usualmente la numeración de los objetos en los problemas de test es mucho mayor que en la de los de entrenamiento. Nos gustaría que el modelo de lenguaje sea capaz de proyectar la numeración de los objetos en los planes relajados de longitud más grande, a las vistas en los planes relajados de entrenamiento. Ya que por lo general, a pesar de la cantidad de objetos en los problemas de test, estos se suelen resolverse de manera similar a los de entrenamiento. \textbf{TODO}: Consultar. Que buscamos que aprenda de la numeración de los objetos? que dos palabras intrumentX, intrumentY esten cerca para todo X, Y?
+    \item Las palabras de los esquemas de acción \verb|take_image|,
+    \verb|turn_to|, \verb|calibrate|, \verb|switch_on|, \verb|switch_off|, y la
+    de los objetos que las utilizan, sean proyectadas cerca en el espacio
+    vectorial. Es decir, si \verb|switch_on| usualmente se instancia con los
+    objetos de tipo \verb|instrument| y \verb|satellite|. Entonces las palabras
+    \verb|switch_on|, \verb|instrumentX|, \verb|satelliteY| esten cerca
+    vectorialmente para toda numeración de los objetos \verb|X|, \verb|Y|.
+    \item En la codificación ad-hoc, distinguiamos la numeración de los objetos
+    como una dimensión más en el espacio vectorial al cual proyectamos los
+    datos. Como contraste a este último, al utilizar word embeddings a nivel de
+    subpalabras, buscamos que todos los objetos numerados de un mismo tipo se
+    proyecten cerca en el espacio. Es decir, si consideramos el tipo
+    \verb|instrument|, entonces para toda numeración \verb|X|, los vectores
+    representación de \verb|instrumentX| están cerca.
+    %Usualmente la numeración de los objetos en los problemas de test es mucho
+    %mayor que en la de los de entrenamiento. Nos gustaría que el modelo de
+    %lenguaje sea capaz de proyectar la numeración de los objetos en los planes
+    %relajados de longitud más grande, a las vistas en los planes relajados de
+    %entrenamiento. Ya que por lo general, a pesar de la cantidad de objetos en
+    %los problemas de test, estos se suelen resolverse de manera similar a los
+    %de entrenamiento. \textbf{TODO}: Consultar. Que buscamos que aprenda de la
+    %numeración de los objetos? que dos palabras intrumentX, intrumentY esten
+    %cerca para todo X, Y?
 \end{enumerate}
 
-Para capturar las propiedades 1 y 2 decidimos utilizar un modelo de lenguaje a nivel de subpalabra (explicado en la sección \ref{method:wb_subwords}). En el capítulo \ref{ch:results} uno de los enfoques será verificar que nuestras suposiciones se cumplen para una parametrización concreta del modelo de lenguaje.
+Para capturar las propiedades 1 y 2 decidimos utilizar un modelo de lenguaje a
+nivel de subpalabra (explicado en la sección \ref{method:wb_subwords}). En el
+capítulo \ref{ch:results} uno de los enfoques será verificar que nuestras
+suposiciones se cumplen para una parametrización concreta del modelo de
+lenguaje.
 
-La implementación utilizada del modelo de la sección \ref{method:wb_subwords} es la de \emph{FastText} \ref{} desarrollada por \emph{Facebook}. Para el entrenamiento, la implementación requiere como entrada un conjunto de oraciones, en nuestro caso los planes relajados, separados por espacios para distinguir sus palabras. Para separar una acción por sobre otra en la secuencia, agregamos además 2 símbolos especiales, \verb|(| y \verb|)| al comienzo y cierre de una acción. Por ejemplo para el plan relajado del cuadro \ref{tab:ohe_plan}:
+La implementación utilizada del modelo de la sección \ref{method:wb_subwords} es
+la de \emph{FastText} \ref{} desarrollada por \emph{Facebook}. Para el
+entrenamiento, la implementación requiere como entrada un conjunto de oraciones,
+en nuestro caso los planes relajados, separados por espacios para distinguir sus
+palabras. Para separar una acción por sobre otra en la secuencia, agregamos
+además 2 símbolos especiales, \verb|(| y \verb|)| al comienzo y cierre de una
+acción. Por ejemplo para el plan relajado del cuadro \ref{tab:ohe_plan}:
 
 \begin{center}
     \verb|( calibrate satellite0 instrument1 groundstation0 )| \\
@@ -278,17 +508,28 @@ La implementación utilizada del modelo de la sección \ref{method:wb_subwords} 
     \verb|( turn_to satellite0 groundstation0 plante5 )|
 \end{center}
 
-Esto se repitió para todos los planes relajados de los problemas de entrenamiento, y se dio como entrada al modelo de FastText.
+Esto se repitió para todos los planes relajados de los problemas de
+entrenamiento, y se dio como entrada al modelo de FastText.
 
-Una vez obtenido el modelo de lenguaje, conseguir la representación de una acción y un plan relajado resulta sencillo. Solo es necesario proyectar cada una de las partes que componen la acción o el plan relajado y calcular el promedio o promedio normalizado (detallado en la sección \ref{lit:sentence_vector}) de tales vectores. Por ejemplo si tenemos la acción:
+Una vez obtenido el modelo de lenguaje, conseguir la representación de una
+acción y un plan relajado resulta sencillo. Solo es necesario proyectar cada una
+de las partes que componen la acción o el plan relajado y calcular el promedio o
+promedio normalizado (detallado en la sección \ref{lit:sentence_vector}) de
+tales vectores. Por ejemplo si tenemos la acción:
 
 \begin{center}
     \verb|calibrate satellite0 instrument1 groundstation0|    
 \end{center}
 
-Dividimos la oración en las palabras \verb|calibrate|,  \verb|satellite0| \verb|instrument1| y \verb|groundstation0|. Entonces el vector de la oración es obtenido como el promedio o promedio normalizado de los vectores de cada palabra.
+Dividimos la oración en las palabras \verb|calibrate|,  \verb|satellite0|
+\verb|instrument1| y \verb|groundstation0|. Entonces el vector de la oración es
+obtenido como el promedio o promedio normalizado de los vectores de cada
+palabra.
 
-El caso de los planes relajados es similar, supongamos que queremos codificar el plan relajado anterior. Nuevamente separamos la oración en palabras (siendo también un símbolo especial una palabra) y promediamos la representación de cada una de ellas.
+El caso de los planes relajados es similar, supongamos que queremos codificar el
+plan relajado anterior. Nuevamente separamos la oración en palabras (siendo
+también un símbolo especial una palabra) y promediamos la representación de cada
+una de ellas.
 
 \begin{center}
 \verb|(| \\
@@ -302,15 +543,16 @@ El caso de los planes relajados es similar, supongamos que queremos codificar el
 ...
 \end{center}
 
-Por lo tanto, para un tamaño de 15 dimensiones para el vector de salida del modelo de lenguaje, la matriz del cuadro \ref{tb:matrix_shape} estaría codificada de la siguiente manera:
+Por lo tanto, para un tamaño de 15 dimensiones para el vector de salida del
+modelo de lenguaje, la matriz del cuadro \ref{tb:matrix_shape} estaría
+codificada de la siguiente manera:
 
 \begin{table}[h!]
 \centering
 \scalebox{0.9}{
  \begin{tabular}{||c | c | c||} 
  \hline
- Plan relajado & Acción & Etiqueta \\ [0.5ex] 
- \hline\hline
+ Plan relajado & Acción & Etiqueta \\ [0.5ex] \hline\hline
  %(take_image satellite0 planet5 instrument1 image1)
  {}[] & {}[] & 1 \\
  {}[] & {}[] & 1 \\
@@ -325,28 +567,62 @@ Por lo tanto, para un tamaño de 15 dimensiones para el vector de salida del mod
  \label{tb:matrix_shape}
 \end{table}
 
-Notar que la dimensión de los vectores del plan relajado y acción son las mismas a diferencia de la codificación ad-hoc. En particular, para todo par de plan relajado en la matriz, sus representaciones tienen la misma dimensión, lo cual no ocurre para la codificación ad-hoc. Esto permite reducir enormemente la dimensionalidad de los vectores que forman parte del conjunto de entrenamiento como así también permite mantener la misma estructura y dimensión con el conjunto de test.
-Lo cual es requerido por el clasificador que buscamos obtener.
+Notar que la dimensión de los vectores del plan relajado y acción son las mismas
+a diferencia de la codificación ad-hoc. En particular, para todo par de plan
+relajado en la matriz, sus representaciones tienen la misma dimensión, lo cual
+no ocurre para la codificación ad-hoc. Esto permite reducir enormemente la
+dimensionalidad de los vectores que forman parte del conjunto de entrenamiento
+como así también permite mantener la misma estructura y dimensión con el
+conjunto de test. Lo cual es requerido por el clasificador que buscamos obtener.
 
 \subsection{Generación de ventanas de planes relajados}
 
-Mencionamos que el largo de los planes relajados de los problemas de entrenamiento y de test varian. Lo cual para la codificación ad-hoc produce vectores de planes relajados con dimensiones distintas. Esto no ocurre en la codificación con word embeddings. Sin embargo, dado que el largo de los planes relajados de test varía entre 200 a 500 acciones, como vimos en la sección de exploración de datos \ref{}, realizar el promedio puede generar que ciertas acciones de un esquema sean importantes pero terminen resultando opacadas por otro grupo con mayor frecuencia en la secuencia. Para solventar ambos casos, los planes relajados de cada problema se partieron en ventanas de contexto. En lugar de consultar sobre un plan relajado y una acción. Transformaremos los conjuntos de entrenamiento de test a matrices compuestas por ventanas de plan relajado y acción.
+Mencionamos que el largo de los planes relajados de los problemas de
+entrenamiento y de test varian. Lo cual para la codificación ad-hoc produce
+vectores de planes relajados con dimensiones distintas. Esto no ocurre en la
+codificación con word embeddings. Sin embargo, dado que el largo de los planes
+relajados de test varía entre 200 a 500 acciones, como vimos en la sección de
+exploración de datos \ref{}, realizar el promedio puede generar que ciertas
+acciones de un esquema sean importantes pero terminen resultando opacadas por
+otro grupo con mayor frecuencia en la secuencia. Para solventar ambos casos, los
+planes relajados de cada problema se partieron en ventanas de contexto. En lugar
+de consultar sobre un plan relajado y una acción. Transformaremos los conjuntos
+de entrenamiento de test a matrices compuestas por ventanas de plan relajado y
+acción.
 
-La figura \ref{} muestra un ejemplo para una ventana de tamaño 3 y un paso de tamaño 2. Es importante mencionar que ahora el tamaño de la matriz de entrenamiento depende del largo de los planes relajados. En general para una cantidad de ventanas generadas $W$, good operators $N$, y bad operators $M$. Los ejemplares generados son $W \times N \times M$. Por ejemplo, si para el plan relajado de la figura \ref{}, se tienen 300 good operators y 1000 bad operators. La cantidad de filas para ese problema es equivalente a $900000$ entradas. Esto es mucho peor para los problemas de test. Es una de las limitaciones la cual tampoco se pudieron generar muchos bad operators para estos problemas en la sección \ref{method:data_generation}.
+La figura \ref{} muestra un ejemplo para una ventana de tamaño 3 y un paso de
+tamaño 2. Es importante mencionar que ahora el tamaño de la matriz de
+entrenamiento depende del largo de los planes relajados. En general para una
+cantidad de ventanas generadas $W$, good operators $N$, y bad operators $M$. Los
+ejemplares generados son $W \times N \times M$. Por ejemplo, si para el plan
+relajado de la figura \ref{}, se tienen 300 good operators y 1000 bad operators.
+La cantidad de filas para ese problema es equivalente a $900000$ entradas. Esto
+es mucho peor para los problemas de test. Es una de las limitaciones la cual
+tampoco se pudieron generar muchos bad operators para estos problemas en la
+sección \ref{method:data_generation}.
 
-Una pregunta que queda por resolver es el valor de la etiqueta. Antes de incluir las ventanas, nos interesaba determinar la probabilidad de que una acción sea relevante para el plan real dado su plan relajado. Al utilizar las ventanas de contexto, la pregunta es ligeramente distinta. Para este caso, nos interesa determinar si la probabilidad de una acción es relevante para el plan real dada una ventana del plan relajado. Si una acción es relevante en alguna ventana del plan real entonces también lo es para el plan completo. Por lo tanto, para cada uno de los planes relajados y acciones del conjunto de entrenamiento, propagamos su etiqueta a su representación por partes.
+Una pregunta que queda por resolver es el valor de la etiqueta. Antes de incluir
+las ventanas, nos interesaba determinar la probabilidad de que una acción sea
+relevante para el plan real dado su plan relajado. Al utilizar las ventanas de
+contexto, la pregunta es ligeramente distinta. Para este caso, nos interesa
+determinar si la probabilidad de una acción es relevante para el plan real dada
+una ventana del plan relajado. Si una acción es relevante en alguna ventana del
+plan real entonces también lo es para el plan completo. Por lo tanto, para cada
+uno de los planes relajados y acciones del conjunto de entrenamiento, propagamos
+su etiqueta a su representación por partes.
 
 TODO Dar un ejemplo del etiquetado.
 
-Una vez generada las ventanas de planes relajados, obtenemos sus codificaciones de manera ad-hoc o por word embeddings igual a como describimos en la sección \ref{method:vectorization} y como se muestra en el siguiente cuadro:
+Una vez generada las ventanas de planes relajados, obtenemos sus codificaciones
+de manera ad-hoc o por word embeddings igual a como describimos en la sección
+\ref{method:vectorization} y como se muestra en el siguiente cuadro:
 
 \begin{table}[h!]
 \centering
 \scalebox{0.9}{
  \begin{tabular}{||c | c | c||} 
  \hline
- Ventana de plan relajado & Acción & Etiqueta \\ [0.5ex] 
- \hline\hline
+ Ventana de plan relajado & Acción & Etiqueta \\ [0.5ex] \hline\hline
  %(take_image satellite0 planet5 instrument1 image1)
  {}[] & {}[] & 1 \\
  {}[] & {}[] & 1 \\
@@ -366,15 +642,39 @@ Una vez generada las ventanas de planes relajados, obtenemos sus codificaciones 
 
 \subsection{Entrenamiento}
 
-Una vez realizado el preprocesamiento estamos en condiciones de entrenar los clasificadores que estudiamos en la sección \ref{lit:algorithms}. Los pares de entrenamiento \{$(\vect{x}_1, y_1), ..., (\vect{x_n}, y_n)$\} para entrenar un modelo de aprendizaje automático están compuestos por, una representación de una ventana perteneciente al plan relajado de un problema, y la representación de una acción a estimar. Esto conforma el vector de características $\vect{x}_i$. Las etiquetas reciben una codificación binaria de 1 o 0. Una etiqueta de 1 representa que la acción es relevante para el plan dado esa ventana del plan relajado y una etiqueta de 0 indica lo contrario.
+Una vez realizado el preprocesamiento estamos en condiciones de entrenar los
+clasificadores que estudiamos en la sección \ref{lit:algorithms}. Los pares de
+entrenamiento \{$(\vect{x}_1, y_1), ..., (\vect{x_n}, y_n)$\} para entrenar un
+modelo de aprendizaje automático están compuestos por, una representación de una
+ventana perteneciente al plan relajado de un problema, y la representación de
+una acción a estimar. Esto conforma el vector de características $\vect{x}_i$.
+Las etiquetas reciben una codificación binaria de 1 o 0. Una etiqueta de 1
+representa que la acción es relevante para el plan dado esa ventana del plan
+relajado y una etiqueta de 0 indica lo contrario.
 
-Para una configuración de parámetros, se entrena un clasificador utilizando con el conjunto de entrenamiento. A eso se agregan $k$ entrenamientos realizando validación cruzada en $k$ grupos distintos. La única diferencia es que las particiones son sobre los problemas de entrenamiento y no sobre el conjunto de entrenamiento. Agrupar sobre este último puede llevar a que ventanas de un mismo problema pertenezcan a grupos distintos y por lo tanto el problema esté incompleto.
+Para una configuración de parámetros, se entrena un clasificador utilizando con
+el conjunto de entrenamiento. A eso se agregan $k$ entrenamientos realizando
+validación cruzada en $k$ grupos distintos. La única diferencia es que las
+particiones son sobre los problemas de entrenamiento y no sobre el conjunto de
+entrenamiento. Agrupar sobre este último puede llevar a que ventanas de un mismo
+problema pertenezcan a grupos distintos y por lo tanto el problema esté
+incompleto.
 
 \subsection{Evaluación}
 
-Una vez realizado los $k + 1$ entrenamientos del clasificador, deben ser evaluados a partir del conjunto de test para obtener registro de las métricas descriptas en la sección \ref{lit:metrics}. 
+Una vez realizado los $k + 1$ entrenamientos del clasificador, deben ser
+evaluados a partir del conjunto de test para obtener registro de las métricas
+descriptas en la sección \ref{lit:metrics}. 
 
-Inicialmente es necesario generar las etiquetas, ventanas de planes relajados, y codificación de los problemas de test. El conjunto de test resultante es dado como entrada al modelo para obtener sus predicciones. No obstante, la evaluación para nuestro problema es ligeramente distinta a la de un problema usual de aprendizaje automático. Nuestro objetivo es estimar la probabilidad de que una acción sea relevante para el plan real dado el plan relajado, no obstante el modelo realizó sus predicciones a nivel de ventanas del plan relajado. Es por eso que la predicción final es la probabilidad máxima de todas las ventanas de un plan relajado asociadas a una acción.
+Inicialmente es necesario generar las etiquetas, ventanas de planes relajados, y
+codificación de los problemas de test. El conjunto de test resultante es dado
+como entrada al modelo para obtener sus predicciones. No obstante, la evaluación
+para nuestro problema es ligeramente distinta a la de un problema usual de
+aprendizaje automático. Nuestro objetivo es estimar la probabilidad de que una
+acción sea relevante para el plan real dado el plan relajado, no obstante el
+modelo realizó sus predicciones a nivel de ventanas del plan relajado. Es por
+eso que la predicción final es la probabilidad máxima de todas las ventanas de
+un plan relajado asociadas a una acción.
 
 TODO: Poner algún ejemplo
 
@@ -382,29 +682,57 @@ TODO: Poner algún ejemplo
 
 \subsection{Preservación de modelos, métricas, e imágenes}
 
-Finalmente evaluado los modelos, se almacenan los resultados (tanto métricas como imágenes) de cada uno de los $k$ grupos, preservando únicamente los pesos y parámetros del modelo entrenado con todo el conjunto de entrenamiento. Esto último para aprovechar la totalidad de ejemplos disponibles.
+Finalmente evaluado los modelos, se almacenan los resultados (tanto métricas
+como imágenes) de cada uno de los $k$ grupos, preservando únicamente los pesos y
+parámetros del modelo entrenado con todo el conjunto de entrenamiento. Esto
+último para aprovechar la totalidad de ejemplos disponibles.
 
 \subsection{Monitoreo y visualización}
 
-Para el registro de métricas e imágenes se utilizó la librería \emph{MLFlow} \cite{} que permite no solo persistir estos datos en el tiempo, sino que además provee herramientas de visualización, tiempos de ejecución de experimentos, comparación de experimentos, y fecha y usuario que la efectuó. Además de ser compatible con varias implementaciones de modelos. Algunas imágenes de las visualizaciones se pueden ver en la figura \ref{}.
+Para el registro de métricas e imágenes se utilizó la librería \emph{MLFlow}
+\cite{} que permite no solo persistir estos datos en el tiempo, sino que además
+provee herramientas de visualización, tiempos de ejecución de experimentos,
+comparación de experimentos, y fecha y usuario que la efectuó. Además de ser
+compatible con varias implementaciones de modelos. Algunas imágenes de las
+visualizaciones se pueden ver en la figura \ref{}.
 
 TODO: Poner imágenes
 
 \section{Adaptación de modelos y transformadores}
 
-En las sección \ref{method:preprocessing}, y \ref{method:model_selection} se puso mucho énfasis en la generación de los datos de esta tesis, así como los pasos de exploración, preprocesamiento, entrenamiento y evaluación. Cada una de estas etapas requirieron:
+En las sección \ref{method:preprocessing}, y \ref{method:model_selection} se
+puso mucho énfasis en la generación de los datos de esta tesis, así como los
+pasos de exploración, preprocesamiento, entrenamiento y evaluación. Cada una de
+estas etapas requirieron:
 
 \begin{enumerate}
     \item Generación de especificaciones de problemas del dominio Satellite.
-    \item Extracción de planes relajados, acciones instanciadas, y soluciones de los problemas a partir del planificador de Fast Downward.
+    \item Extracción de planes relajados, acciones instanciadas, y soluciones de
+    los problemas a partir del planificador de Fast Downward.
     \item Separación en problemas de entrenamiento y test.
     \item Almacenamiento y preservación en una base de datos.
     \item Generación de conjuntos de entrenamiento y test.
-    \item Transformación de los conjuntos de entrenamiento utilizando ventanas de planes relajados.
+    \item Transformación de los conjuntos de entrenamiento utilizando ventanas
+    de planes relajados.
     \item Codificación de ventanas y acciones.
     \item Entrenamiento
     \item Evaluación
     \item Registro de resultados
 \end{enumerate}
 
-Para la implementación de estos pasos se utilizó como lenguaje de programación \emph{Python}. No obstante las librerías y herramientas principales requirieron ser adaptadas a una interfaz común de tal manera que puedan ejecutarse de manera sitemática. Esto se debió a que cada proceso sigue sus propias convenciones, e inversión de control. Por ejemplo, la extracción de datos y lectura de archivos necesitó de librerias que trabajen sobre el sistema de archivos, la persistencia de datos fue por medio de \emph{SQL}, las consultas de bases de datos fueron realizadas por medio del ORM \emph{SqlAlchemy}, las etapas de preprocesamiento en mayor parte fueron con herramientas de \emph{Numpy} y \emph{Pandas}. La regresión logística y XGBoost proveian una interfaz a través de \emph{Scikit-learn}, pero las redes neuronales fueron implementadas en \emph{Pytorch}. La validación cruzada, evaluación y obtención de métricas también se hicieron con \emph{Scikit-learn}. Y el registro de datos con \emph{MLflow}. Al momento de usar estas librerías claramente fue necesario implementar una interfaz en común que minimice su acoplamiento lo cual fue también un desafío de este trabajo.
+Para la implementación de estos pasos se utilizó como lenguaje de programación
+\emph{Python}. No obstante las librerías y herramientas principales requirieron
+ser adaptadas a una interfaz común de tal manera que puedan ejecutarse de manera
+sitemática. Esto se debió a que cada proceso sigue sus propias convenciones, e
+inversión de control. Por ejemplo, la extracción de datos y lectura de archivos
+necesitó de librerias que trabajen sobre el sistema de archivos, la persistencia
+de datos fue por medio de \emph{SQL}, las consultas de bases de datos fueron
+realizadas por medio del ORM \emph{SqlAlchemy}, las etapas de preprocesamiento
+en mayor parte fueron con herramientas de \emph{Numpy} y \emph{Pandas}. La
+regresión logística y XGBoost proveian una interfaz a través de
+\emph{Scikit-learn}, pero las redes neuronales fueron implementadas en
+\emph{Pytorch}. La validación cruzada, evaluación y obtención de métricas
+también se hicieron con \emph{Scikit-learn}. Y el registro de datos con
+\emph{MLflow}. Al momento de usar estas librerías claramente fue necesario
+implementar una interfaz en común que minimice su acoplamiento lo cual fue
+también un desafío de este trabajo.

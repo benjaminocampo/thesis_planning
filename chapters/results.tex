@@ -48,10 +48,6 @@ siguiente:
     \end{itemize}
 \end{itemize}
 
-Esto es un total de 15 modelos por grupo. \textbf{TODO VER SI LLEGAMOS A
-INCLUIRLO: Para los mejores modelos, se calcularon los tiempos de predicción con
-el fin de determinar si es viable realizar grounding heurístico con tales modelos.} 
-
 Por último, mencionaremos otros experimentos que se trabajaron durante la tesis,
 que a pesar de no lograr el resultado que esperábamos, fueron muy importantes
 para guiar futuros experimentos.
@@ -280,11 +276,27 @@ y otra para su evaluación. Sin embargo, lo que buscamos es que esto mismo se
 logre generalizar a problemas no instanciables. Por lo tanto, la evaluación
 final la realizamos sobre el conjunto de test.
 
-\begin{figure}[b!]
+\begin{figure}[t!]
     \centering
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_wb_take_image_test.png}
+    \includegraphics[width=0.7\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_wb_take_image_test.png}
     \caption{Distribución de predicciones sobre el conjunto de test del modelo de LGR con word embeddings.}
     \label{fig:takeimage-bestmodel-distplot-test}
+\end{figure}
+
+\begin{figure}[t!]
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_percent.png}
+        \caption{Matriz normalizada por clase}
+        \label{fig:takeimage-bestmodel-cm-test}
+    \end{subfigure}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_raw.png}
+        \caption{Matriz sin normalización}
+        \label{fig:takeimage-bestmodel-cm-raw-test}
+    \end{subfigure}
+    \caption{Matrices de confusión sobre el conjunto de test del modelo de LGR con word embeddings.}
 \end{figure}
 
 La figura \ref{fig:takeimage-bestmodel-distplot-test} muestra nuevamente
@@ -307,13 +319,6 @@ tal predicción representaría la performance máxima o ideal que podríamos obt
 en test, y no la que realmente estamos obteniendo con información del conjunto
 de entrenamiento.
 
-\begin{figure}[b!]
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_percent.png}
-    \caption{Matriz de confusiòn normalizada sobre el conjunto de test del modelo de LGR con word embeddings.}
-    \label{fig:takeimage-bestmodel-cm-test}
-\end{figure}
-
 Si observamos la matriz de confusión de la figura
 \ref{fig:takeimage-bestmodel-cm-raw-test} del modelo LGR, pero esta vez sin
 normalizar por porcentajes. Se puede ver que LGR tiende a predecir ligeramente
@@ -332,13 +337,6 @@ que tenemos en el conjunto de entrenamiento siendo una de las posibles causas
 del desempeño de LGR para la clase negativa. Es decir, LGR fue entrenado para
 predecir, sobre acciones alcanzables relajadamente, pero lo estamos evaluando
 sobre bad operators que no lo son.
-
-\begin{figure}[b!]
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_raw.png}
-    \caption{Matriz de confusiòn sin normalizar sobre el conjunto de test del modelo de LGR con word embeddings.}
-    \label{fig:takeimage-bestmodel-cm-raw-test}
-\end{figure}
 
 Por último, en el cuadro \ref{results:lgr-wb-calibrate} se puede ver que
 precision y recall sobre la clase positiva es de 0.823, y 0.912,
@@ -519,7 +517,7 @@ validación cruzada en terminos de grounding heurístico.
 \begin{figure}[b!]
     \centering
     \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate.png}
-    \caption{Matriz de confusiòn normalizada sobre el conjunto de test del modelo de LGR con word embeddings.}
+    \caption{Distribución de predicciones en validación cruzada sobre el modelo NN ad-hoc.}
     \label{fig:calibrate-bestmodel-adhoc}
 \end{figure}
 
@@ -546,7 +544,7 @@ validación cruzada en terminos de grounding heurístico.
      No relevante & 5 & 0.98 & 0.7 & - & - & 0.57 \\
      \hline
      \end{tabular}}
-     \caption{Métricas sobre el conjunto de test del modelo de ad-hoc NN.}
+     \caption{Métricas sobre el conjunto de test del modelo NN ad-hoc.}
      \label{results:nn-adhoc-calibrate}
 \end{table}
 
@@ -599,11 +597,27 @@ heurístico el modelo seguiría desempeñandose correctamente.
     \minipage{0.50\textwidth}
     \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_5_confusion_matrix_raw.png}
     \endminipage
-    \caption{Matrices de confusión en validación cruzada para el modelo de LGR con word embeddings.}
+    \caption{Matrices de confusión en validación cruzada para el modelo NN ad-hoc.}
     \label{fig:calibrate-bestmodel-cm}
 \end{figure}
 
 \subsubsection{Performance en test}
+
+\begin{figure}[b!]
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate_test.png}
+        \caption{Distribución de predicciones}
+        \label{fig:calibrate-bestmoodel-adhoc-test}
+    \end{subfigure}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/NN_cm_test.png}
+        \caption{Matriz de confusión}
+        \label{fig:calibrate-bestmoodel-adhoc-test}
+    \end{subfigure}
+    \caption{Resultados en el conjunto de test para el modelo NN ad-hoc.}
+\end{figure}
 
 Nuevamente, lo que buscamos es que este modelo logre generalizar a problemas no
 instanciables. La figura \ref{fig:calibrate-bestmoodel-adhoc-test} muestra como
@@ -625,13 +639,8 @@ fijo, y varia de acuerdo a $H_{beta}$. Para este problema el umbral es una
 manera de cuantificar esta idea más cualitativa que buscamos en grounding
 heurístico pero que es determinante en la elección del modelo de aprendizaje.
 
-\begin{figure}[b!]
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate_test.png}
-    \caption{Distribución de predicciones sobre datos de test con el modelo de NN y codificación ad-hoc}
-    \label{fig:calibrate-bestmoodel-adhoc-test}
-\end{figure}
-
+Por ejemplo, para un umbral de 0.1, podemos ver que el modelo se comporta de
+manera similar al de \emph{take\_image}.
 
 % \begin{figure}
 %     \centering

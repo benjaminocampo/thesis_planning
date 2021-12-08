@@ -66,7 +66,7 @@ A continuación, mencionaremos los parámetros utilizados para construir los
 vectores de características, y los parámetros de los algoritmos de
 clasificación.
 
-En primer lugar optamos por un paso y tamaño de ventana de $3$. Observamos que
+En primer lugar, se necesito asignar la configuración para la construcción de las ventanas y planes relajados.  Observamos que
 por lo general los planes relajados del conjunto de entrenamiento suelen tener
 entre $3$ a $10$ acciones. Nuestro algoritmo debe ser capaz de generalizar para
 ejemplos de entrenamientos no antes visto, por lo que el preprocesamiento que
@@ -74,7 +74,7 @@ realicemos sobre estos datos debe ser orientado a reducir las discrepancias
 entre un ejemplo nuevo y los que fueron utilizados en la etapa de entrenamiento.
 Como los planes relajados de los problemas de test rondan por el orden de
 cientos de acciones, partimos el plan relajado lo suficiente para que aproxime
-en tamaño a los planes relajados de los problemas de entrenamiento.
+en tamaño a los planes relajados de los problemas de entrenamiento. Es por ello, que optamos por un paso y tamaño de ventana de $3$.
 
 Para el entrenamiento de los clasificadores, se realizó una búsqueda de
 hiper-parámetros cuya métrica a optimizar es $H_{\beta}$ con $\beta = 1.5$. Dado
@@ -107,58 +107,70 @@ de entrenamiento. La siguiente lista de parámetros muestra aquellos que fueron
 utilizados para cada algoritmo en este experimento:
 
 \begin{conditions}
-Nombre\ del\ modelo & \verb|Regresión logística| \\
-penalty & \verb|[elasticnet]| \\
-C & \verb|[1, 0.1, 0.01]| \\
-class\_weight & \verb|[balanced]|  \\
-solver & \verb|[saga]|  \\
-max\_iter & \verb|[1000 10000]| \\
-random\_state & \verb|[0]| \\
-l1\_ratio & \verb|[0, 1]|
+\emph{Nombre\ del\ modelo} & \verb|Regresión logística| \\
+\emph{penalty} & \verb|[elasticnet]| \\
+\emph{C} & \verb|[1, 0.1, 0.01]| \\
+\emph{class\_weight} & \verb|[balanced]|  \\
+\emph{solver} & \verb|[saga]|  \\
+\emph{max\_iter} & \verb|[1000 10000]| \\
+\emph{random\_state} & \verb|[0]| \\
+\emph{l1\_ratio} & \verb|[0, 1]|
 \end{conditions}
 
 \begin{conditions}
-Nombre\ del\ modelo & \verb|XGBoost| \\
-objective & \verb|[binary:logistic]| \\
-n\_estimators & \verb|[500, 1000]| \\
-gamma & \verb|[0.001, 1]| \\
-max\_depth & \verb|[10, 20]| \\
-alpha & \verb|[0.001, 1]| \\
-lambda & \verb|[0.001, 1]| \\
-booster & \verb|[gbtree]| \\
-colsample\_bytree & \verb|[1]| \\
-subsample & \verb|[0.5]| \\
-eval\_metric & \verb|[logloss]| \\
-use\_label\_encoder & \verb|[false]| \\
-random\_state & \verb|[0]|
+\emph{Nombre\ del\ modelo} & \verb|XGBoost| \\
+\emph{objective} & \verb|[binary:logistic]| \\
+\emph{n\_estimators} & \verb|[500, 1000]| \\
+\emph{gamma} & \verb|[0.001, 1]| \\
+\emph{max\_depth} & \verb|[10, 20]| \\
+\emph{alpha} & \verb|[0.001, 1]| \\
+\emph{lambda} & \verb|[0.001, 1]| \\
+\emph{booster} & \verb|[gbtree]| \\
+\emph{colsample\_bytree} & \verb|[1]| \\
+\emph{subsample} & \verb|[0.5]| \\
+\emph{eval\_metric} & \verb|[logloss]| \\
+\emph{use\_label\_encoder} & \verb|[false]| \\
+\emph{random\_state} & \verb|[0]|
 \end{conditions}
 
 \begin{conditions}
-Nombre\ del\ modelo & \verb|PytorchNN| \\
-h\_size & \verb|[32, 64]| \\
-n\_layers & \verb|[2, 4, 8, 16]| \\
-bn\_bool & \verb|[False]| \\
-p & \verb|[0, 0.1]| \\
-epochs & \verb|[20]| \\
-batch\_size & \verb|[32]| \\
-balanced & \verb|[True]| \\
-lr & \verb|[0.001]| \\
-weight\_decay & \verb|[0]| \\
+\emph{Nombre\ del\ modelo} & \verb|PytorchNN| \\
+\emph{h\_size} & \verb|[32, 64]| \\
+\emph{n\_layers} & \verb|[2, 4, 8, 16]| \\
+\emph{bn\_bool} & \verb|[False]| \\
+\emph{p} & \verb|[0, 0.1]| \\
+\emph{epochs} & \verb|[20]| \\
+\emph{batch\_size} & \verb|[32]| \\
+\emph{balanced} & \verb|[True]| \\
+\emph{lr} & \verb|[0.001]| \\
 \end{conditions}
 
-En el caso de la regresión logística, el parámetro $penalty$ permite realizar
-variaciones en la regularización de la función de costo en combinación con
-$l1\_ratio$. XGBoost requiere que se le especifiquen la cantidad de árboles a
-ensamblar con $n\_estimators$, la fuerza en del parámetro de regularización
-$gamma$, y la profundidad del árbol $max\_depth$. La red neuronal necesita del
-número de neuronas para todas las capas $h\_size$, la cantidad de capas ocultas
-$n\_layers$, si los vectores de entrada son normalizados $bn\_bool$, la
-probabilidad de eliminar neuronas aleatoriamente $p$, entre otros.
+Estos parámetros corresponden con la interfaz provista por las librerías de
+\emph{Scikit-learn} y \emph{Pytorch} que implementan los algoritmos de aprendizaje. Cada parámetro muestra una lista de 1 o más valores donde cada elemento representa una posible asignación de ese parámetro.
 
-La cantidad de parámetros a buscar es igual al producto cartesiano de cada una
-de las listas de los parámetros. Por ejemplo para el caso de la regresión
-logística, se realizan un total de $3 \times 2 \times 2 = 12$ búsquedas por
-esquema de acción.
+La cantidad de asignaciones posibles es igual al producto cartesiano de cada una de las listas de los parámetros de un modelo. Por ejemplo para el caso de la regresión
+logística, los parámetros \emph{C}, \emph{max\_iter}, y \emph{l1\_ratio} tienen 3, 2, y 2 asignaciones respectivamente, el resto de parámetros solo tiene una sola. Por lo tanto, se realizan un total de $3 \times 2 \times 2 = 12$ pruebas de parámetros.
+
+Los parámetros que seleccionamos siempre buscaban plantear variantes en la función de costo a optimizar, el tipo de optimizador, y métodos para evitar el sobreajuste. En particular, seguimos como guía valores comunes que la comunidad de aprendizaje automático suele utilizar para estos modelos,  la experiencia transmitida por el ´boca a boca´, y conocimientos tanto del área de planning como del funcionamiento interno de los modelos utilizados. 
+
+En el caso de la regresión logística, los parámetros \emph{penalty},
+\emph{l1\_ratio}, y \emph{C} permiten realizar variaciones en la regularización
+de la función de costo, evitando que la norma del vector de pesos del modelo
+crezca demasiado por sobreajuste. \emph{solver} indica el método de optimización de la función de costo. \emph{max\_iter} es el número
+de iteraciones que requiere el algoritmo para converger. Por último,
+\emph{class\_weight} permite configurar el modelo de tal manera que balancee
+la cantidad de ejemplares positivos y negativos del material de entrenamiento. Este último es importante para nosotros ya que nuestro conjunto de entrenamiento está desbalanceado, teniendo una mayor cantidad de good operators que de
+bad operators por problema.
+
+XGBoost requiere que se le especifiquen la cantidad de árboles a
+ensamblar con \emph{n\_estimators}, la fuerza del parámetro de regularización
+\emph{gamma}, y la profundidad máxima de los árboles \emph{max\_depth}. \emph{objetive} indica la función objetivo a optimizar, en este caso la misma función de costo que una regresión logística. \emph{booster} permite seleccionar variantes del método iterativo de boosting explicado en el capítulo \ref{alg:xgboost}. Por último \emph{colsample\_bytre} y \emph{subsample} permiten
+tomar una muestra con reposición de los nodos de cada
+
+La red neuronal necesita del número de neuronas para todas las capas
+\emph{h\_size}, la cantidad de capas ocultas \emph{n\_layers}, si los vectores
+de entrada son normalizados \emph{bn\_bool}, y la probabilidad  \emph{p} de apagar momentáneamente neuronas de la red de manera
+aleatoria.
 
 La elección de estos parámetros se basó en los valores comunes en los que la
 comunidad de aprendizaje automático suele utilizar para estos algoritmos en los

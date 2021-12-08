@@ -350,9 +350,9 @@ debido a que esta métrica penaliza si se tiene un baja en la taza de verdaderos
 negativos.
 
 
-\begin{table}[h!]
+\begin{table}[t!]
 \centering
-\scalebox{1.2}{
+\scalebox{1}{
  \begin{tabular}{|c || c | c | c | c | c | c |} 
  \hline
   Clase & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión \\
@@ -365,19 +365,17 @@ negativos.
  \label{results:lgr-wb-calibrate}
 \end{table}
 
-Por otro lado, el modelo de redes neuronales se comportó mucho mejor en
-validaciòn cruzada, como lo muestra la figura
-\ref{fig:nn-distplot-takeimage-wb}. Sin embargo el conjunto de test
 
-\begin{figure}[b!]
-    \centering
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot.png}
-    \caption{Distribución de predicciones en validación cruzada y el conjunto de test en take\_image para el modelo de redes neuronales.}
-    \label{fig:nn-distplot-takeimage-wb}
-\end{figure}
-
-\subsubsection{Resultados: calibrate}
-
+% Por otro lado, el modelo de redes neuronales se comportó mucho mejor en
+% validaciòn cruzada, como lo muestra la figura
+% \ref{fig:nn-distplot-takeimage-wb}. Sin embargo el conjunto de test
+% 
+% \begin{figure}[b!]
+%     \centering
+%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot.png}
+%     \caption{Distribución de predicciones en validación cruzada y el conjunto de test en take\_image para el modelo de redes neuronales.}
+%     \label{fig:nn-distplot-takeimage-wb}
+% \end{figure}
 % \begin{figure}
 %     \centering
 %     \begin{subfigure}[b]{0.83\textwidth}
@@ -497,20 +495,143 @@ validaciòn cruzada, como lo muestra la figura
 
 \subsection{Configuración del experimento}
 
-Como contraparte del experimento anterior, usaremos la codificación por word
-embeddings, bajo el mismo conjunto de entrenamientos y construcción de ventanas,
-con la salvedad de ser codificados a partir del modelo de lenguaje de FastText,
-entrenado con oraciones provenientes de planes relajados. El modelo de lenguaje
-es un modelo Skipgram entrenado por $100$ épocas, un tamaño de ventana de
-contexto de $3$ palabras, y un vector de salida de dimensión $30$. Se hicieron
-pruebas sobre otras configuraciones de parámetros pero el comportamiento que
-buscábamos que el modelo de lenguaje aprendiese ya era obtenido bajo esta
-configuración.
+Para esta sección usaremos la codificación ad-hoc, bajo el mismo conjunto de
+entrenamientos, construcción de ventanas, y configuraciones de búsqueda de los
+modelos.
 
-Los clasificadores y grillas de búsqueda de parámetros utilizadas fueron las
-mismos que los modelo predictivos ad-hoc.
+Describiremos el mejor modelo que obtuvimos con la codificación ad-hoc sobre un
+esquema de acción distinto. En particular, el esquema \emph{calibrate} y el
+perceptrón multicapa como modelo de aprendizaje.
 
 \subsection{Resultados}
+
+\subsubsection{Performance en validación cruzada}
+
+La figura \ref{fig:calibrate-bestmodel-adhoc} muestra la distribución de las
+predicciones en validación cruzada para la mejor configuración de parámetros de
+NN. Si observamos los histogramas de la clase positiva, tenemos que aproximadamente
+el 90\% de las acciones etiquetadas como positivas se agrupan en el intervalo $r
+= [0.8; 1]$ mientras que de las negativas solo un 10\% al 20\% se encuentra en
+$r$. Además, la mayoria de acciones negativas tienen probabilidades en el rango
+del $[0;0.4]$ lo cual nuevamente estamos ante un muy buen desempeño en
+validación cruzada en terminos de grounding heurístico.
+
+\begin{figure}[b!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate.png}
+    \caption{Matriz de confusiòn normalizada sobre el conjunto de test del modelo de LGR con word embeddings.}
+    \label{fig:calibrate-bestmodel-adhoc}
+\end{figure}
+
+\begin{table}[h!]
+    \centering
+    \scalebox{1}{
+     \begin{tabular}{|c || c | c | c | c | c | c |} 
+     \hline
+      Clase & Fold & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión \\
+     \hline
+     Relevante &  1 & 0.31 & 0.85 & - & - & 0.7\\
+     No relevante & 1 & 0.97 & 0.71 & - & - & 0.7 \\
+     \hline
+     Relevante & 2 & 0.26 & 0.87 & - & - & 0.77 \\
+     No relevante & 2 & 0.98 & 0.68 & - & - & 0.77 \\
+     \hline
+     Relevante & 3 & 0.3 & 0.9 & - & - & 0.72 \\
+     No relevante & 3 & 0.97 & 0.0.63 & - & - & 0.72\\
+     \hline
+     Relevante & 4 & 0.31 & 0.86 & - & - & 0.75\\
+     No relevante & 4 & 0.97 & 0.0.7 & - & - & 0.75\\
+     \hline
+     Relevante & 5 & 0.26 & 0.87 & -  & - & 0.57 \\
+     No relevante & 5 & 0.98 & 0.7 & - & - & 0.57 \\
+     \hline
+     \end{tabular}}
+     \caption{Métricas sobre el conjunto de test del modelo de ad-hoc NN.}
+     \label{results:nn-adhoc-calibrate}
+\end{table}
+
+El cuadro \ref{results:nn-adhoc-calibrate} muestra los resultados de predicción
+por cada fold. Notar como el umbral de decisión optimizado por $H_{1.5}$ llegó a
+alcanzar hasta un valor de 0.77 en el segundo fold. Aún para este valor de
+umbral, los resultados en \emph{precision} no fueron muy altos para la clase
+positiva. Recordemos que \emph{precision} en clase positiva penaliza los
+falsos positivos (FPs). Observando el gráfico de distribuciones, el umbral
+estaría separando adecuadamente las clases relevantes de las irrelevantes por lo
+cual no se logra observar el porque de estos resultados en \emph{precision} con
+este gráfico.
+
+Sin embargo, si en lugar de considerar las distribuciones revisamos las matrices
+de confusión sin normalizar (Figura \ref{fig:calibrate-bestmodel-cm}),
+observamos que los datos se encuentran desbalanceados para la clase 0.
+Asemejandose a lo que usualmente ocurre con los problemas de planning donde los
+good operators suelen ser menor en cantidad a los bad operators. En particular,
+esto puede ser un problema para \emph{precision} dado que penaliza por la
+cantidad de FPs. Por ejemplo, si observamos el primer fold de la validación
+cruzada, se logra predecir correctamente por encima del 70\% de las acciones no
+relevantes. Sin embargo, esto es relativo a la cantidad de acciones que tengamos
+de la clase 0. Si tenemos en cuenta la formula de \emph{precision}:
+
+\begin{align*}
+    precision = TP / (TP + FP)
+\end{align*}
+
+Se logra observar que al depender de los FPs, entonces también depende de la
+cantidad de desbalance que tenga el conjunto de datos. De hecho, si se
+incrementa la cantidad de bad operators, pero las proporciones 70-30\% se
+mantienen, la métrica disminuiria. Sin embargo, en términos de grounding
+heurístico el modelo seguiría desempeñandose correctamente.
+
+\begin{figure}[t!]
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_1_confusion_matrix_raw.png}
+    \endminipage
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_2_confusion_matrix_raw.png}
+    \endminipage
+        
+    \minipage{0.50\textwidth}%
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_3_confusion_matrix_raw.png}
+    \endminipage
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_4_confusion_matrix_raw.png}
+    \endminipage
+
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_5_confusion_matrix_raw.png}
+    \endminipage
+    \caption{Matrices de confusión en validación cruzada para el modelo de LGR con word embeddings.}
+    \label{fig:calibrate-bestmodel-cm}
+\end{figure}
+
+\subsubsection{Performance en test}
+
+Nuevamente, lo que buscamos es que este modelo logre generalizar a problemas no
+instanciables. La figura \ref{fig:calibrate-bestmoodel-adhoc-test} muestra como
+se distribuyen las probabilidades que el modelo asigna a las acciones participes
+del conjunto de test. Se puede observar un comportamiento muy distinto al que
+ocurrió en validación cruzada. El umbral de predicción promedio obtenido en
+validación cruzada es de 0.702. Bajo ese umbral, el modelo predice que todas las
+acciones son irrelevantes obteniendo una performance practicamente nula. Por lo
+que a primera impresión parecería que no es un modelo que podamos utilizar en
+grounding heurístico. De hecho, un resultado como este para un problema clásico
+de aprendizaje automático llevaría a descartar la solución y probar con otra
+configuración. No obstante, en el contexto de grounding heúrstico, buscamos que
+las acciones relevantes para encontrar un plan tengan una probabilidad superior
+a las que no lo son. Sin importar en que parte del intervalo $[0;1]$ se asignen
+las probabilidades. Mientras se respete el orden que necesitamos para ubicar las
+acciones en la cola de prioridades, entonces podemos considerarlo como un buen
+modelo. Es por eso la razón por la que el umbral de decisión tampoco se mantiene
+fijo, y varia de acuerdo a $H_{beta}$. Para este problema el umbral es una
+manera de cuantificar esta idea más cualitativa que buscamos en grounding
+heurístico pero que es determinante en la elección del modelo de aprendizaje.
+
+\begin{figure}[b!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate_test.png}
+    \caption{Distribución de predicciones sobre datos de test con el modelo de NN y codificación ad-hoc}
+    \label{fig:calibrate-bestmoodel-adhoc-test}
+\end{figure}
+
 
 % \begin{figure}
 %     \centering
@@ -565,9 +686,6 @@ mismos que los modelo predictivos ad-hoc.
 %     \end{subfigure}
 %     \caption{Ad-hoc take\_image}
 % \end{figure}
-
-\section{Comparación de mejores modelos}
-\label{results:comparison}
 
 % \section{Tiempos de predicción}
 % \label{exp:time}

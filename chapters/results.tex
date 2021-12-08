@@ -62,18 +62,13 @@ para guiar futuros experimentos.
 
 \subsection{Configuración del experimento}
 
-A continuación, mencionaremos los parámetros utilizados para construir los
-vectores de características, y los parámetros de los algoritmos de
-clasificación.
-
 En primer lugar, se necesito asignar la configuración para la construcción de las ventanas y planes relajados.  Observamos que
 por lo general los planes relajados del conjunto de entrenamiento suelen tener
 entre $3$ a $10$ acciones. Nuestro algoritmo debe ser capaz de generalizar para
 ejemplos de entrenamientos no antes visto, por lo que el preprocesamiento que
 realicemos sobre estos datos debe ser orientado a reducir las discrepancias
 entre un ejemplo nuevo y los que fueron utilizados en la etapa de entrenamiento.
-Como los planes relajados de los problemas de test rondan por el orden de
-cientos de acciones, partimos el plan relajado lo suficiente para que aproxime
+Como el largo de los planes relajados de los problemas de test es por encima de los cientos de acciones, generamos ventanas que aproximen en
 en tamaño a los planes relajados de los problemas de entrenamiento. Es por ello, que optamos por un paso y tamaño de ventana de $3$.
 
 Para el entrenamiento de los clasificadores, se realizó una búsqueda de
@@ -97,7 +92,7 @@ agrupamos para obtener solo una. Para este experimento, seleccionamos el máximo
 de las $M$ probabilidades. Notar que bajo esta decisión, una probabilidad baja
 significa que para todas las ventanas del plan relajado, el planificador le
 asignó una baja probabilidad a $a'$, mientras que una probabilidad alta requiere
-que por lo menos una ventana del plan relajado haya provisto con la información
+que por lo menos una ventana del plan relajado haya provisto la información
 necesaria para considerar relevante a $a'$.
 
 Por último, los algoritmos presentados en el capítulo \ref{ch:lit_ml}
@@ -146,10 +141,8 @@ utilizados para cada algoritmo en este experimento:
 \end{conditions}
 
 Estos parámetros corresponden con la interfaz provista por las librerías de
-\emph{Scikit-learn} y \emph{Pytorch} que implementan los algoritmos de aprendizaje. Cada parámetro muestra una lista de 1 o más valores donde cada elemento representa una posible asignación de ese parámetro.
-
-La cantidad de asignaciones posibles es igual al producto cartesiano de cada una de las listas de los parámetros de un modelo. Por ejemplo para el caso de la regresión
-logística, los parámetros \emph{C}, \emph{max\_iter}, y \emph{l1\_ratio} tienen 3, 2, y 2 asignaciones respectivamente, el resto de parámetros solo tiene una sola. Por lo tanto, se realizan un total de $3 \times 2 \times 2 = 12$ pruebas de parámetros.
+\emph{Scikit-learn} y \emph{Pytorch} que implementan los algoritmos de aprendizaje. Cada parámetro muestra una lista de 1 o más valores donde cada elemento representa una posible asignación de ese parámetro. La cantidad de configuraciones posibles de un modelo es igual al producto cartesiano de cada una de las listas de los parámetros de un modelo. Por ejemplo para el caso de la regresión
+logística, los parámetros \emph{C}, \emph{max\_iter}, y \emph{l1\_ratio} tienen 3, 2, y 2 asignaciones respectivamente, el resto de parámetros solo tiene una. Por lo tanto, hay un total de $3 \times 2 \times 2 = 12$ configuraciones del modelo.
 
 Los parámetros que seleccionamos siempre buscaban plantear variantes en la función de costo a optimizar, el tipo de optimizador, y métodos para evitar el sobreajuste. En particular, seguimos como guía valores comunes que la comunidad de aprendizaje automático suele utilizar para estos modelos,  la experiencia transmitida por el ´boca a boca´, y conocimientos tanto del área de planning como del funcionamiento interno de los modelos utilizados. 
 
@@ -165,20 +158,20 @@ bad operators por problema.
 XGBoost requiere que se le especifiquen la cantidad de árboles a
 ensamblar con \emph{n\_estimators}, la fuerza del parámetro de regularización
 \emph{gamma}, y la profundidad máxima de los árboles \emph{max\_depth}. \emph{objetive} indica la función objetivo a optimizar, en este caso la misma función de costo que una regresión logística. \emph{booster} permite seleccionar variantes del método iterativo de boosting explicado en el capítulo \ref{alg:xgboost}. Por último \emph{colsample\_bytre} y \emph{subsample} permiten
-tomar una muestra con reposición de los nodos de cada
+tomar una muestra con reposición de las filas o columnas en la confección de un árbol en el ensemble con el proposito de reducir el sobreajuste.
 
 La red neuronal necesita del número de neuronas para todas las capas
 \emph{h\_size}, la cantidad de capas ocultas \emph{n\_layers}, si los vectores
 de entrada son normalizados \emph{bn\_bool}, y la probabilidad  \emph{p} de apagar momentáneamente neuronas de la red de manera
 aleatoria.
 
-La elección de estos parámetros se basó en los valores comunes en los que la
-comunidad de aprendizaje automático suele utilizar para estos algoritmos en los
-estados del arte de otros problemas. La exhaustividad en la cantidad de
-configuraciones de parámetros también se vió comprometida por el hardware
-disponible.
+Por cada posible asignación obtenemos aquella que mejor se comporte con el conjunto de test. Recordemos que nuestro objetivo es encontrar modelos que se pueda utilizar para algún esquema de acción. De un total de 5 esquemas de acción en el dominio \emph{Satellite}, el mejor caso sería encontrar 5 modelos que den buenos resultados en esos esquemas.
 
 \subsection{Resultados}
+
+Empecemos analizando el mejor modelo que llegamos a obtener para el esquema de \emph{}
+
+
 
 \begin{figure}
     \centering

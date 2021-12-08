@@ -62,14 +62,17 @@ para guiar futuros experimentos.
 
 \subsection{Configuración del experimento}
 
-En primer lugar, se necesito asignar la configuración para la construcción de las ventanas y planes relajados.  Observamos que
-por lo general los planes relajados del conjunto de entrenamiento suelen tener
-entre $3$ a $10$ acciones. Nuestro algoritmo debe ser capaz de generalizar para
-ejemplos de entrenamientos no antes visto, por lo que el preprocesamiento que
-realicemos sobre estos datos debe ser orientado a reducir las discrepancias
-entre un ejemplo nuevo y los que fueron utilizados en la etapa de entrenamiento.
-Como el largo de los planes relajados de los problemas de test es por encima de los cientos de acciones, generamos ventanas que aproximen en
-en tamaño a los planes relajados de los problemas de entrenamiento. Es por ello, que optamos por un paso y tamaño de ventana de $3$.
+En primer lugar, se necesito asignar la configuración para la construcción de
+las ventanas y planes relajados.  Observamos que por lo general los planes
+relajados del conjunto de entrenamiento suelen tener entre $3$ a $10$ acciones.
+Nuestro algoritmo debe ser capaz de generalizar para ejemplos de entrenamientos
+no antes visto, por lo que el preprocesamiento que realicemos sobre estos datos
+debe ser orientado a reducir las discrepancias entre un ejemplo nuevo y los que
+fueron utilizados en la etapa de entrenamiento. Como el largo de los planes
+relajados de los problemas de test es por encima de los cientos de acciones,
+generamos ventanas que aproximen en en tamaño a los planes relajados de los
+problemas de entrenamiento. Es por ello, que optamos por un paso y tamaño de
+ventana de $3$.
 
 Para el entrenamiento de los clasificadores, se realizó una búsqueda de
 hiper-parámetros cuya métrica a optimizar es $H_{\beta}$ con $\beta = 1.5$. Dado
@@ -141,45 +144,67 @@ utilizados para cada algoritmo en este experimento:
 \end{conditions}
 
 Estos parámetros corresponden con la interfaz provista por las librerías de
-\emph{Scikit-learn} y \emph{Pytorch} que implementan los algoritmos de aprendizaje. Cada parámetro muestra una lista de 1 o más valores donde cada elemento representa una posible asignación de ese parámetro. La cantidad de configuraciones posibles de un modelo es igual al producto cartesiano de cada una de las listas de los parámetros de un modelo. Por ejemplo para el caso de la regresión
-logística, los parámetros \emph{C}, \emph{max\_iter}, y \emph{l1\_ratio} tienen 3, 2, y 2 asignaciones respectivamente, el resto de parámetros solo tiene una. Por lo tanto, hay un total de $3 \times 2 \times 2 = 12$ configuraciones del modelo.
+\emph{Scikit-learn} y \emph{Pytorch} que implementan los algoritmos de
+aprendizaje. Cada parámetro muestra una lista de 1 o más valores donde cada
+elemento representa una posible asignación de ese parámetro. La cantidad de
+configuraciones posibles de un modelo es igual al producto cartesiano de cada
+una de las listas de los parámetros de un modelo. Por ejemplo para el caso de la
+regresión logística, los parámetros \emph{C}, \emph{max\_iter}, y
+\emph{l1\_ratio} tienen 3, 2, y 2 asignaciones respectivamente, el resto de
+parámetros solo tiene una. Por lo tanto, hay un total de $3 \times 2 \times 2 =
+12$ configuraciones del modelo.
 
-Los parámetros que seleccionamos siempre buscaban plantear variantes en la función de costo a optimizar, el tipo de optimizador, y métodos para evitar el sobreajuste. En particular, seguimos como guía valores comunes que la comunidad de aprendizaje automático suele utilizar para estos modelos,  la experiencia transmitida por el ´boca a boca´, y conocimientos tanto del área de planning como del funcionamiento interno de los modelos utilizados. 
+Los parámetros que seleccionamos siempre buscaban plantear variantes en la
+función de costo a optimizar, el tipo de optimizador, y métodos para evitar el
+sobreajuste. En particular, seguimos como guía valores comunes que la comunidad
+de aprendizaje automático suele utilizar para estos modelos,  la experiencia
+transmitida por el ´boca a boca´, y conocimientos tanto del área de planning
+como del funcionamiento interno de los modelos utilizados. 
 
 En el caso de la regresión logística, los parámetros \emph{penalty},
 \emph{l1\_ratio}, y \emph{C} permiten realizar variaciones en la regularización
 de la función de costo, evitando que la norma del vector de pesos del modelo
-crezca demasiado por sobreajuste. \emph{solver} indica el método de optimización de la función de costo. \emph{max\_iter} es el número
-de iteraciones que requiere el algoritmo para converger. Por último,
-\emph{class\_weight} permite configurar el modelo de tal manera que balancee
-la cantidad de ejemplares positivos y negativos del material de entrenamiento. Este último es importante para nosotros ya que nuestro conjunto de entrenamiento está desbalanceado, teniendo una mayor cantidad de good operators que de
-bad operators por problema.
+crezca demasiado por sobreajuste. \emph{solver} indica el método de optimización
+de la función de costo. \emph{max\_iter} es el número de iteraciones que
+requiere el algoritmo para converger. Por último, \emph{class\_weight} permite
+configurar el modelo de tal manera que balancee la cantidad de ejemplares
+positivos y negativos del material de entrenamiento. Este último es importante
+para nosotros ya que nuestro conjunto de entrenamiento está desbalanceado,
+teniendo una mayor cantidad de good operators que de bad operators por problema.
 
-XGBoost requiere que se le especifiquen la cantidad de árboles a
-ensamblar con \emph{n\_estimators}, la fuerza del parámetro de regularización
-\emph{gamma}, y la profundidad máxima de los árboles \emph{max\_depth}. \emph{objetive} indica la función objetivo a optimizar, en este caso la misma función de costo que una regresión logística. \emph{booster} permite seleccionar variantes del método iterativo de boosting explicado en el capítulo \ref{alg:xgboost}. Por último \emph{colsample\_bytre} y \emph{subsample} permiten
-tomar una muestra con reposición de las filas o columnas en la confección de un árbol en el ensemble con el proposito de reducir el sobreajuste.
+XGBoost requiere que se le especifiquen la cantidad de árboles a ensamblar con
+\emph{n\_estimators}, la fuerza del parámetro de regularización \emph{gamma}, y
+la profundidad máxima de los árboles \emph{max\_depth}. \emph{objetive} indica
+la función objetivo a optimizar, en este caso la misma función de costo que una
+regresión logística. \emph{booster} permite seleccionar variantes del método
+iterativo de boosting explicado en el capítulo \ref{alg:xgboost}. Por último
+\emph{colsample\_bytre} y \emph{subsample} permiten tomar una muestra con
+reposición de las filas o columnas en la confección de un árbol en el ensemble
+con el proposito de reducir el sobreajuste.
 
 La red neuronal necesita del número de neuronas para todas las capas
 \emph{h\_size}, la cantidad de capas ocultas \emph{n\_layers}, si los vectores
-de entrada son normalizados \emph{bn\_bool}, y la probabilidad  \emph{p} de apagar momentáneamente neuronas de la red de manera
-aleatoria.
+de entrada son normalizados \emph{bn\_bool}, y la probabilidad  \emph{p} de
+apagar momentáneamente neuronas de la red de manera aleatoria.
 
-Por cada posible asignación obtenemos aquella que mejor se comporte con el conjunto de test. Recordemos que nuestro objetivo es encontrar modelos que se pueda utilizar para algún esquema de acción. De un total de 5 esquemas de acción en el dominio \emph{Satellite}, el mejor caso sería encontrar 5 modelos que den buenos resultados en esos esquemas.
+Por cada posible asignación obtenemos aquella que mejor se comporte con el
+conjunto de test. Recordemos que nuestro objetivo es encontrar modelos que se
+pueda utilizar para algún esquema de acción. De un total de 5 esquemas de acción
+en el dominio \emph{Satellite}, el mejor caso sería encontrar 5 modelos que den
+buenos resultados en esos esquemas.
 
 \subsection{Resultados: take\_image}
 
-Empecemos por el esquema de acción \verb|take_image|
-con el cual obtuvimos mejores resultados. De los 3 modelos
-regresión logística (LGR), xgboost (XGB), y redes neuronales
-(NN), el que mejor comportamiento que obtuvimos fue con la regresión
-logística. 
+Empecemos por el esquema de acción \verb|take_image| con el cual obtuvimos
+mejores resultados. De los 3 modelos regresión logística (LGR), xgboost (XGB), y
+redes neuronales (NN), el que mejor comportamiento que obtuvimos fue con la
+regresión logística. 
 
 \subsubsection{Performance en validación cruzada}
 
-La figura \ref{fig:takeimage-bestmodel-distplot} muestra
-la distribución de las predicciones en validación cruzada
-para la mejor configuración de parámetros de LGR.
+La figura \ref{fig:takeimage-bestmodel-distplot} muestra la distribución de las
+predicciones en validación cruzada para la mejor configuración de parámetros de
+LGR.
 
 
 \begin{figure}
@@ -218,60 +243,50 @@ para la mejor configuración de parámetros de LGR.
 \end{figure}
 
 
-La figura muestra dos histogramas independientes, el de la
-clase positiva, y el de la clase negativa. Cada punto
-en el gráfico representa la probabilidad de una
-acción dado su plan relajado (completo). Para ambos histogramas
-se genera una cantidad $N$ de bins equidistantes en el
-rango [0, 1]. Luego, para cada bin $b$, se muestra la cantidad
-de acciones que recibieron una probabilidad contenida
-en $b$ divido el tamaño de la clase a la que pertenecen.
+La figura muestra dos histogramas independientes, el de la clase positiva, y el
+de la clase negativa. Cada punto en el gráfico representa la probabilidad de una
+acción dado su plan relajado (completo). Para ambos histogramas se genera una
+cantidad $N$ de bins equidistantes en el rango [0, 1]. Luego, para cada bin $b$,
+se muestra la cantidad de acciones que recibieron una probabilidad contenida en
+$b$ divido el tamaño de la clase a la que pertenecen.
 
-Para el histograma de la clase positiva, observamos
-que las acciones relevantes (good operators) se agrupan
-en los bins con
-probabilidades entre $r=[0,6; 1]$. Cada bin contiene
-entre el 2\% al 7\%
-de las acciones. Si sumamos los porcentajes de cada uno
-de los bins en $r$, tendremos que más de la mitad de las
+Para el histograma de la clase positiva, observamos que las acciones relevantes
+(good operators) se agrupan en los bins con probabilidades entre $r=[0,6; 1]$.
+Cada bin contiene entre el 2\% al 7\% de las acciones. Si sumamos los
+porcentajes de cada uno de los bins en $r$, tendremos que más de la mitad de las
 acciones se encuentran en $r$.
 
-Por otro lado, el histograma de la clase negativa, muestra
-que más de la mitad de las acciones no relevantes 
-(bad operators) se agrupan
-en los bins con probabilidades
-entre $[0;0.4]$.
+Por otro lado, el histograma de la clase negativa, muestra que más de la mitad
+de las acciones no relevantes (bad operators) se agrupan en los bins con
+probabilidades entre $[0;0.4]$.
 
-Desde el punto de vista de grounding heurístico este es
-el comportamiento que buscamos. El algoritmo almacenará
-en una cola de prioridades acciones tanto relevantes
-como no relevantes con una probabilidad asociada, dándole
-prioridad a las que tienen una mayor probabilidad. Si
-el modelo asigna a las acciones relevantes una alta probabilidad
-entonces el proceso de grounding heurístico les dará prioridad
-para su instanciación.
+Desde el punto de vista de grounding heurístico este es el comportamiento que
+buscamos. El algoritmo almacenará en una cola de prioridades acciones tanto
+relevantes como no relevantes con una probabilidad asociada, dándole prioridad a
+las que tienen una mayor probabilidad. Si el modelo asigna a las acciones
+relevantes una alta probabilidad entonces el proceso de grounding heurístico les
+dará prioridad para su instanciación.
 
-Notar que el objetivo de utilizar validación cruzada
-es variar el conjunto de entrenamiento con
-el fin de determinar si el modelo de LGR es robusto ante
-cambios, lo cual podemos decir que indudablemente fue este
-el caso en las 5 particiones.
+Notar que el objetivo de utilizar validación cruzada es variar el conjunto de
+entrenamiento con el fin de determinar si el modelo de LGR es robusto ante
+cambios, lo cual podemos decir que indudablemente fue este el caso en las 5
+particiones.
 
-Si observamos la matriz de confusión del modelo por cada partición dada por la figura \ref{fig:takeimage-bestmodel-cm},
-podemos ver que en cada uno, más del 90\% de las acciones positivas
-se predicen como positivas, y más del 63\% de las negativas se
-predicen como negativas. La función de decisión se obtiene a partir del
-cálculo de $H_{1.5}$. Es decir, se computa $H_{1.5}$ para distintas 
-funciones de decisión con umbral en el intervalo [0, 1] y
-utilizamos aquel que maximice $H_{1.5}$. 
+Si observamos la matriz de confusión del modelo por cada partición dada por la
+figura \ref{fig:takeimage-bestmodel-cm}, podemos ver que en cada uno, más del
+90\% de las acciones positivas se predicen como positivas, y más del 63\% de las
+negativas se predicen como negativas. La función de decisión se obtiene a partir
+del cálculo de $H_{1.5}$. Es decir, se computa $H_{1.5}$ para distintas
+funciones de decisión con umbral en el intervalo [0, 1] y utilizamos aquel que
+maximice $H_{1.5}$. 
 
 \subsubsection{Performance en test}
 
-Los resultados anteriores fueron sobre 5 particiones del conjunto
-de entrenamiento donde una parte efectivamente se utilizaba para entrenar
-el modelo y otra para su evaluación. Sin embargo, lo que buscamos es
-que esto mismo se logre generalizar a problemas no instanciables. Por
-lo tanto, la evaluación final la realizamos sobre el conjunto de test.
+Los resultados anteriores fueron sobre 5 particiones del conjunto de
+entrenamiento donde una parte efectivamente se utilizaba para entrenar el modelo
+y otra para su evaluación. Sin embargo, lo que buscamos es que esto mismo se
+logre generalizar a problemas no instanciables. Por lo tanto, la evaluación
+final la realizamos sobre el conjunto de test.
 
 \begin{figure}
     \centering
@@ -280,21 +295,51 @@ lo tanto, la evaluación final la realizamos sobre el conjunto de test.
     \label{fig:takeimage-bestmodel-cm-raw}
 \end{figure}
 
-La figura \ref{x} muestra nuevamente muestra un histograma
-de la probabilidad de una acción dado su plan relajado. El caso de las acciones
-relevantes se sigue manteniendo el comportamiento que vimos en validación cruzada
-lo cual es un buen indicio ya que estarán en las primeras posiciones en la cola de prioridades en grounding heurístico. Sin embargo, si observamos el histograma de acciones no relevantes, se tiene que ahora a una gran parte de ellas se le asigna una alta probabilidad. Estas acciones también serían ubicadas al comienzo de la cola de prioridades y por lo tanto instanciadas. Si observamos la matriz
-de confusión en \ref{x'}, la proporción de acciones relevantes se mantiene en un 91\%, mientras que esta vez un 67\% de las no relevantes se filtran como positivas, cabe recalcar que esta vez, el umbral de decisión en test es el promedio de los umbrales obtenidos en validación cruzada. El objetivo era aprender un umbral que sea lo más óptimo para predecir nuevos ejemplos, utilizando únicamente información de los datos de entrenamiento. Podríamos haber utilizado un umbral de decisión a partir de las etiquetas de test, no obstante tal predicción representaría la performance máxima o ideal que podríamos obtener en test, y no la que realmente estamos obteniendo con información del conjunto de entrenamiento.
+La figura \ref{x} muestra nuevamente muestra un histograma de la probabilidad de
+una acción dado su plan relajado. El caso de las acciones relevantes se sigue
+manteniendo el comportamiento que vimos en validación cruzada lo cual es un buen
+indicio ya que estarán en las primeras posiciones en la cola de prioridades en
+grounding heurístico. Sin embargo, si observamos el histograma de acciones no
+relevantes, se tiene que ahora a una gran parte de ellas se le asigna una alta
+probabilidad. Estas acciones también serían ubicadas al comienzo de la cola de
+prioridades y por lo tanto instanciadas. Si observamos la matriz de confusión en
+\ref{x'}, la proporción de acciones relevantes se mantiene en un 91\%, mientras
+que esta vez un 67\% de las no relevantes se filtran como positivas, cabe
+recalcar que esta vez, el umbral de decisión en test es el promedio de los
+umbrales obtenidos en validación cruzada. El objetivo era aprender un umbral que
+sea lo más óptimo para predecir nuevos ejemplos, utilizando únicamente
+información de los datos de entrenamiento. Podríamos haber utilizado un umbral
+de decisión a partir de las etiquetas de test, no obstante tal predicción
+representaría la performance máxima o ideal que podríamos obtener en test, y no
+la que realmente estamos obteniendo con información del conjunto de
+entrenamiento.
 
-Por último, si observamos la matriz de confusión de la figura \ref{fig:takeimage-bestmodel-cm-raw} del modelo LGR, pero esta vez sin
-normalizar por porcentajes. Se puede ver que LGR tiende a predecir ligeramente sobre
-la clase positiva, pero además es la mayoritaria en test para este esquema.
-Esto sucede debido a como se generan los bad operators en los problemas de test.
-Recordemos que estos no pueden obtenerse por Fast Downward por lo que se generó una muestra aleatoria usando grounding cartesiano pero respetando los tipos de las interfaces. Como solo se pudieron generar una cantidad de 5000 bad operators por problema, y los planes en los problemas de test son de mayor tamaño que los de entrenamiento, surgió este desbalance hacia la clase positiva. No obstante, en una situación real, la cantidad de bad operators sería nuevamente superior a la de good operators. Otro aspecto importante sobre la generación de los bad operators es que podrían no ser alcanzables relajadamente, y por lo tanto tener una distribución distinta a la que tenemos en el conjunto de entrenamiento siendo una de las posibles causas del desempeño de LGR para la clase negativa. Es decir, LGR fue entrenado para predecir, sobre acciones alcanzables relajadamente, pero lo estamos evaluando sobre bad operators que no lo son.
+Por último, si observamos la matriz de confusión de la figura
+\ref{fig:takeimage-bestmodel-cm-raw} del modelo LGR, pero esta vez sin
+normalizar por porcentajes. Se puede ver que LGR tiende a predecir ligeramente
+sobre la clase positiva, pero además es la mayoritaria en test para este
+esquema. Esto sucede debido a como se generan los bad operators en los problemas
+de test. Recordemos que estos no pueden obtenerse por Fast Downward por lo que
+se generó una muestra aleatoria usando grounding cartesiano pero respetando los
+tipos de las interfaces. Como solo se pudieron generar una cantidad de 5000 bad
+operators por problema, y los planes en los problemas de test son de mayor
+tamaño que los de entrenamiento, surgió este desbalance hacia la clase positiva.
+No obstante, en una situación real, la cantidad de bad operators sería
+nuevamente superior a la de good operators. Otro aspecto importante sobre la
+generación de los bad operators es que podrían no ser alcanzables relajadamente,
+y por lo tanto tener una distribución distinta a la que tenemos en el conjunto
+de entrenamiento siendo una de las posibles causas del desempeño de LGR para la
+clase negativa. Es decir, LGR fue entrenado para predecir, sobre acciones
+alcanzables relajadamente, pero lo estamos evaluando sobre bad operators que no
+lo son.
 
-Por último, notar que tanto precision como recall sobre la clase positiva
-es de 0.8088, y 0.997, respectivamente. Si calculamos la métrica $F_{1.5}$ priorizando recall, obtendriamos una performance de 0.997 para LGR. Sin embargo,
-no es un buen indicio de la correctitud del modelo pues acabamos de identificar que su rendimiento en la clase negativa no era el óptimo. En contraparte, si en lugar de considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.4351 lo cual tiene más sentido ya que penaliza la baja en la taza de verdaderos negativos.
+Por último, notar que precision y recall sobre la clase positiva es de 0.823, y
+0.912, respectivamente. Si calculamos la métrica $F_{1.5}$ priorizando recall,
+obtendriamos una performance de 0.8826 para LGR. Sin embargo, no es un buen
+indicio de la correctitud del modelo en la clase negativa, como podemos ver en
+el cuadro \ref{results:lgr-wb-calibrate}. En contraparte, si en lugar de
+considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.589 lo cual
+al penalizar la baja en la taza de verdaderos negativos.
 
 \begin{table}[h!]
 \centering
@@ -303,12 +348,12 @@ no es un buen indicio de la correctitud del modelo pues acabamos de identificar 
  \hline
   Clase & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión \\
  \hline
- Relevante & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 \\
- No relevante & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 \\
+ Relevante & 0.823 & 0.912 & 0.589 & 0.8826 & 0.416 \\
+ No relevante & 0.52 & 0.33 & 0.4081 & 0.3717 & 0.416 \\
  \hline
  \end{tabular}}
  \caption{Resultados por esquema de acción del mejor modelo con codificación por word embeddings.}
- \label{results:ad-hoc-calibrate}
+ \label{results:lgr-wb-calibrate}
 \end{table}
 
 \begin{figure}

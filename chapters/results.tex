@@ -167,11 +167,149 @@ aleatoria.
 
 Por cada posible asignación obtenemos aquella que mejor se comporte con el conjunto de test. Recordemos que nuestro objetivo es encontrar modelos que se pueda utilizar para algún esquema de acción. De un total de 5 esquemas de acción en el dominio \emph{Satellite}, el mejor caso sería encontrar 5 modelos que den buenos resultados en esos esquemas.
 
-\subsection{Resultados}
+\subsection{Resultados: take\_image}
 
-Empecemos analizando el mejor modelo que llegamos a obtener para el esquema de \emph{}
+Empecemos por el esquema de acción \verb|take_image|
+con el cual obtuvimos mejores resultados. De los 3 modelos
+regresión logística (LGR), xgboost (XGB), y redes neuronales
+(NN), el que mejor comportamiento que obtuvimos fue con la regresión
+logística. 
+
+\subsubsection{Performance en validación cruzada}
+
+La figura \ref{fig:takeimage-bestmodel-distplot} muestra
+la distribución de las predicciones en validación cruzada
+para la mejor configuración de parámetros de LGR.
 
 
+\begin{figure}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr__distplot.png}
+        \caption{Distribución de predicciones en validación cruzada y el conjunto de test.}
+        \label{fig:takeimage-bestmodel-distplot}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{\textwidth}
+    \minipage{0.32\textwidth}
+      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_1_confusion_matrix_percent.png}
+    \endminipage\hfill
+    \minipage{0.32\textwidth}
+      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_2_confusion_matrix_percent.png}
+    \endminipage\hfill \minipage{0.32\textwidth}%
+      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_3_confusion_matrix_percent.png}
+    \endminipage
+    
+    \medskip
+    
+    \minipage{0.32\textwidth}
+      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_4_confusion_matrix_percent.png}
+    \endminipage\hfill
+    \minipage{0.32\textwidth}
+      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_5_confusion_matrix_percent.png}
+    \endminipage\hfill \minipage{0.32\textwidth}%
+      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_percent.png}
+    \endminipage
+    \caption{Matrices de confusión en validación cruzada y el conjunto de test}
+    \label{fig:takeimage-bestmodel-cm}
+    \end{subfigure}
+    \caption{Resultados del modelo de regresión logística con codificación por word embeddings y esquema de acción take\_image.}
+    \label{fig:takeimage-bestmodel}
+\end{figure}
+
+
+La figura muestra dos histogramas independientes, el de la
+clase positiva, y el de la clase negativa. Cada punto
+en el gráfico representa la probabilidad de una
+acción dado su plan relajado (completo). Para ambos histogramas
+se genera una cantidad $N$ de bins equidistantes en el
+rango [0, 1]. Luego, para cada bin $b$, se muestra la cantidad
+de acciones que recibieron una probabilidad contenida
+en $b$ divido el tamaño de la clase a la que pertenecen.
+
+Para el histograma de la clase positiva, observamos
+que las acciones relevantes (good operators) se agrupan
+en los bins con
+probabilidades entre $r=[0,6; 1]$. Cada bin contiene
+entre el 2\% al 7\%
+de las acciones. Si sumamos los porcentajes de cada uno
+de los bins en $r$, tendremos que más de la mitad de las
+acciones se encuentran en $r$.
+
+Por otro lado, el histograma de la clase negativa, muestra
+que más de la mitad de las acciones no relevantes 
+(bad operators) se agrupan
+en los bins con probabilidades
+entre $[0;0.4]$.
+
+Desde el punto de vista de grounding heurístico este es
+el comportamiento que buscamos. El algoritmo almacenará
+en una cola de prioridades acciones tanto relevantes
+como no relevantes con una probabilidad asociada, dándole
+prioridad a las que tienen una mayor probabilidad. Si
+el modelo asigna a las acciones relevantes una alta probabilidad
+entonces el proceso de grounding heurístico les dará prioridad
+para su instanciación.
+
+Notar que el objetivo de utilizar validación cruzada
+es variar el conjunto de entrenamiento con
+el fin de determinar si el modelo de LGR es robusto ante
+cambios, lo cual podemos decir que indudablemente fue este
+el caso en las 5 particiones.
+
+Si observamos la matriz de confusión del modelo por cada partición dada por la figura \ref{fig:takeimage-bestmodel-cm},
+podemos ver que en cada uno, más del 90\% de las acciones positivas
+se predicen como positivas, y más del 63\% de las negativas se
+predicen como negativas. La función de decisión se obtiene a partir del
+cálculo de $H_{1.5}$. Es decir, se computa $H_{1.5}$ para distintas 
+funciones de decisión con umbral en el intervalo [0, 1] y
+utilizamos aquel que maximice $H_{1.5}$. 
+
+\subsubsection{Performance en test}
+
+Los resultados anteriores fueron sobre 5 particiones del conjunto
+de entrenamiento donde una parte efectivamente se utilizaba para entrenar
+el modelo y otra para su evaluación. Sin embargo, lo que buscamos es
+que esto mismo se logre generalizar a problemas no instanciables. Por
+lo tanto, la evaluación final la realizamos sobre el conjunto de test.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.7]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_raw.png}
+    \caption{Matriz de confusión sin porcentajes del modelo de regresión logística con codificación por word embeddings y esquema de acción take\_image.}
+    \label{fig:takeimage-bestmodel-cm-raw}
+\end{figure}
+
+La figura \ref{x} muestra nuevamente muestra un histograma
+de la probabilidad de una acción dado su plan relajado. El caso de las acciones
+relevantes se sigue manteniendo el comportamiento que vimos en validación cruzada
+lo cual es un buen indicio ya que estarán en las primeras posiciones en la cola de prioridades en grounding heurístico. Sin embargo, si observamos el histograma de acciones no relevantes, se tiene que ahora a una gran parte de ellas se le asigna una alta probabilidad. Estas acciones también serían ubicadas al comienzo de la cola de prioridades y por lo tanto instanciadas. Si observamos la matriz
+de confusión en \ref{x'}, la proporción de acciones relevantes se mantiene en un 91\%, mientras que esta vez un 67\% de las no relevantes se filtran como positivas, cabe recalcar que esta vez, el umbral de decisión en test es el promedio de los umbrales obtenidos en validación cruzada. El objetivo era aprender un umbral que sea lo más óptimo para predecir nuevos ejemplos, utilizando únicamente información de los datos de entrenamiento. Podríamos haber utilizado un umbral de decisión a partir de las etiquetas de test, no obstante tal predicción representaría la performance máxima o ideal que podríamos obtener en test, y no la que realmente estamos obteniendo con información del conjunto de entrenamiento.
+
+Por último, si observamos la matriz de confusión de la figura \ref{fig:takeimage-bestmodel-cm-raw} del modelo LGR, pero esta vez sin
+normalizar por porcentajes. Se puede ver que LGR tiende a predecir ligeramente sobre
+la clase positiva, pero además es la mayoritaria en test para este esquema.
+Esto sucede debido a como se generan los bad operators en los problemas de test.
+Recordemos que estos no pueden obtenerse por Fast Downward por lo que se generó una muestra aleatoria usando grounding cartesiano pero respetando los tipos de las interfaces. Como solo se pudieron generar una cantidad de 5000 bad operators por problema, y los planes en los problemas de test son de mayor tamaño que los de entrenamiento, surgió este desbalance hacia la clase positiva. No obstante, en una situación real, la cantidad de bad operators sería nuevamente superior a la de good operators. Otro aspecto importante sobre la generación de los bad operators es que podrían no ser alcanzables relajadamente, y por lo tanto tener una distribución distinta a la que tenemos en el conjunto de entrenamiento siendo una de las posibles causas del desempeño de LGR para la clase negativa. Es decir, LGR fue entrenado para predecir, sobre acciones alcanzables relajadamente, pero lo estamos evaluando sobre bad operators que no lo son.
+
+Por último, notar que tanto precision como recall sobre la clase positiva
+es de 0.8088, y 0.997, respectivamente. Si calculamos la métrica $F_{1.5}$ priorizando recall, obtendriamos una performance de 0.997 para LGR. Sin embargo,
+no es un buen indicio de la correctitud del modelo pues acabamos de identificar que su rendimiento en la clase negativa no era el óptimo. En contraparte, si en lugar de considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.4351 lo cual tiene más sentido ya que penaliza la baja en la taza de verdaderos negativos.
+
+\begin{table}[h!]
+\centering
+\scalebox{0.9}{
+ \begin{tabular}{|c || c | c | c | c | c | c |} 
+ \hline
+  Clase & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión \\
+ \hline
+ Relevante & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 \\
+ No relevante & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 \\
+ \hline
+ \end{tabular}}
+ \caption{Resultados por esquema de acción del mejor modelo con codificación por word embeddings.}
+ \label{results:ad-hoc-calibrate}
+\end{table}
 
 \begin{figure}
     \centering
@@ -265,48 +403,6 @@ Empecemos analizando el mejor modelo que llegamos a obtener para el esquema de \
     \caption{Matrices de confusión en validación cruzada y el conjunto de test}
     \end{subfigure}
     \caption{Resultados del modelo de redes neuronales con codificación por word embeddings y esquema de acción calibrate.}
-\end{figure}
-
-
-\begin{figure}
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr__distplot.png}
-        \caption{Distribución de predicciones en validación cruzada y el conjunto de test.}
-        \label{fig:my_label}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_1_confusion_matrix_percent.png}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_2_confusion_matrix_percent.png}
-    \endminipage\hfill \minipage{0.32\textwidth}%
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_3_confusion_matrix_percent.png}
-    \endminipage
-    
-    \medskip
-    
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_4_confusion_matrix_percent.png}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_5_confusion_matrix_percent.png}
-    \endminipage\hfill \minipage{0.32\textwidth}%
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_percent.png}
-    \endminipage
-    \caption{Matrices de confusión en validación cruzada y el conjunto de test}
-    \end{subfigure}
-    \caption{Resultados del modelo de regresión logística con codificación por word embeddings y esquema de acción take\_image.}
-\end{figure}
-
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.7]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_raw.png}
-    \caption{Matriz de confusión sin porcentajes del modelo de regresión logística con codificación por word embeddings y esquema de acción take\_image.}
-    \label{fig:my_label}
 \end{figure}
 
 \begin{table}[h!]

@@ -48,10 +48,9 @@ siguiente:
     \end{itemize}
 \end{itemize}
 
-Esto es un total de 15 modelos por grupo. Para los mejores modelos, se
-calcularon los tiempos de predicción con el fin de determinar si es viable
-realizar grounding heurístico con estos modelos en el algoritmo de Fast
-Downward.
+Esto es un total de 15 modelos por grupo. \textbf{TODO VER SI LLEGAMOS A
+INCLUIRLO: Para los mejores modelos, se calcularon los tiempos de predicción con
+el fin de determinar si es viable realizar grounding heurístico con tales modelos.} 
 
 Por último, mencionaremos otros experimentos que se trabajaron durante la tesis,
 que a pesar de no lograr el resultado que esperábamos, fueron muy importantes
@@ -145,7 +144,7 @@ utilizados para cada algoritmo en este experimento:
 
 Estos parámetros corresponden con la interfaz provista por las librerías de
 \emph{Scikit-learn} y \emph{Pytorch} que implementan los algoritmos de
-aprendizaje. Cada parámetro muestra una lista de 1 o más valores donde cada
+aprendizaje. Cada parámetro muestra una lista de uno o más valores donde cada
 elemento representa una posible asignación de ese parámetro. La cantidad de
 configuraciones posibles de un modelo es igual al producto cartesiano de cada
 una de las listas de los parámetros de un modelo. Por ejemplo para el caso de la
@@ -178,7 +177,7 @@ la profundidad máxima de los árboles \emph{max\_depth}. \emph{objetive} indica
 la función objetivo a optimizar, en este caso la misma función de costo que una
 regresión logística. \emph{booster} permite seleccionar variantes del método
 iterativo de boosting explicado en el capítulo \ref{alg:xgboost}. Por último
-\emph{colsample\_bytre} y \emph{subsample} permiten tomar una muestra con
+\emph{colsample\_bytree} y \emph{subsample} permiten tomar una muestra con
 reposición de las filas o columnas en la confección de un árbol en el ensemble
 con el proposito de reducir el sobreajuste.
 
@@ -189,7 +188,7 @@ apagar momentáneamente neuronas de la red de manera aleatoria.
 
 Por cada posible asignación obtenemos aquella que mejor se comporte con el
 conjunto de test. Recordemos que nuestro objetivo es encontrar modelos que se
-pueda utilizar para algún esquema de acción. De un total de 5 esquemas de acción
+puedan utilizar para algún esquema de acción. De un total de 5 esquemas de acción
 en el dominio \emph{Satellite}, el mejor caso sería encontrar 5 modelos que den
 buenos resultados en esos esquemas.
 
@@ -200,6 +199,13 @@ mejores resultados. De los 3 modelos regresión logística (LGR), xgboost (XGB),
 redes neuronales (NN), el que mejor comportamiento que obtuvimos fue con la
 regresión logística. 
 
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_wb_take_image.png}
+    \caption{Distribución de predicciones en validación cruzada para el modelo de LGR con word embeddings.}
+    \label{fig:takeimage-bestmodel-distplot}
+\end{figure}
+
 \subsubsection{Performance en validación cruzada}
 
 La figura \ref{fig:takeimage-bestmodel-distplot} muestra la distribución de las
@@ -207,56 +213,42 @@ predicciones en validación cruzada para la mejor configuración de parámetros 
 LGR.
 
 
-\begin{figure}
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr__distplot.png}
-        \caption{Distribución de predicciones en validación cruzada y el conjunto de test.}
-        \label{fig:takeimage-bestmodel-distplot}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_1_confusion_matrix_percent.png}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_2_confusion_matrix_percent.png}
-    \endminipage\hfill \minipage{0.32\textwidth}%
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_3_confusion_matrix_percent.png}
+\begin{figure}[b!]
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_1_confusion_matrix_percent.png}
     \endminipage
-    
-    \medskip
-    
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_4_confusion_matrix_percent.png}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_2_confusion_matrix_percent.png}
+    \endminipage
+        
+    \minipage{0.50\textwidth}%
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_3_confusion_matrix_percent.png}
+    \endminipage
+    \minipage{0.50\textwidth}
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_4_confusion_matrix_percent.png}
+    \endminipage
+
+    \minipage{0.50\textwidth}
       \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_5_confusion_matrix_percent.png}
-    \endminipage\hfill \minipage{0.32\textwidth}%
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_percent.png}
     \endminipage
-    \caption{Matrices de confusión en validación cruzada y el conjunto de test}
+    \caption{Matrices de confusión en validación cruzada para el modelo de LGR con word embeddings.}
     \label{fig:takeimage-bestmodel-cm}
-    \end{subfigure}
-    \caption{Resultados del modelo de regresión logística con codificación por word embeddings y esquema de acción take\_image.}
-    \label{fig:takeimage-bestmodel}
 \end{figure}
 
+Para cada particiòn, se muestran dos histogramas independientes, el de la clase
+positiva, y el de la clase negativa. Cada punto en el gráfico representa la
+probabilidad de una acción dado su plan relajado (completo). En ambos
+histogramas se genera una cantidad $N$ de bins equidistantes en el rango $[0;1]$.
+Luego, para cada bin $b$, se muestra la cantidad de acciones que recibieron una
+probabilidad contenida en $b$ divido el tamaño de la clase a la que pertenecen.
 
-La figura muestra dos histogramas independientes, el de la clase positiva, y el
-de la clase negativa. Cada punto en el gráfico representa la probabilidad de una
-acción dado su plan relajado (completo). Para ambos histogramas se genera una
-cantidad $N$ de bins equidistantes en el rango [0, 1]. Luego, para cada bin $b$,
-se muestra la cantidad de acciones que recibieron una probabilidad contenida en
-$b$ divido el tamaño de la clase a la que pertenecen.
-
-Para el histograma de la clase positiva, observamos que las acciones relevantes
+Para los histogramas de la clase positiva, observamos que las acciones relevantes
 (good operators) se agrupan en los bins con probabilidades entre $r=[0,6; 1]$.
 Cada bin contiene entre el 2\% al 7\% de las acciones. Si sumamos los
 porcentajes de cada uno de los bins en $r$, tendremos que más de la mitad de las
 acciones se encuentran en $r$.
 
-Por otro lado, el histograma de la clase negativa, muestra que más de la mitad
+Por otro lado, los histogramas de la clase negativa, muestran que más de la mitad
 de las acciones no relevantes (bad operators) se agrupan en los bins con
 probabilidades entre $[0;0.4]$.
 
@@ -276,7 +268,7 @@ Si observamos la matriz de confusión del modelo por cada partición dada por la
 figura \ref{fig:takeimage-bestmodel-cm}, podemos ver que en cada uno, más del
 90\% de las acciones positivas se predicen como positivas, y más del 63\% de las
 negativas se predicen como negativas. La función de decisión se obtiene a partir
-del cálculo de $H_{1.5}$. Es decir, se computa $H_{1.5}$ para distintas
+de optimizar $H_{1.5}$. Es decir, se computa $H_{1.5}$ para distintas
 funciones de decisión con umbral en el intervalo [0, 1] y utilizamos aquel que
 maximice $H_{1.5}$. 
 
@@ -288,62 +280,79 @@ y otra para su evaluación. Sin embargo, lo que buscamos es que esto mismo se
 logre generalizar a problemas no instanciables. Por lo tanto, la evaluación
 final la realizamos sobre el conjunto de test.
 
-\begin{figure}
+\begin{figure}[b!]
     \centering
-    \includegraphics[scale=0.7]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_raw.png}
-    \caption{Matriz de confusión sin porcentajes del modelo de regresión logística con codificación por word embeddings y esquema de acción take\_image.}
-    \label{fig:takeimage-bestmodel-cm-raw}
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_wb_take_image_test.png}
+    \caption{Distribución de predicciones sobre el conjunto de test del modelo de LGR con word embeddings.}
+    \label{fig:takeimage-bestmodel-distplot-test}
 \end{figure}
 
-La figura \ref{x} muestra nuevamente muestra un histograma de la probabilidad de
-una acción dado su plan relajado. El caso de las acciones relevantes se sigue
-manteniendo el comportamiento que vimos en validación cruzada lo cual es un buen
-indicio ya que estarán en las primeras posiciones en la cola de prioridades en
-grounding heurístico. Sin embargo, si observamos el histograma de acciones no
-relevantes, se tiene que ahora a una gran parte de ellas se le asigna una alta
-probabilidad. Estas acciones también serían ubicadas al comienzo de la cola de
-prioridades y por lo tanto instanciadas. Si observamos la matriz de confusión en
-\ref{x'}, la proporción de acciones relevantes se mantiene en un 91\%, mientras
-que esta vez un 67\% de las no relevantes se filtran como positivas, cabe
-recalcar que esta vez, el umbral de decisión en test es el promedio de los
-umbrales obtenidos en validación cruzada. El objetivo era aprender un umbral que
-sea lo más óptimo para predecir nuevos ejemplos, utilizando únicamente
-información de los datos de entrenamiento. Podríamos haber utilizado un umbral
-de decisión a partir de las etiquetas de test, no obstante tal predicción
-representaría la performance máxima o ideal que podríamos obtener en test, y no
-la que realmente estamos obteniendo con información del conjunto de
-entrenamiento.
+La figura \ref{fig:takeimage-bestmodel-distplot-test} muestra nuevamente
+un histograma de la probabilidad de una acción dado su plan relajado. Para el caso de
+las acciones relevantes, se sigue manteniendo el comportamiento que vimos en
+validación cruzada lo cual es un buen indicio ya que estarán en las primeras
+posiciones en la cola de prioridades en grounding heurístico. Sin embargo, si
+observamos el histograma de acciones no relevantes, se tiene que ahora a una
+gran parte de ellas se le asigna una alta probabilidad. Estas acciones también
+serían ubicadas al comienzo de la cola de prioridades y por lo tanto
+instanciadas. Si observamos la matriz de confusión en la figura
+\ref{fig:takeimage-bestmodel-cm-test}, la proporción de acciones relevantes se
+mantiene en un 91\%, mientras que esta vez un 67\% de las no relevantes se
+filtran como positivas, cabe recalcar que esta vez, el umbral de decisión en
+test es el promedio de los umbrales obtenidos en validación cruzada. El objetivo
+era aprender un umbral que sea lo más óptimo para predecir nuevos ejemplos,
+utilizando únicamente información de los datos de entrenamiento. Podríamos haber
+utilizado un umbral de decisión a partir de las etiquetas de test, no obstante
+tal predicción representaría la performance máxima o ideal que podríamos obtener
+en test, y no la que realmente estamos obteniendo con información del conjunto
+de entrenamiento.
 
-Por último, si observamos la matriz de confusión de la figura
-\ref{fig:takeimage-bestmodel-cm-raw} del modelo LGR, pero esta vez sin
+\begin{figure}[b!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_percent.png}
+    \caption{Matriz de confusiòn normalizada sobre el conjunto de test del modelo de LGR con word embeddings.}
+    \label{fig:takeimage-bestmodel-cm-test}
+\end{figure}
+
+Si observamos la matriz de confusión de la figura
+\ref{fig:takeimage-bestmodel-cm-raw-test} del modelo LGR, pero esta vez sin
 normalizar por porcentajes. Se puede ver que LGR tiende a predecir ligeramente
 sobre la clase positiva, pero además es la mayoritaria en test para este
 esquema. Esto sucede debido a como se generan los bad operators en los problemas
-de test. Recordemos que estos no pueden obtenerse por Fast Downward por lo que
-se generó una muestra aleatoria usando grounding cartesiano pero respetando los
-tipos de las interfaces. Como solo se pudieron generar una cantidad de 5000 bad
-operators por problema, y los planes en los problemas de test son de mayor
-tamaño que los de entrenamiento, surgió este desbalance hacia la clase positiva.
-No obstante, en una situación real, la cantidad de bad operators sería
-nuevamente superior a la de good operators. Otro aspecto importante sobre la
-generación de los bad operators es que podrían no ser alcanzables relajadamente,
-y por lo tanto tener una distribución distinta a la que tenemos en el conjunto
-de entrenamiento siendo una de las posibles causas del desempeño de LGR para la
-clase negativa. Es decir, LGR fue entrenado para predecir, sobre acciones
-alcanzables relajadamente, pero lo estamos evaluando sobre bad operators que no
-lo son.
+de test. Recordemos que estos no pudieron obtenerse a través de Fast Downward,
+por lo se generó una muestra aleatoria usando grounding cartesiano pero
+respetando los tipos de las interfaces. Como solo se pudieron generar una
+cantidad de 5000 bad operators por problema, y los planes en los problemas de
+test son de mayor tamaño que los de entrenamiento, surgió este desbalance hacia
+la clase positiva. No obstante, en una situación real, la cantidad de bad
+operators sería nuevamente superior a la de good operators. Otro aspecto
+importante sobre la generación de los bad operators es que podrían no ser
+alcanzables relajadamente, y por lo tanto tener una distribución distinta a la
+que tenemos en el conjunto de entrenamiento siendo una de las posibles causas
+del desempeño de LGR para la clase negativa. Es decir, LGR fue entrenado para
+predecir, sobre acciones alcanzables relajadamente, pero lo estamos evaluando
+sobre bad operators que no lo son.
 
-Por último, notar que precision y recall sobre la clase positiva es de 0.823, y
-0.912, respectivamente. Si calculamos la métrica $F_{1.5}$ priorizando recall,
+\begin{figure}[b!]
+    \centering
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr_set_6_confusion_matrix_raw.png}
+    \caption{Matriz de confusiòn sin normalizar sobre el conjunto de test del modelo de LGR con word embeddings.}
+    \label{fig:takeimage-bestmodel-cm-raw-test}
+\end{figure}
+
+Por último, en el cuadro \ref{results:lgr-wb-calibrate} se puede ver que
+precision y recall sobre la clase positiva es de 0.823, y 0.912,
+respectivamente. Si calculamos la métrica $F_{1.5}$ priorizando recall,
 obtendriamos una performance de 0.8826 para LGR. Sin embargo, no es un buen
-indicio de la correctitud del modelo en la clase negativa, como podemos ver en
-el cuadro \ref{results:lgr-wb-calibrate}. En contraparte, si en lugar de
-considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.589 lo cual
-al penalizar la baja en la taza de verdaderos negativos.
+indicio de la correctitud del modelo en la clase negativa. En contraparte, si en
+lugar de considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.589
+debido a que esta métrica penaliza si se tiene un baja en la taza de verdaderos
+negativos.
+
 
 \begin{table}[h!]
 \centering
-\scalebox{0.9}{
+\scalebox{1.2}{
  \begin{tabular}{|c || c | c | c | c | c | c |} 
  \hline
   Clase & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión \\
@@ -352,122 +361,135 @@ al penalizar la baja en la taza de verdaderos negativos.
  No relevante & 0.52 & 0.33 & 0.4081 & 0.3717 & 0.416 \\
  \hline
  \end{tabular}}
- \caption{Resultados por esquema de acción del mejor modelo con codificación por word embeddings.}
+ \caption{Métricas sobre el conjunto de test del modelo de LGR con word embeddings.}
  \label{results:lgr-wb-calibrate}
 \end{table}
 
-\begin{figure}
+Por otro lado, el modelo de redes neuronales se comportó mucho mejor en
+validaciòn cruzada, como lo muestra la figura
+\ref{fig:nn-distplot-takeimage-wb}. Sin embargo el conjunto de test
+
+\begin{figure}[b!]
     \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/calibrate/calibrate__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/calibrate/calibrate__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate__distplot.png}
-    \end{subfigure}
-    \caption{Word embeddings calibrate}
+    \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot.png}
+    \caption{Distribución de predicciones en validación cruzada y el conjunto de test en take\_image para el modelo de redes neuronales.}
+    \label{fig:nn-distplot-takeimage-wb}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/take_image/take_image__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot (1).png}
-    \end{subfigure}
-    \caption{Word embeddings take\_image}
-\end{figure}
+\subsubsection{Resultados: calibrate}
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/switch_on/switch_on__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/switch_on/xgb__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/switch_on/switch_on__distplot (1).png}
-    \end{subfigure}
-    \caption{Word embeddings switch\_on}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/calibrate/calibrate__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/calibrate/calibrate__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate__distplot.png}
+%     \end{subfigure}
+%     \caption{Word embeddings calibrate}
+% \end{figure}
+% 
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/take_image/take_image__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot (1).png}
+%     \end{subfigure}
+%     \caption{Word embeddings take\_image}
+% \end{figure}
+% 
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/switch_on/switch_on__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/switch_on/xgb__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/switch_on/switch_on__distplot (1).png}
+%     \end{subfigure}
+%     \caption{Word embeddings switch\_on}
+% \end{figure}
+% 
+% 
+% \begin{figure}
+%     \begin{subfigure}[b]{\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate__distplot.png}
+%         \caption{Distribución de predicciones en validación cruzada y el conjunto de test.}
+%         \label{fig:my_label}
+%     \end{subfigure}
+%     \hfill
+%     \begin{subfigure}[b]{\textwidth}
+%     \minipage{0.32\textwidth}
+%       \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_1_confusion_matrix_percent.png}
+%     \endminipage\hfill
+%     \minipage{0.32\textwidth}
+%       \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_2_confusion_matrix_percent.png}
+%     \endminipage\hfill \minipage{0.32\textwidth}%
+%       \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate+_set_3_confusion_matrix_percent.png}
+%     \endminipage
+%     
+%     \medskip
+%     
+%     \minipage{0.32\textwidth}
+%       \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_4_confusion_matrix_percent.png}
+%     \endminipage\hfill
+%     \minipage{0.32\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_5_confusion_matrix_percent.png}
+%     \endminipage\hfill \minipage{0.32\textwidth}%
+%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_6_confusion_matrix_percent.png}
+%     \endminipage
+%     \caption{Matrices de confusión en validación cruzada y el conjunto de test}
+%     \end{subfigure}
+%     \caption{Resultados del modelo de redes neuronales con codificación por word embeddings y esquema de acción calibrate.}
+% \end{figure}
 
-
-\begin{figure}
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate__distplot.png}
-        \caption{Distribución de predicciones en validación cruzada y el conjunto de test.}
-        \label{fig:my_label}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{\textwidth}
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_1_confusion_matrix_percent.png}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_2_confusion_matrix_percent.png}
-    \endminipage\hfill \minipage{0.32\textwidth}%
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate+_set_3_confusion_matrix_percent.png}
-    \endminipage
-    
-    \medskip
-    
-    \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_4_confusion_matrix_percent.png}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_5_confusion_matrix_percent.png}
-    \endminipage\hfill \minipage{0.32\textwidth}%
-    \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_6_confusion_matrix_percent.png}
-    \endminipage
-    \caption{Matrices de confusión en validación cruzada y el conjunto de test}
-    \end{subfigure}
-    \caption{Resultados del modelo de redes neuronales con codificación por word embeddings y esquema de acción calibrate.}
-\end{figure}
-
-\begin{table}[h!]
-\centering
-\scalebox{0.9}{
- \begin{tabular}{|c || c | c | c | c | c | c |} 
- \hline
-  Esquemas & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión &
-  Modelo \\
- \hline
- take\_image & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 & LGR \\
- calibrate & 0.0467 & 0.4743 & 0.5083 & 0.1242 & 0.728 & NN\\
- switch\_on  & 0.0405 & 0.4567 & 0.5106 & 0.1097 & 0.576 & NN\\
- switch\_off & 0.0476 & 0.1818 & 0.2422 & 0.0876 & 0.034 & NN \\
- turn\_to  & - & - & - & - & - & -\\[1ex]
- \hline
- \end{tabular}}
- \caption{Resultados por esquema de acción del mejor modelo con codificación por word embeddings.}
- \label{results:ad-hoc-calibrate}
-\end{table}
+% \begin{table}[h!]
+% \centering
+% \scalebox{0.9}{
+%  \begin{tabular}{|c || c | c | c | c | c | c |} 
+%  \hline
+%   Esquemas & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de decisión &
+%   Modelo \\
+%  \hline
+%  take\_image & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 & LGR \\
+%  calibrate & 0.0467 & 0.4743 & 0.5083 & 0.1242 & 0.728 & NN\\
+%  switch\_on  & 0.0405 & 0.4567 & 0.5106 & 0.1097 & 0.576 & NN\\
+%  switch\_off & 0.0476 & 0.1818 & 0.2422 & 0.0876 & 0.034 & NN \\
+%  turn\_to  & - & - & - & - & - & -\\[1ex]
+%  \hline
+%  \end{tabular}}
+%  \caption{Resultados por esquema de acción del mejor modelo con codificación por word embeddings.}
+%  \label{results:ad-hoc-calibrate}
+% \end{table}
 
 
 \section{Modelos predictivos ad-hoc}
@@ -490,86 +512,86 @@ mismos que los modelo predictivos ad-hoc.
 
 \subsection{Resultados}
 
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/ad-hoc/lgr/calibrate/calibrate__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/ad-hoc/xgb/2021-12-07_06.29.19.600877__distplot (2).png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/2021-12-06_17.03.17.314982__distplot.png}
-    \end{subfigure}
-    \caption{Ad-hoc calibrate}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/ad-hoc/lgr/switch_on/turn_to__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/ad-hoc/xgb/switch_on/2021-12-07_06.56.08.418411__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/switch_on/2021-12-06_18.44.35.478500__distplot.png}
-    \end{subfigure}
-    \caption{Ad-hoc switch\_on}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-    \includegraphics[width=\linewidth]{figures/results/ad-hoc/lgr/take_image/take_image__distplot.png}
-    \end{subfigure}
-    \hfill
-    \centering
-    \begin{subfigure}[b]{0.83\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{figures/results/ad-hoc/xgb/2021-12-07_07.38.35.967776__distplot.png}
-    \end{subfigure}
-    \caption{Ad-hoc take\_image}
-\end{figure}
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/ad-hoc/lgr/calibrate/calibrate__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/ad-hoc/xgb/2021-12-07_06.29.19.600877__distplot (2).png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/2021-12-06_17.03.17.314982__distplot.png}
+%     \end{subfigure}
+%     \caption{Ad-hoc calibrate}
+% \end{figure}
+% 
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/ad-hoc/lgr/switch_on/turn_to__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/ad-hoc/xgb/switch_on/2021-12-07_06.56.08.418411__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/switch_on/2021-12-06_18.44.35.478500__distplot.png}
+%     \end{subfigure}
+%     \caption{Ad-hoc switch\_on}
+% \end{figure}
+% 
+% \begin{figure}
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%     \includegraphics[width=\linewidth]{figures/results/ad-hoc/lgr/take_image/take_image__distplot.png}
+%     \end{subfigure}
+%     \hfill
+%     \centering
+%     \begin{subfigure}[b]{0.83\textwidth}
+%         \centering
+%         \includegraphics[width=\linewidth]{figures/results/ad-hoc/xgb/2021-12-07_07.38.35.967776__distplot.png}
+%     \end{subfigure}
+%     \caption{Ad-hoc take\_image}
+% \end{figure}
 
 \section{Comparación de mejores modelos}
 \label{results:comparison}
 
-\section{Tiempos de predicción}
-\label{exp:time}
-
-Para un nuevo ejemplo no visto se debe realizar el proceso completo creación de
-ventanas, codificación, predicción por parte del clasificador, y posterior
-agrupamiento de ventanas para obtener la máxima prioridad. Al incluir los
-modelos predictivos en el proceso de grounding heurístico el tiempo necesario
-para realizar todas las etapas y obtener el valor de salida del modelo
-predictivo es importante durante el proceso de grounding heurístico ya que los
-planificadores deben encontrar la solución a la tarea asignada de acuerdo a un
-tiempo límite, si este es excedido, ocurre una falla por parte del planificador.
-Esto motivo la medición del tiempo de respuesta para los modelos predictivos
-comparados en la sección \ref{results:comparison}.
-
-Actualmente la implementación de grounding heurístico en Fast Downward, son
-realizadas a nivel de ejemplo. Por lo que la unidad de medida utilizada fueron
-\emph{ns/ejemplo}, no obstante también se probaron realizar las predicciones a
-nivel de batch con el de determinar que tan prometedor es incluir este cambio en
-el algoritmo de grounding heurístico.
-
-\subsection{Predicciones por batch}
-
-\subsection{Predicciones por acción}
+% \section{Tiempos de predicción}
+% \label{exp:time}
+% 
+% Para un nuevo ejemplo no visto se debe realizar el proceso completo creación de
+% ventanas, codificación, predicción por parte del clasificador, y posterior
+% agrupamiento de ventanas para obtener la máxima prioridad. Al incluir los
+% modelos predictivos en el proceso de grounding heurístico el tiempo necesario
+% para realizar todas las etapas y obtener el valor de salida del modelo
+% predictivo es importante durante el proceso de grounding heurístico ya que los
+% planificadores deben encontrar la solución a la tarea asignada de acuerdo a un
+% tiempo límite, si este es excedido, ocurre una falla por parte del planificador.
+% Esto motivo la medición del tiempo de respuesta para los modelos predictivos
+% comparados en la sección \ref{results:comparison}.
+% 
+% Actualmente la implementación de grounding heurístico en Fast Downward, son
+% realizadas a nivel de ejemplo. Por lo que la unidad de medida utilizada fueron
+% \emph{ns/ejemplo}, no obstante también se probaron realizar las predicciones a
+% nivel de batch con el de determinar que tan prometedor es incluir este cambio en
+% el algoritmo de grounding heurístico.
+% 
+% \subsection{Predicciones por batch}
+% 
+% \subsection{Predicciones por acción}
 
 \section{Otros experimentos}
 

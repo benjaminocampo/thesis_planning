@@ -7,15 +7,14 @@ modelos predictivos. Un grupo con una codificación ad-hoc, y otro grupo con una
 codificación por word embeddings. Los vectores de características tendrán como
 información una ventana del plan relajado y una acción. Se destacarán aquellos
 modelos que presenten mejores resultados en validación cruzada y sobre ejemplos
-del conjunto de test. Para aquellos modelos que tuvieron un mal desempeño,
-mencionaremos algunas de las posibles causas.
+del conjunto de test.
 
-Por otro lado se entrenarán los 3 algoritmos de clasificación vistos en el
+Por otro lado, se entrenarán los 3 algoritmos de clasificación vistos en el
 capítulo \ref{ch:lit_ml}, \emph{XGBoost}, \emph{regresión logística}, y
 \emph{perceptrón multicapa}. Los conjuntos de entrenamiento y de test son
 divididos por esquemas de acción, entrenando un modelo por cada uno. Esto con el
-fin de capturar la información significativa de un solo esquema por modelo. En
-resumen, la estructura de nuestros experimentos para ambos grupos es la
+fin de capturar la información significativa de un solo esquema por modelo. Por
+lo tanto la estructura de nuestros experimentos para ambos grupos es la
 siguiente:
 
 \begin{itemize}
@@ -48,9 +47,8 @@ siguiente:
     \end{itemize}
 \end{itemize}
 
-Por último, mencionaremos otros experimentos que se trabajaron durante la tesis,
-que a pesar de no lograr el resultado que esperábamos, fueron muy importantes
-para guiar futuros experimentos.
+Por último, mencionaremos otros experimentos que se trabajaron durante la tesis
+y la importancia que tuvieron para guiar futuros experimentos.
 
 \section{Modelos predictivos por word embeddings}
 \label{exp:ad-hoc}
@@ -65,7 +63,7 @@ no antes visto, por lo que el preprocesamiento que realicemos sobre estos datos
 debe ser orientado a reducir las discrepancias entre un ejemplo nuevo y los que
 fueron utilizados en la etapa de entrenamiento. Como el largo de los planes
 relajados de los problemas de test es por encima de los cientos de acciones,
-generamos ventanas que aproximen en en tamaño a los planes relajados de los
+generamos ventanas que aproximen en tamaño a los planes relajados de los
 problemas de entrenamiento. Es por ello, que optamos por un paso y tamaño de
 ventana de $3$.
 
@@ -610,15 +608,15 @@ pesar de no lograr resultados concretos fueron parte importante del trabajo y
 otorgaron conocimiento invaluable para involucrarse más en el dominio del
 problema.
 
-\subsection{Modelos End-to-end}
+\subsection{Modelos end-to-end}
 
-End-to-end (E2E) models refieren a sistemas complejos representados por un único
-modelo neuronal profundo ensamblando las capas de preprocesamiento y como capas
+Los modelos End-to-end (E2E) refieren a sistemas complejos representados por un único
+modelo neuronal profundo ensamblando las capas de preprocesamiento como capas
 intermedias del modelo. En particular, este tipo de pruebas se realizaron en una
 etapa temprana de la tesis donde la idea de generar ventanas de planes relajados
-aún no se había investigado. En particular se experimentaron con modelos E2E de
+aún no se había investigado. En particular, se experimentaron con modelos E2E de
 FastText donde agrega una capa neuronal más al modelo de embeddings para que
-sean utilizados en clasificación. No obstante se optó por descontinuar estos
+sean utilizados en clasificación. No obstante, se optó por descontinuar estos
 experimentos al comenzar ya que fueron experimentos prototipos donde se buscaba
 verificar la factibilidad del uso de word embeddings en grounding heurístico.
 
@@ -627,7 +625,7 @@ verificar la factibilidad del uso de word embeddings en grounding heurístico.
 Otra estrategía que utilizamos durante el análisis en la generación de ventanas
 de planes relajados, fue plantear el problema de clasificación binaria como uno
 multiclase. En lugar de solo 2 clases, manteníamos 4 que representaban la noción
-de si una acción estaba incluido en el plan relajado y si eran parte de los good
+de si una acción estaba incluida en el plan relajado y si eran parte de los good
 operators del problema. Es decir, una ventana de plan relajado $w$ y acción $a$
 es etiquetada como:
 
@@ -639,9 +637,13 @@ es etiquetada como:
 \end{itemize}
 
 Luego al agrupar por ventanas y acción, consideramos como predicción final la
-clase $3$ si al menos una de las ventanas predijo $3$. Caso contrario si para
-alguna ventana la predicción fue $2$ predicción del agrupamiento es $2$. Y así
+clase $3$ si al menos una de las ventanas predijo $3$. Caso contrario, si para
+alguna ventana la predicción fue $2$, la predicción del agrupamiento es $2$. Y así
 sucesivamente hasta la clase $0$.
+
+De esta manera obteniamos un resultado similar a la agregación por el máximo que
+realizamos en los experimentos. Es decir, si una acción es relevante dada una
+ventana del plan relajado, entonces debe serlo dado el plan completo.
 
 \subsection{Mayorización}
 
@@ -657,9 +659,11 @@ $\mathbb{R}^{D}$.
 
 \subsection{Orden de ventanas como características}
 
-Por último otra implementación que se agregó al sistema y que es un patrón
-configurable de las etapas de ejecución es la posibilidad de mantener el orden
-en que ocurren las ventanas. Es decir, se tiene
+Por último, otra implementación que se agregó al sistema, y que es un patrón
+configurable de las etapas de ejecución, es la posibilidad de mantener el orden
+en que ocurren las ventanas. Es decir, se agrega un indice en la matriz de
+características indicando la posición en el plan relajado como se muestra en el
+cuadro \ref{tb:window_order}.
 
 \begin{table}[h!]
 \centering
@@ -675,9 +679,11 @@ en que ocurren las ventanas. Es decir, se tiene
  \hline
  \end{tabular}}
  \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
- \label{tb:matrix_shape}
+ \label{tb:window_order}
 \end{table}
 
-El objetivo de este agregado es evitar perder la información del orden durante
-la separación y se buscaba analizar si es un factor relevante para el
-entrenamiento y evaluación.
+El objetivo de este experimento fue agregado con el fin de evitar perder la
+información del orden durante la creación de las ventanas de un plan relajado y
+se buscaba analizar si es un factor relevante para el entrenamiento. Para este
+experimento se había analizado si era un factor relevante durante la evaluación
+de un modelo.

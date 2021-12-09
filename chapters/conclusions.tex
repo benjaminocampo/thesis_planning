@@ -3,6 +3,119 @@
 
 \section{Reflección}
 
-\section{Aportes}
+La motivación de grounding heurístico surgió tras observar que gran parte de los
+problemas de planning solo utilizan una pequeña fracción del total de posibles
+acciones para resolver una tarea. Es común en el área trabajar sobre tareas de
+tan con cientos de miles de acciones pero que resultan en planes de tan solo
+unos cientos de ellas. Aún así, los planificadores para encontrar una solución
+de la tarea, deben realizar una búsqueda exhaustiva sobre el total de acciones.
+Esta búsqueda es guiada a partir de una función heúristica definida en base a
+información que se puede extraer de la tarea. En el caso de Fast Downward, el
+framework de planning más utilizado por la comunidad para la resolución de
+problemas de planning, implementa un algoritmo genérico de búsqueda cuya función
+heúristica se basa en el uso de planes relajados. Esto motivó el uso de planes
+relajados en grounding heurístico. Si los planes relajados tienen la información
+para guiar el proceso de búsqueda, entonces también pueden guiar el proceso de
+grounding.
+
+Por otro lado, el poder predictivo de los algoritmos de aprendizaje automático
+ha llegado a incluso alcanzar tazas menores al error humano. Por lo que en este
+trabajo se buscó investigar de que manera se podían aplicar técnicas de
+aprendizaje automático que permitiesen reconocer la relación entre los planes
+relajados, acciones, y planes reales. Nuestro objetivo fue encontrar un modelo
+que permita estimar la probabilidad de que una acción sea relevante para algún
+plan real, dado su plan relajado.
+
+A partir de esto, surgió una etapa de pruebas de concepto donde verificabamos de
+que manera disponer el material de entrenamiento y test para los modelos de
+aprendizaje automático y de que forma codificar los planes relajados y las
+acciones. A la par de estas pruebas de concepto, se desarrolló la arquitectura
+del sistema que utilizariamos para ejecutar futuros experimentos.
+
+El algoritmo final estuvo constituido por una etapa de extracción de los datos a
+partir del generador de tareas, su preservación de datos, selección de problemas
+de entrenamiento y test, generación de ejemplos etiquetados, construcción de
+ventanas de planes relajados, y codificación de características.
+
+En la etapa de codificación fue donde pusimos nuestro mayor enfoque proponiendo
+dos codificaciones, una de tipo ad-hoc inspirada por una codificación one-hot, y
+otra a partir de word embeddings del preprocesamiento del lenguaje natural. Dos
+métodos muy distintos pero igual de prometedores para entrenar modelos de
+aprendizaje automático. Con respecto a los clasificadores utilizados, se
+utilizaron los representantes de tres grandes familia de modelos. En el caso de
+los modelos lineales, una regresión logística. De los algoritmos de ensemble,
+XGBoost. Y del mundo del deep learning y las redes neuronales, el perceptrón
+multicapa. Cada método y clasificador trabajado fueron muy distintos y con
+características únicas, lo cual resultó excelente para enriquecer nuestro
+espacio de búsqueda y experimentación.
+
+Con respecto a los resultados finales, presentamos dos modelos que obtuvieron
+excelentes resultados entrenados sobre acciones provenientes de los esquemas de
+acción \emph{take\_image}, y \emph{calibrate}.
+
+Para el caso de \emph{take\_image}, el mejor modelo se obtuvo sorprendentemente
+con una regresión logística donde, para el conjunto de test, fue capaz de
+predecir 5865 acciones relevantes para un total de 6432 de ellas. Para el caso
+de las no relevantes, pudo filtrar 615 de 1877. Esto es equivalente a un 91\% de
+acciones relevantes que fueron correctamente identificadas y se les asignó una
+probabilidad mayor a un umbral de 0.416, y un 33\% de acciones no relevantes que
+recibieron una probabilidad menor a ese umbral. Además, se pudo observar a
+través de validación cruzada que el modelo se mantuvo robusto ante variantes en
+los datos de entrenamiento, lo cual lo hace uno de los mejores resultados de
+este trabajo.
+
+Por otro lado, el perceptrón multicapa dio también buenos resultados con el
+esquema de acción \emph{calibrate} donde las predicciones en el conjunto de test
+se distribuyeron de manera distinta a los resultados en validación cruzada, se
+mantuvo el orden las acciones relevantes, siguen manteniendo una probabilidad
+mayor que las no relevantes. Lo cual en términos de grounding heurístico es
+importante. En particular, para un umbral de 0.1 el modelo fue capaz de predecir
+correctamente un 81\% de las acciones relevantes correctamente y logró filtrar
+hasta un 33\% de las no relevantes. Lo cual lo convierte en otro candidato para
+ser utilizado en el algoritmo de grounding heurístico.
 
 \section{Trabajo a futuro}
+
+Una de los experimentos principales como trabajo a futuro es agregar los modelos
+obtenidos en la implementación de grounding heurístico en el framework de Fast
+Downward y corroborar que tales modelos de aprendizaje, efectivamente permiten
+resolver los problemas de test que un principio no son instanciables y por lo
+tanto no tienen solución bajo la implementación vanilla de Fast Downward.
+
+Otro experimento posible es mantener un registro de los tiempos de predicción de
+cada modelo a nivel de acción o a nivel de batch de acciones. Recordemos que
+para realizar la predicción de una acción se debe primero realizar su
+preprocesamiento, construir las ventanas del plan relajado, realizar la
+predicción de cada ventana, y finalmente agrupar las predcciones para determinar
+su probabilidad. Este preprocesamiento podría ser un cuello de botella si no es
+implementado y optimizado de manera adecuada en el algoritmo de grounding
+heurístico, teniendo en cuenta que además los planificadores deben encontrar la
+solución del problema en un tiempo limitado. Por lo tanto, un debido análisis
+del tiempo necesario para llevar acabo el preprocesamiento y predicción de los
+modelos es requerido antes de ser incluidos en el algoritmo de Fast Downward.
+
+Para el caso de la codificación por word embeddings, se puede tomar ventaja de
+la codificación por promedio normalizado desarrollada en la sección
+\ref{method:wb}. Una posibilidad es utilizar distintos tamaños de ventana entre
+los datos de entrenamiento y de test. Por ejemplo, mantener un tamaño de ventana
+de $3$ para los planes relajados del conjunto de entrenamiento, y otro de $5$
+para los planes relajados del conjunto de test. Resolviendo los problemas de
+dimensiónes en las matrices promediando las representaciones de las palabras que
+componen cada ventana. Como los embeddings mantienen la misma dimensión de
+salida para todas las palabras, entonces las matrices de entrenamiento y de test
+mantendrían la misma estructura y dimensión. Este método puede ser una solución
+a la explosión de ejemplares a causa de la confección de las ventanas de planes
+relajados, pero puede degradar la información al considerar tamaños de ventanas
+mucho mayores. Investigar el balance necesario entre calidad del modelo, y
+degradación de información puede ser un posible lineamiento para
+experimentaciones futuras.
+
+En virtud de mejorar el sistema de experimentación desarrollado en el capítulo
+\ref{ch:method} se puede sincronizar la plataforma de \emph{MLFlow} con la base
+de datos SQL para que se mantengan registro de los modelos. Mantener
+persistencia organizada de modelos en la nube. Otra opción es generar tareas en
+\emph{Jenkins}, un sistema de gestion de pipelines de ejecución, que permitan
+entrenar, evaluar, registrar, y almacenar los resultados de manera
+independiente, sin necesidad de conocer su implementación. También se puede
+optimizar algunos procesos de manera que aprovechen el hardware disponible de la
+computadora con \emph{Cython}.

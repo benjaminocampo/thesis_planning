@@ -4,5 +4,39 @@
 % https://writingcenter.gmu.edu/guides/writing-an-abstract
 \chapter*{Resumen}
 
+La planificación automática, o simplemente \emph{Planning}, es una de las área
+más antiguas y centrales de la Inteligencia Artificial que estudia la generación
+automática de acciones por parte de agentes inteligentes con el proposito de
+alcanzar una meta a partir de una situación inicial. Esta secuencia de acciones
+es denominada un \emph{plan} de la tarea. Los planificadores son los encargados
+de encontrar un plan a partir de una especificación de la tarea a resolver. Para
+esto, la mayoría de planificadores realizan una etapa de preprocesamiento sobre
+la especificación para obtener una representación de mucho más bajo
+nivel de abstracción. Este proceso se conoce como \emph{proceso de grounding},
+el cual se realiza previamente a la búsqueda de un plan. Para
+aquellas tareas en las que el proceso de grounding no puede realizarse debido al
+agotamiento de recursos computacionales, el planificador no puede empezar la
+búsqueda de una solución al no poder generar la tarea groundeada. Por otro lado,
+la búsqueda que realizan los planificadores es guiada a partir de una función
+heurística que se obtiene a partir de información de la tarea. En particular, el
+sistema Fast Downward (FD), el framework para resolver tareas de planning más famoso
+y utilizado por la comunidad de planning, implementa una búsqueda guiada a
+partir de planes de una tarea simplificada. Estas soluciones son denominadas
+\emph{planes relajados}. Dado que los planes relajados han mostrado contener la
+información necesaria para guiar el proceso de búsqueda, entonces es posible que
+también puedan guiar el proceso de grounding. En este trabajo mostramos un
+proceso alternativo denominado \emph{grounding heurístico} que consiste en
+generar solamente una proyección de la tarea cuando grounding total no es
+factible. Este proceso es un mecanismo guiado en donde identificamos las
+acciones que son relevantes para encontrar un plan utilizando métodos de
+aprendizaje automático. Como características de los modelos se utilizaron planes
+relajados en motivación al método de búsqueda de FD. Por último, se propusieron
+dos codificaciones para los datos de entrada de los modelos de aprendizaje, una
+codificación ad-hoc basasda en las codificaciones de tipo one-hot, y otra a
+partir de word embeddings provenientes del lenguaje natural. Los resultados
+obtenidos justifican el uso de planes relajados para guiar el proceso de
+grounding.
+
+
 \noindent % Provide your key words
 \textbf{Keywords:} a maximum of five keywords/keyphrase separated by commas

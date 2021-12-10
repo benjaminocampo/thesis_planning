@@ -22,7 +22,7 @@ partir del famoso \emph{Test de Turing}, una máquina cuyo objetivo era engañar
 un humano haciéndole creer que se encontraba delante de otra persona en lugar de
 un ordenador, llegando  a la conclusión de que los computadores de propósito
 general, podrían ser capaces de aprender y ser de alguna manera originales.
-\footnote{\url{https://www.turing.org.uk/scrapbook/test.html}}
+\citep{test-turing-website}
 
 En los últimos años varias aplicaciones se han beneficiado de esta área, desde
 programas relacionados con la detección fraudulenta de transacciones con tarjeta
@@ -80,7 +80,7 @@ del análisis y exploración. Es por eso que no pueden ser evaluados basándose 
 exactitud o precisión, si no más bien en la cantidad de información que podamos
 extraer de los datos a partir del uso de estas técnicas. Algo a considerar es la
 facilidad para disponer de estos datos (en comparación a los no supervisados) al
-no requerir ningún tipo de supervisión humana.
+no requerir ningún tipo de anotación previa.
 
 \section{Algoritmos de clasificación}
 \label{lit:algorithms}
@@ -90,8 +90,8 @@ preocuparnos inicialmente por la manera en que los ejemplares están codificados
 con excepción de las etiquetas. Es decir para un conjunto de entrenamiento
 $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$ la codificación de los
 $\vect{x}_i's$ será irrelevante por el momento. La únicas restricciones que se
-pedirán es que sean vectores numéricos. Los $y_i's$ aparte de ser numérico debe
-ser categórico dado que trataremos con algoritmos de clasificación.
+pedirán es que sean vectores numéricos. Los $y_i's$ aparte de ser numéricos, deben
+ser categóricos, dado que trataremos con algoritmos de clasificación.
 
 El objetivo principal de un clasificador es aproximar una función no conocida
 $f$ a partir de un modelo $h: \mathbb{R}^D \rightarrow \{c_1,.., c_k\}$ la cual
@@ -127,7 +127,7 @@ Una posible función de decisión podría estar definida como $d(t) = c_1$ si $t
 \geq 0$, $d(t) = c_2$ caso contrario. Por lo tanto la frontera de decisión queda
 definida por la relación $h_{\vect{w}, w_0}\left( \vect{x} \right) = 0$ y
 corresponde a un hiperplano de ($D-1$ dimensiones) en uno de $D$ dimensiones. El
-sesgo $w_0$ desplaza el hiperplano del origen coordenados de $D$. Un ejemplo de
+sesgo $w_0$ desplaza el hiperplano del origen de coordenadas de $D$. Un ejemplo de
 pares de puntos separados por un hiperplano (en este caso una recta) se muestra
 en la figura \ref{fig:linear_model_boundary}.
 
@@ -204,7 +204,7 @@ Donde $a_k = \ln p\left( \vect{x} | c_k \right) p\left( c_k \right)$. La funció
 $\frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j}$ es conocida como la función
 \emph{softmax} ya que es una versión suavizada de la función $max$ en el sentido
 de si $a_k >> a_j$ para todo $j \neq k$ entonces $p(c_k | \vect{x}) \approx 1$ y
-$p(c_j | \vect{x} \approx 0)$.
+$p(c_j | \vect{x}) \approx 0$.
 
 \subsection{Función de costo}
 
@@ -256,34 +256,34 @@ $\alpha$ conocida como la \emph{taza de aprendizaje}.
 En cada iteración se realiza la operación de la ecuación actualizando
 $\vect{w}$. Dado a que $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$
 disminuirá y eventualmente la función de costo $J$ convergerá a su valor mínimo
-en $T$ iteraciones. Algo a notar es que la ecuación \ref{eq:gradient_descent},
+en $T$ iteraciones. Algo a notar es que en la ecuación \ref{eq:gradient_descent},
 al ser una operación vectorial, cada componente se actualiza simultáneamente. La
 figura \ref{fig:gradient_descent} muestra la intuición detrás de este método
 utilizando el error cuadrático medio como función de costo.
 
 El método de descenso por el gradiente es también llamado el optimizador de la
-función de costo. En la literatura hay varias variantes de este método que
+función de costo. En la literatura hay muchas variantes de este método que
 llevan a optimizadores más complejos y eficientes, tales como \emph{adam},
 \emph{descenso por el gradiente estocástico}, entre otros.
 
 \subsection{Sobreajuste (overfitting)}
 
-Una vez optimizado la función de costo y haber encontrado los configuración de
-$\vect{w}$ que minimiza la función de costo se pueden utilizar estos pesos
-aprendidos para hacer predicciones de ejemplos no antes visto en el proceso de
-entrenamiento. Sin embargo, algo que suele ocurrir al utilizar solamente la
-función de costo para optimizar modelos de machine learning, es que tienden a
-sobreajustar los datos de entrenamiento reduciendo su error pero obteniendo
-malas predicciones en estos nuevos ejemplares. Por lo general, suele asociarse
-con la magnitud de los coeficientes en $\vect{w}$ siendo muy alta para estos
-casos. Otras razones de esto suele ser la dimensión de $\vect{w}$. En cuanto
-mayor la cantidad de parámetros de ajuste, existen más chances de que el modelo
-de machine learning memorice los datos de entrenamiento. Para solucionar esto se
-suele recurrir a varias técnicas con el fin de obtener modelos sencillos pero
-que logren generalizar la tarea que se está queriendo clasificar. Uno de ellos
-es agregar a la función de costo un \emph{término de regularización} sobre las
-componentes de $\vect{w}$ para lidiar el problema de su magnitud. Por ejemplo
-para el error cuadrático medio:
+Una vez optimizado la función de costo y haber encontrado la configuración de
+pesos $\vect{w}$, se pueden utilizar estos pesos aprendidos para hacer
+predicciones de ejemplos no antes vistos en el proceso de entrenamiento. Sin
+embargo, algo que suele ocurrir al utilizar solamente la función de costo para
+optimizar modelos de aprendizaje automático, es que tienden a sobreajustar los
+datos de entrenamiento reduciendo su error pero obteniendo malas predicciones en
+estos nuevos ejemplares. Por lo general, suele asociarse con la magnitud de los
+coeficientes en $\vect{w}$ siendo muy alta para estos casos. Otras razones de
+esto suele ser la dimensión de $\vect{w}$. En cuanto mayor la cantidad de
+parámetros de ajuste, existen más chances de que el modelo de aprendizaje
+automático memorice los datos de entrenamiento. Para solucionar esto se suele
+recurrir a varias técnicas con el fin de obtener modelos sencillos pero que
+logren generalizar la tarea que se está queriendo clasificar. Uno de ellos es
+agregar a la función de costo un \emph{término de regularización} sobre las
+componentes de $\vect{w}$ para penalizar el modelo si la magnitud $\vect{w}$
+crece demasiado. Por ejemplo para el error cuadrático medio:
 
 \begin{align}
     J(\vect{w}) = \frac{1}{2n} \sum_{i=1}^{n}\left( h_{\vect{w}}\left( \vect{x}_{i}\right) - y \right) +
@@ -315,7 +315,7 @@ las etiquetas de las clases $c_1$ y $c_2$, como $0$ y $1$, ya que permite
 algunas simplificaciones en la definición de su función de costo.
 
 De esta manera podemos pensar la etiqueta $y$ como observaciones discretas de
-una distribución bernoulli.
+una distribución Bernoulli.
 
 \begin{align}
     & p(y = 1 | \vect{x}) = h_{\vect{w}}(\vect{x}) \\
@@ -380,7 +380,7 @@ predictivos. Estas áreas incluyen, entre otras el procesamiento del habla, la
 visión por computadoras, el procesamiento del lenguaje natural y la toma de
 decisiones y control en agentes situados.
 
-El término surge bajo los intentos de definir un modelo matemático de una red
+El término surge bajo de los intentos de definir un modelo matemático de una red
 neuronal biológica \citep{McCulloch-Pitts-1990}. No obstante, enfocaremos
 nuestra atención en un tipo especifico de red neuronal reconocida por su alto
 valor práctico, denominado \emph{perceptrón multicapa}.
@@ -557,14 +557,13 @@ dejando invariantes los positivos.
 El modelo y procedimiento definido en las secciones
 \ref{subch:multi_layer_perceptron}, \ref{subch:backpropagation}, conforman una
 de las variantes más simples de una red neuronal multicapa. En particular
-existen formas de alterar este proceso que aportan permiten dar cierta
-flexibilidad al predictor en algunas circunstancias. Una de ellas es la
-posibilidad de ``apagar`` neuronas aleatoriamente con el fin de evitar el
-overfitting. Por lo general a mayor cantidad de capas y neuronas, hay más
-posibilidad de memorizar los datos de entrenamiento y obtener no muy buenos
-resultados en ejemplares nuevos. Es por eso que este método, denominado
-\emph{dropout}, puede reducir la complejidad del modelo cada ciertos tramos en
-el proceso de entrenamiento.
+existen formas de alterar este proceso que permiten dar cierta flexibilidad al
+predictor en algunas circunstancias. Una de ellas es la posibilidad de
+``apagar`` neuronas aleatoriamente con el fin de evitar el sobreajuste. Por lo
+general a mayor cantidad de capas y neuronas, hay más posibilidad de
+sobreajustar el conjunto de entrenamiento. Es por eso que este método,
+denominado \emph{dropout}, puede reducir la complejidad del modelo dinámicamente
+durante el proceso de entrenamiento.
 
 Otra variante es el uso de \emph{batches} al actualizar $\vect{w}$ recopilando
 el error de varios ejemplares para su posterior propagación a diferencia de
@@ -583,14 +582,15 @@ Boosting en inglés), un modelo de \emph{ensemble} que consiste en combinar la
 respuesta de varios modelos para obtener una final. Es decir, en lugar de
 consultar la predicción de un modelo, $K$ de ellos son utilizados. Este tipo de
 heurísticas y en particular la de XGBoost han sido enormemente utilizadas por
-científico de datos siendo el estado del arte en múltiples problemas de
-aprendizaje automático. Desde comparaciones en \emph{benchmarks} hasta
-competencias como Netflix prize, Kaggle, y KDDCup.
+científicos de datos siendo el estado del arte en múltiples problemas de
+aprendizaje automático. Desde obtener un gran desempeño en \emph{benchmarks},
+hasta lograr los primeros puestos en competencias de aprendizaje automático como
+Netflix prize, Kaggle, y KDDCup.
 
 Otro de los aspectos importantes detrás del éxito de XGBoost es su escalabilidad
 en todo tipo de escenarios, siendo muy rápido para manejar consultas de billones
 de ejemplos en dominios donde se cuenta con una cantidad limitada de recursos.
-Esto motivo aún más su uso en esta tesis, principalmente por la necesidad de
+Esto motivó aún más su uso en esta tesis, principalmente por la necesidad de
 modelos con un rápido tiempo de respuesta durante el proceso de grounding
 heurístico.
 
@@ -602,9 +602,8 @@ iniciativa de que se complementen entre sí. Por ejemplo, supongamos que queremo
 averiguar si una persona le gusta un videojuego de computadora. Los datos de
 entrada serían vectores cuyas componentes representen su edad y la frecuencia en
 la que utilizan el ordenador. Si mantenemos dos árboles para cada una de estas
-componentes podemos complementar sus respuestas figura (figura
-\ref{fig:xgboost_tree}) que en lugar de tener solo uno (figura
-\ref{fig:xgboost_two_tree}).
+componentes podemos complementar sus respuestas (figura \ref{fig:xgboost_tree})
+en lugar de tener solo uno (figura \ref{fig:xgboost_two_tree}).
 
 \begin{figure}
     \centering
@@ -624,7 +623,7 @@ componentes podemos complementar sus respuestas figura (figura
 \end{figure}
 
 Nuevamente consideremos un conjunto de datos etiquetados $\{(\vect{x}_1, y_1),
-..., (\vect{x}_n, y_n)\}$ donde cada $\{\vect{x}_i \in \mathbb{R}^{D}\}$. Un
+..., (\vect{x}_n, y_n)\}$ donde cada $\vect{x}_i \in \mathbb{R}^{D}$. Un
 modelo de \emph{ensemble} del tipo \emph{boosting tree} puede escribirse
 matemáticamente como una suma de $K$ funciones que dependan de un ejemplo
 $\vect{x}_i$.
@@ -640,13 +639,14 @@ parámetros del modelo?.
 
 Debemos representar matemáticamente la estructura del árbol que asigne un
 ejemplo de entrada $\vect{x}$ a una correspondiente hoja y por ende a un puntaje
-como vimos en la figura X. Los parámetros a encontrar son tales puntajes y se
-suele referir a ellos como los pesos del modelo. Otro factor importante es la
-manera en que se determina la estructura que debe tener cada árbol.
+como vimos en las figuras \ref{fig:xgboost_tree}, y \ref{fig:xgboost_two_tree}.
+Los parámetros a encontrar son tales puntajes y se suele referir a ellos como
+los pesos del modelo. Otro factor importante es la manera en que se determina la
+estructura que debe tener cada árbol.
 
 Formalmente $\mathcal{F} = \{f(\vect{x}) = w_{q\left( \vect{x} \right)}\}$ donde
 $q : \mathbb{R}^{D} \rightarrow T$ y $\vect{w} \in \mathbb{R}^{T}$. Aquí $q$
-representa el mapeo de un ejemplo $\vect{x}$ una hoja en el árbol. $T$ es el
+representa el mapeo de un ejemplo $\vect{x}$ a una hoja en el árbol. $T$ es el
 número de hojas de este último. Y $w_{q\left( \vect{x} \right)}$ es una
 componente de $\vect{w}$ que representa el puntaje asociado al ejemplo
 $\vect{x}$ según la estructura del árbol determinada por $q$.
@@ -654,7 +654,7 @@ $\vect{x}$ según la estructura del árbol determinada por $q$.
 Luego como los modelos vistos hasta ahora, para determinar los pesos $\vect{w}$
 y la estructura del árbol es necesario definir una función objetivo a minimizar
 compuesta por una función de costo y su regularización. No obstante, aprender la
-estructura es mucho más complejo que solo utilizar algún método del tipo
+estructura es mucho más complejo que sólo utilizar algún método del tipo
 descenso por el gradiente. Es por eso que la estrategia utilizada por los
 algoritmos de \emph{boosting} es agregar de manera iterativa un nuevo árbol a lo
 aprendido, en particular, aquellos árboles que optimicen algún objetivo. Esto da
@@ -737,7 +737,7 @@ performance son los de las ecuaciones \ref{eq:xgboost-best-w} y
 \end{align}
 
 En resumen, para una estructura de árbol dada, cada ejemplo es evaluado
-asignandole una hoja. Se recopilan los ejemplos que pertenecen a cada una de
+asignándole una hoja. Se recopilan los ejemplos que pertenecen a cada una de
 ellas y se penaliza según los estadisticos $g_i$ y $h_i$ y finalmente obtener el
 error cometido por el árbol $\mathcal{L^{*}}$. Aquel árbol que tenga menor error
 es el mejor para ser incluido en la iteración actual.
@@ -745,13 +745,13 @@ es el mejor para ser incluido en la iteración actual.
 \section{Codificación de características}
 
 Una vez revisado los modelos de aprendizaje, otro factor importante para obtener
-un buen modelo de machine learning es la representación de los datos de entrada.
-Preparar los ejemplares para acoplarse apropiadamente a un algoritmo con el fin
-de mejorar la performance del modelo es una de las tareas las cuales los
-científicos de datos disponen la mayor parte de su atención y tiempo. Alguna de
-las obligaciones que incluye son la imputación de valores faltantes, manejo de
-valores atípicos, estandarización y escalado, transformación de características
-numéricas a categóricas, y codificación.
+un buen modelo de aprendizaje automático es la representación de los datos de
+entrada. Preparar los ejemplares para acoplarse apropiadamente a un algoritmo
+con el fin de mejorar la performance del modelo es una de las tareas que
+los científicos de datos disponen la mayor parte de su atención y tiempo. Alguna
+de las obligaciones que incluye son la imputación de valores faltantes, manejo
+de valores atípicos, estandarización y escalado, transformación de
+características numéricas a categóricas, y codificación.
 
 En particular pondremos nuestro foco en la codificación de características
 desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
@@ -761,20 +761,20 @@ desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
 
 A menudo los datos disponibles presentan características que no están dadas en
 un espacio continuo si no más bien categórico. Por ejemplo, se podría describir
-el continente de un país por las clases \emph{inAsia}, \emph{inAfrica},
-\emph{inEurope}, \emph{inSouthAmerica}, \emph{inNorthAmerica} siendo
-eficientemente representables con enteros $[0, 1, 2, 3, 4]$. De esta manera, si
-tenemos un variable que puede tomar una serie de valores categóricos, entonces
-se puede enumerar cada uno de sus objetos. Esta representación es conocida como
-\emph{ordinal encoder}.
+el continente de un país por las clases \emph{enAsia}, \emph{enAfrica},
+\emph{enEurope}, \emph{enAmerica}, \emph{enOceanía}, \emph{enAntártida} siendo
+eficientemente representables con enteros $[0, 1, 2, 3, 4, 5]$. De esta manera,
+si tenemos un variable que puede tomar una serie de valores categóricos,
+entonces se puede enumerar cada uno de sus objetos. Esta representación es
+conocida como \emph{ordinal encoder}.
 
 \begin{equation*}
     \begin{bmatrix}
-         & inContinent\\
+         & enContinente\\
         Argentina & 3 \\
         Brasil & 3 \\
-        España & 2 \\
-        USA & 4  \\
+        Espa\tilde{n}a & 2 \\
+        USA & 3  \\
         Italia & 2 
     \end{bmatrix}
 \end{equation*}
@@ -791,17 +791,21 @@ lenguaje natural. Supongamos que tenemos los documentos.
     $D_2$: ``La tierra es un planeta.``    
 \end{center}
 
-Basado en  estos dos textos, un vocabulario de 9 palabras distintas es
-construido. Por lo tanto cada documento es representado como un vector de 9
+Basado en  estos dos textos, un vocabulario de 10 palabras distintas es
+construido. Por lo tanto cada documento es representado como un vector de 10
 dimensiones.
 
-\begin{equation*}
-    \begin{bmatrix}
-        & El & sol & es & una & estrella & no & un & planeta & tierra \\
-        D_1 & 1 & 1 & 2 & 1 & 1 & 1 & 1 & 1 & 0  \\
-        D_2 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 
-    \end{bmatrix}
-\end{equation*}
+\begin{table}[H]
+    \centering
+    \scalebox{0.9}{
+     \begin{tabular}{||c | c | c | c | c | c | c | c | c | c | c ||} 
+     \hline
+      -  & El & sol & es & una & estrella & no & un & planeta & la & tierra \\ [0.5ex] \hline\hline
+      $D_1$ & 1 & 1 & 2 & 1 & 1 & 1 & 1 & 1 & 0 & 0  \\
+      $D_2$ & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 1 \\ [1ex]
+      \hline
+     \end{tabular}}
+\end{table}
 
 Observar que para este caso una codificación ordinal no sería adecuada dado que
 se deberían enumerar todas las palabras del vocabulario.
@@ -824,7 +828,7 @@ sea por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
 vectorial al cual se proyectan. Por ejemplo, si tenemos las oraciones: ``Que
 tengas una buena mañana`` y ``Que tengas una buena tarde``. Difieren
 semánticamente solo por las palabras ``mañana`` y ``tarde``. No obstante, se
-utilizan en contextos similares, lo cual esperaríamos que estén cercanas
+utilizan en contextos similares, con lo cual esperaríamos que estén cercanas
 vectorialmente.
 
 Otro ejemplo muy famoso que deja en evidencia el concepto de \emph{analogía} en
@@ -851,7 +855,7 @@ substraer el caracter masculino del vector \emph{man} y agregar las de
 \emph{woman} esperando que se aproximen a las de \emph{queen}.
 Sorprendentemente, de un total de 400000 palabras sobre las cuales se realizó el
 experimento, reina fue la palabra más cercana. Los detalles del mismo se pueden
-ver desde \footnote{\url{https://jalammar.github.io/illustrated-word2vec/}}.
+ver desde \citep{jalammar-website}.
 
 \begin{figure}
     \centering

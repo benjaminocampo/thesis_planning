@@ -57,7 +57,7 @@ y la importancia que tuvieron para guiar futuros experimentos.
 
 En primer lugar, se necesito asignar la configuración para la construcción de
 las ventanas y planes relajados.  Observamos que por lo general los planes
-relajados del conjunto de entrenamiento suelen tener entre $3$ a $10$ acciones.
+relajados del conjunto de entrenamiento tienen entre $3$ y $10$ acciones.
 Nuestro algoritmo debe ser capaz de generalizar para ejemplos de entrenamientos
 no antes visto, por lo que el preprocesamiento que realicemos sobre estos datos
 debe ser orientado a reducir las discrepancias entre un ejemplo nuevo y los que
@@ -76,7 +76,7 @@ penalizado si no logra predecir todas las acciones relevantes para obtener un
 plan, y si no logra filtrar una cantidad aceptable de acciones no relevantes.
 
 Recordemos que para evaluar los modelos, generamos las predicciones a nivel de
-ventana de plan relajado y acción. No obstante, buscamos predecir si una acción
+ventana de plan relajado y acción. Pero, buscamos predecir si una acción
 es relevante dada la información del plan relajado completo, por lo que es
 necesario agrupar las predicciones que cada ventana realizó sobre esa acción.
 Por ejemplo, supongamos que tenemos $M$ ventanas de un plan relajado $\vec{a}$
@@ -103,7 +103,7 @@ utilizados para cada algoritmo en este experimento:
 \emph{C} & \verb|[1, 0.1, 0.01]| \\
 \emph{class\_weight} & \verb|[balanced]|  \\
 \emph{solver} & \verb|[saga]|  \\
-\emph{max\_iter} & \verb|[1000 10000]| \\
+\emph{max\_iter} & \verb|[1000, 10000]| \\
 \emph{random\_state} & \verb|[0]| \\
 \emph{l1\_ratio} & \verb|[0, 1]|
 \end{conditions}
@@ -151,7 +151,7 @@ Los parámetros que seleccionamos siempre buscaban plantear variantes en la
 función de costo a optimizar, el tipo de optimizador, y métodos para evitar el
 sobreajuste. En particular, seguimos como guía valores comunes que la comunidad
 de aprendizaje automático suele utilizar para estos modelos,  la experiencia
-transmitida por el ´boca a boca´, y conocimientos tanto del área de planning
+transmitida por el ´´boca a boca´´, y conocimientos tanto del área de planning
 como del funcionamiento interno de los modelos utilizados. 
 
 En el caso de la regresión logística, los parámetros \emph{penalty},
@@ -163,7 +163,7 @@ requiere el algoritmo para converger. Por último, \emph{class\_weight} permite
 configurar el modelo de tal manera que balancee la cantidad de ejemplares
 positivos y negativos del material de entrenamiento. Este último es importante
 para nosotros ya que nuestro conjunto de entrenamiento está desbalanceado,
-teniendo una mayor cantidad de good operators que de bad operators por problema.
+teniendo una mayor cantidad de bad operators que de good operators por problema.
 
 XGBoost requiere que se le especifiquen la cantidad de árboles a ensamblar con
 \emph{n\_estimators}, la fuerza del parámetro de regularización \emph{gamma}, y
@@ -190,8 +190,7 @@ que den buenos resultados en esos esquemas.
 
 Empecemos por el esquema de acción \verb|take_image| con el cual obtuvimos
 mejores resultados. De los 3 modelos regresión logística (LGR), xgboost (XGB), y
-redes neuronales (NN), el que mejor comportamiento que obtuvimos fue con la
-regresión logística. 
+redes neuronales (NN), LGR resultó el de mejor comportamiento.
 
 \begin{figure}[t!]
     \centering
@@ -259,7 +258,7 @@ entrenamiento con el fin de determinar si el modelo de LGR es robusto ante
 cambios, lo cual podemos decir que indudablemente fue este el caso en las 5
 particiones.
 
-Si observamos la matriz de confusión del modelo por cada partición dada por la
+Si observamos la matriz de confusión del modelo por cada partición dada en la
 figura \ref{fig:takeimage-bestmodel-cm}, podemos ver que en cada uno, más del
 90\% de las acciones positivas se predicen como positivas, y más del 63\% de las
 negativas se predicen como negativas. La función de decisión se obtiene a partir
@@ -271,7 +270,7 @@ $H_{1.5}$.
 
 Los resultados anteriores fueron sobre 5 particiones del conjunto de
 entrenamiento donde una parte efectivamente se utilizaba para entrenar el modelo
-y otra para su evaluación. Sin embargo, lo que buscamos es que esto mismo se
+y otra para su evaluación. Sin embargo, lo que buscamos es que lo aprendido se
 logre generalizar a problemas no instanciables. Por lo tanto, la evaluación
 final la realizamos sobre el conjunto de test.
 
@@ -308,17 +307,19 @@ gran parte de ellas se le asigna una alta probabilidad. Estas acciones también
 serían ubicadas al comienzo de la cola de prioridades y por lo tanto
 instanciadas. Si observamos la matriz de confusión en la figura
 \ref{fig:takeimage-bestmodel-cm-test}, la proporción de acciones relevantes se
-mantiene en un 91\%, mientras que esta vez un 67\% de las no relevantes se
-filtran como positivas, cabe recalcar que esta vez, el umbral de decisión en
+mantiene en un 91\%, mientras que esta vez solo un 33\% de las negativas se
+predicen como negativas. Cabe recalcar que esta vez, el umbral de decisión en
 test es el promedio de los umbrales obtenidos en validación cruzada. El objetivo
 era aprender un umbral que sea lo más óptimo para predecir nuevos ejemplos,
-utilizando únicamente información de los datos de entrenamiento. Podríamos haber
-utilizado un umbral de decisión a partir de las etiquetas de test, no obstante
+utilizando únicamente información de los datos de entrenamiento. Por lo que se
+utilizó el promedio de los umbrales de validación cruzada siendo este un valor
+que toma en cuenta los umbrales de las 5 particiones. Podríamos haber
+utilizado un umbral de decisión a partir de las etiquetas de test, pero
 tal predicción representaría la performance máxima o ideal que podríamos obtener
 en test, y no la que realmente estamos obteniendo con información del conjunto
 de entrenamiento.
 
-Si observamos la matriz de confusión de la figura
+Observemos la matriz de confusión de la figura
 \ref{fig:takeimage-bestmodel-cm-raw-test} del modelo LGR, pero esta vez sin
 normalizar por porcentajes. Se puede ver que LGR tiende a predecir ligeramente
 sobre la clase positiva, pero además es la mayoritaria en test para este
@@ -344,7 +345,7 @@ obtendriamos una performance de 0.8826 para LGR. Sin embargo, no es un buen
 indicio de la correctitud del modelo en la clase negativa. En contraparte, si en
 lugar de considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.589
 debido a que esta métrica penaliza si se tiene un baja en la taza de verdaderos
-negativos.
+negativos. Esto se debe a que 
 
 
 \begin{table}[t!]
@@ -591,7 +592,7 @@ a las que no lo son. Sin importar en que parte del intervalo $[0;1]$ se asignen
 las probabilidades. Mientras se respete el orden que necesitamos para ubicar las
 acciones en la cola de prioridades, entonces podemos considerarlo como un buen
 modelo. Es por eso la razón por la que el umbral de decisión tampoco se mantiene
-fijo, y varia de acuerdo a $H_{beta}$. Para este problema el umbral es una
+fijo, y varia de acuerdo a $H_{\beta}$. Para este problema el umbral es una
 manera de cuantificar esta idea más cualitativa que buscamos en grounding
 heurístico pero que es determinante en la elección del modelo de aprendizaje.
 
@@ -601,31 +602,34 @@ manera similar al de \emph{take\_image}.
 \section{Otros experimentos}
 
 Los experimentos presentados en las secciones \ref{exp:ad-hoc}, \ref{exp:wb},
-fueron aquellos principales y los que nos enfocamos durante la tesis. No
-obstante, se intentaron otras vías de análisis que llevaron a 4 experimentos con
-el fin de lograr aquel modelo que nos permita guiar el proceso de grounding. A
-pesar de no lograr resultados concretos fueron parte importante del trabajo y
-otorgaron conocimiento invaluable para involucrarse más en el dominio del
-problema.
+fueron el principal eje de la tesis. No obstante, se intentaron otras vías de
+análisis que llevaron a muchos más experimentos con el fin de lograr aquel
+modelo que nos permita guiar el proceso de grounding. A pesar de no lograr
+resultados concretos fueron parte importante del trabajo y otorgaron
+conocimiento invaluable para involucrarse más en el dominio del problema.
+En esta sección mencionaremos algunos de ellos.
 
 \subsection{Modelos end-to-end}
 
-Los modelos End-to-end (E2E) refieren a sistemas complejos representados por un único
-modelo neuronal profundo ensamblando las capas de preprocesamiento como capas
-intermedias del modelo. En particular, este tipo de pruebas se realizaron en una
-etapa temprana de la tesis donde la idea de generar ventanas de planes relajados
-aún no se había investigado. En particular, se experimentaron con modelos E2E de
-FastText donde agrega una capa neuronal más al modelo de embeddings para que
-sean utilizados en clasificación. No obstante, se optó por descontinuar estos
-experimentos al comenzar ya que fueron experimentos prototipos donde se buscaba
-verificar la factibilidad del uso de word embeddings en grounding heurístico.
+Los modelos End-to-end (E2E) refieren a sistemas complejos representados por un
+único modelo neuronal profundo ensamblando las capas de preprocesamiento como
+capas intermedias del modelo. En particular, este tipo de pruebas se realizaron
+en una etapa temprana de la tesis donde la idea de generar ventanas de planes
+relajados aún no se había investigado. En particular, se experimentaron con
+modelos E2E de FastText donde se agrega una capa de predicción \emph{sigmoide} o
+\emph{softmax} al modelo de embeddings para que sean utilizados en
+clasificación. No obstante, se optó por descontinuar estos experimentos por no
+haber mostrado buenos resultados iniciales. Fueron experimentos prototipos donde
+se buscaba verificar la factibilidad del uso de word embeddings en grounding
+heurístico. De todas formas, a la luz de lo aprendido en el marco de la tesis,
+es quizás una tarea interesante para trabajo futuro revisitar esta idea.
 
 \subsection{El problema de inclusión sobre planes relajados}
 
 Otra estrategía que utilizamos durante el análisis en la generación de ventanas
 de planes relajados, fue plantear el problema de clasificación binaria como uno
-multiclase. En lugar de solo 2 clases, manteníamos 4 que representaban la noción
-de si una acción estaba incluida en el plan relajado y si eran parte de los good
+multiclase. En lugar de sólo 2 clases, manteníamos 4 que representaban la noción
+de si una acción pertenecía al plan relajado, y si era parte de los good
 operators del problema. Es decir, una ventana de plan relajado $w$ y acción $a$
 es etiquetada como:
 
@@ -644,6 +648,11 @@ sucesivamente hasta la clase $0$.
 De esta manera obteniamos un resultado similar a la agregación por el máximo que
 realizamos en los experimentos. Es decir, si una acción es relevante dada una
 ventana del plan relajado, entonces debe serlo dado el plan completo.
+
+Esta idea agrega como información adicional si la acción está en el plan
+relajado o no, con la hipótesis de que una acción en el plan relajado tiene más
+chances de estar en el plan original. Sin embargo, esto no pareció resultar en
+buena performance.
 
 \subsection{Mayorización}
 

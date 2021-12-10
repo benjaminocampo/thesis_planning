@@ -29,26 +29,23 @@ programas relacionados con la detección fraudulenta de transacciones con tarjet
 de crédito \citep{Fang-2021}, sistemas de recomendación que guían usuarios en un
 servicio de acuerdo a sus preferencias \citep{Burke-2007}, o incluso vehículos
 que se manejan sin necesidad de la intervención del conductor
-\citep{Sorin-2019}. Al mismo tiempo, una importante cantidad de avances teóricos
-y algorítmicos se fueron realizando formando las bases de este campo.
-
-Aún con estos increíbles logros, no se conoce como crear computadoras que
-aprendan al nivel que las personas lo hacen. No obstante, se han desarrollado
-algoritmos que se han aproximado a este objetivo siendo efectivos para varios
-tipos de problemas.
+\citep{Sorin-2019}. Incluso en algúnas tareas de reconocimiento de patrones el
+aprendizaje automático ha logrado obtener tazas menores al error húmano
+\citep{niklas-et-al-2020}. Al mismo tiempo, una importante cantidad de avances
+teóricos y algorítmicos se fueron realizando formando las bases de este campo. 
 
 \section{Aprendizaje supervisado}
 
 El aprendizaje supervisado es una subárea del aprendizaje automático cuyo
 objetivo es deducir un modelo a partir de datos anotados que permita mapear
 ejemplos no vistos previamente. Esta información está compuesta por un conjunto
-de ejemplares y sus correspondientes etiquetas, en ocasiones dada por un
-anotador humano, que indica el resultado esperado del modelo a partir del dato
+de ejemplares y sus correspondientes etiquetas. En ocasiones, dada por un
+anotador humano que indica el resultado esperado del modelo a partir del dato
 como entrada. Las etiquetas pueden ser categóricas o continuas determinando un
-problema de clasificación o regresión. Algunas tareas más frecuentes de
-clasificación son la categorización de documentos, reconocimiento de lenguaje
-ofensivo, o análisis de sentimiento. Mientras que para regresión, lo son las
-estimaciones de precios de artículos, objetos, o viviendas.
+problema de clasificación o regresión, respectivamente. Algunas tareas más
+frecuentes de clasificación son la categorización de documentos, reconocimiento
+de lenguaje ofensivo, o análisis de sentimiento. Mientras que para regresión, lo
+son las estimaciones de precios de artículos, objetos, o viviendas.
 
 El resultado de ejecutar un algoritmo de machine learning supervisado se puede
 expresar como una función $f(\vect{x})$ que recibe un ejemplar $\vect{x}$ como
@@ -263,8 +260,9 @@ utilizando el error cuadrático medio como función de costo.
 
 El método de descenso por el gradiente es también llamado el optimizador de la
 función de costo. En la literatura hay muchas variantes de este método que
-llevan a optimizadores más complejos y eficientes, tales como \emph{adam},
-\emph{descenso por el gradiente estocástico}, entre otros.
+llevan a optimizadores más complejos y eficientes, tales como \emph{descenso por
+el gradiente estocástico}\citep{Kiefer-1952}, \emph{Adam} \citep{kingma-adam-2017}, \emph{NAdam}
+\citep{zhang-2018}, entre otros.
 
 \subsection{Sobreajuste (overfitting)}
 
@@ -401,7 +399,7 @@ Notar además que se puede pensar está red neuronal simple como un modelo de
 regresión logística si la función de activación es la sigmoide, es decir, si $g
 = \sigma$.
 
-\subsection{Perceptrón multicapa}
+\subsubsection{Perceptrón multicapa}
 \label{subch:multi_layer_perceptron}
 
 Este modelo puede describirse como una serie de transformaciones similares a la
@@ -470,7 +468,7 @@ propagation} en inglés), que transmite la información a través de la red. Por
 último, algo a notar son las componentes $w_{j0}^{(1)}$ y $w_{k0}^{(2)}$ que se
 corresponden con el sesgo de los modelos lineales.
 
-\subsection{Backpropagation}
+\subsubsection{Backpropagation}
 \label{subch:backpropagation}
 
 Una vez determinado explícitamente el modelo, es necesario encontrar el vector
@@ -501,7 +499,7 @@ En resumen el algoritmo de aprendizaje de una red neuronal consiste en:
     \item Repetir los pasos para cada ejemplo de entrada.
 \end{itemize}
 
-\subsection{Funciones de activación}
+\subsubsection{Funciones de activación}
 
 Hasta el momento no mencionamos la forma de la función de activación $g$ siendo
 la protagonista para obtener un modelo no lineal. Algunas de las funciones más
@@ -552,7 +550,7 @@ mapeando valores reales al rango $[-1, 1]$ como se muestra en la ecuación
 En el caso de la \emph{ReLU} cumple el rol de quitar los valores negativos
 dejando invariantes los positivos.
 
-\subsection{Variantes de arquitectura y métodos de entrenamiento}
+\subsubsection{Variantes de arquitectura y métodos de entrenamiento}
 
 El modelo y procedimiento definido en las secciones
 \ref{subch:multi_layer_perceptron}, \ref{subch:backpropagation}, conforman una
@@ -578,14 +576,14 @@ una dimensión por sobre otra.
 \label{alg:xgboost}
 
 El ultimo modelo de aprendizaje que veremos es \emph{XGBoost} (eXtreme Gradient
-Boosting en inglés), un modelo de \emph{ensemble} que consiste en combinar la
-respuesta de varios modelos para obtener una final. Es decir, en lugar de
-consultar la predicción de un modelo, $K$ de ellos son utilizados. Este tipo de
-heurísticas y en particular la de XGBoost han sido enormemente utilizadas por
-científicos de datos siendo el estado del arte en múltiples problemas de
-aprendizaje automático. Desde obtener un gran desempeño en \emph{benchmarks},
-hasta lograr los primeros puestos en competencias de aprendizaje automático como
-Netflix prize, Kaggle, y KDDCup.
+Boosting en inglés) \citep{Chen-2016}, un modelo de \emph{ensemble} que consiste
+en combinar la respuesta de varios modelos para obtener una final. Es decir, en
+lugar de consultar la predicción de un modelo, $K$ de ellos son utilizados. Este
+tipo de heurísticas y en particular la de XGBoost han sido enormemente
+utilizadas por científicos de datos siendo el estado del arte en múltiples
+problemas de aprendizaje automático. Desde obtener un gran desempeño en
+\emph{benchmarks}, hasta lograr los primeros puestos en competencias de
+aprendizaje automático como Netflix prize, Kaggle, y KDDCup.
 
 Otro de los aspectos importantes detrás del éxito de XGBoost es su escalabilidad
 en todo tipo de escenarios, siendo muy rápido para manejar consultas de billones
@@ -1119,8 +1117,8 @@ prioridad), $1.5$ (priorizar recall).
 variante de la $F_{\beta}$, que denominamos $H_{\beta}$, permitiendo lidiar con
 datos desbalanceados. Si la cantidad de datos negativos es mucho mayor que la de
 positivos, la precisión puede verse más comprometida que la recall, al haber más
-oportunidades de cometer un falso positivo. Para solucionar eso, en vez de
-considerar precisión y recall en la ecuación de $F_{\beta}$, se utilizó la
+oportunidades de cometer un falso positivo. Para resolver este problema, en vez
+de considerar precisión y recall en la ecuación de $F_{\beta}$, se utilizó la
 \emph{taza de verdaderos positivos y negativos} (TPR, y TNR).
 
 \begin{align}
@@ -1135,10 +1133,70 @@ negativos. Si el desbalance es sobre los negativos, entonces la métrica no se v
 comprometida. De manera similar a $F_{\beta}$, un valor de $0.5$ prioriza $TNR$,
 de 1 considera un balance entre ambas métricas, y $1.5$ prioriza $TPR$.
 
+\textbf{Matrices de confusión.} En problemas de clasificación, las matrices de
+confusión permiten evaluar la calidad de la clasificación comparando las
+predicciones del modelo, con las etiquetas reales. Por definición, una matriz de
+confusión $C$ es tal que $C_{ij}$ es igual al numero de ejemplos cuya etiqueta
+es $i$, y la predicción es $j$. Por lo tanto para un problema de clasificación
+binaria tenemos que:
+
+\begin{itemize}
+    \item La cantidad de verdaderos negativos (TN) es $C_{0,0}$.
+    \item La cantidad de falsos negativos (FN) es $C_{1,0}$.
+    \item La cantidad de verdaderos positivos (TP) es $C_{1, 1}$.
+    \item La cantidad de falsos positivos (FP) es $C_{0, 1}$
+\end{itemize}
+
+La figura \ref{fig:cm_example_raw} muestra una matriz de confusión para un
+problema de clasificación binaria donde las columnas representan las
+predicciones, y las filas la etiqueta real. Para este ejemplo se pueden observar
+60 TP, 5 FP, 187 TN, y 46 FN.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/cm_example_raw.png}
+    \caption{Ejemplo de matriz de confusión en un problema de clasificación binaria.}
+    \label{fig:cm_example_raw}
+\end{figure}
+
+Para los casos en que tengamos datos desbalanceados, es conveniente normalizar
+la matriz de confusión. Sea una matriz de confusión $C$, definimos $CN$, la
+matriz de confusión normalizada de $C$, tal que $CN_{i,j} =
+\frac{C_{i,j}}{\sum_{j} C_{i, j}}$.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/cm_example_percent.png}
+    \caption{Ejemplo de matriz de confusión normalizada en un problema de clasificación binaria.}
+    \label{fig:cm_example_percent}
+\end{figure}
+
+Para el caso de la figura \ref{fig:cm_example_raw}, cada celda se dividió por la
+cantidad de elementos totales en una fila completa obteniendo la matriz de la
+\ref{fig:cm_example_percent}. De esta manera, podemos comparar los resultados en
+dos categorias distintas aún si estas se encuentran desbalanceadas. En este
+ejemplo observamos que un 57\% de los datos pertenecientes a la clase positiva
+se clasificaron correctamente como positivos, mientras que un 97\% de las
+negativas fueron clasificados como negativas.
+
 \textbf{Gráficos de distribución de predicciones.} Por úĺtimo, la métrica
-estrella de este trabajo son los gráfico de distribución de predicciones. Dado
-que para el algoritmo de grounding heurístico se utilizan las probabilidades
-asignadas a un plan relajado y una acción, un histograma que refleje la
-distribución de las probabilidades asociadas a cada par es excelente para
-determinar si las clases positivas se distribuyen con una probabilidad mayor que
-las negativas.
+estrella de este trabajo son los gráfico de distribución de predicciones. Como
+el algoritmo de grounding heurístico utiliza las probabilidades asignadas a una
+acción dado su plan relajado, un histograma que refleje la distribución de las
+probabilidades asociadas a cada par es excelente para determinar si las clases
+positivas se distribuyen con una probabilidad mayor que las negativas.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/displot_example.png}
+    \caption{Gráfico de distribución de predicciones en un problema de clasificación binaria.}
+    \label{fig:distplot-example}
+\end{figure}
+
+La figura \ref{fig:distplot-example} muestra el gráfico de distribución de
+predicciones para el mismo problema de clasificación binaria que utilizamos para
+explicar las matrices de confusión. Las barras azules representan la clase
+negativa, y las barras naranjas la clase positiva. Se busca que ambas barras
+esten lo más separadas posibles. En particular, que las predicciones cuya clase
+es positiva, tengan asociada una probabilidad cercana a 1, y las predicciones
+cuya clase es negativa, tengan asociada una probabilidad cercana a 0.

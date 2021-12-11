@@ -266,6 +266,34 @@ de optimizar $H_{1.5}$. Es decir, se computa $H_{1.5}$ para distintas funciones
 de decisión con umbral en el intervalo [0, 1] y utilizamos aquel que maximice
 $H_{1.5}$. 
 
+\begin{table}[h!]
+    \centering
+    \scalebox{1}{
+     \begin{tabular}{|c || c | c | c | c | c | c |} 
+     \hline
+      Clase & Fold & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ & Umbral de
+      decisión \\
+     \hline
+     Relevante &  1 & 0.14 & 0.91 & 0.804 & 0.338 & 0.41\\
+     No relevante & 1 & 0.99 & 0.64 & 0.703 & 0.7181 & 0.41 \\
+     \hline
+     Relevante & 2 & 0.095 & 0.93 & 0.822 & 0.251 & 0.42 \\
+     No relevante & 2 & 1 & 0.66 & 0.720 & 0.7371 & 0.42 \\
+     \hline
+     Relevante & 3 & 0.14 & 0.93 & 0.83 & 0.340 & 0.38 \\
+     No relevante & 3 & 0.99 & 0.67 & 0.7295 & 0.744 & 0.38\\
+     \hline
+     Relevante & 4 & 0.12 & 0.9 & 0.797 & 0.300 & 0.43\\
+     No relevante & 4 & 0.99 & 0.63 & 0.6944 & 0.709 & 0.43\\
+     \hline
+     Relevante & 5 & 0.12 & 0.93 & 0.821 & 0.3022 & 0.44 \\
+     No relevante & 5 & 0.99 & 0.65 & 0.7147 & 0.7268 & 0.44 \\
+     \hline
+     \end{tabular}}
+     \caption{Métricas en validación cruzada del modelo LGR con word embeddings.}
+     \label{results:lgr-wb-takeimage-tb}
+\end{table}
+
 \subsubsection{Performance en test}
 
 Los resultados anteriores fueron sobre 5 particiones del conjunto de
@@ -536,7 +564,7 @@ incrementa la cantidad de bad operators, pero las proporciones 70-30\% se
 mantienen, la métrica disminuiria. Sin embargo, en términos de grounding
 heurístico el modelo seguiría desempeñandose correctamente.
 
-\begin{figure}[t!]
+\begin{figure}[h!]
     \minipage{0.50\textwidth}
     \includegraphics[width=\linewidth]{figures/results/ad-hoc/nn/calibrate/2021-12-06_17.03.17.314982_set_1_confusion_matrix_raw.png}
     \endminipage
@@ -560,21 +588,6 @@ heurístico el modelo seguiría desempeñandose correctamente.
 
 \subsubsection{Performance en test}
 
-\begin{figure}[b!]
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate_test.png}
-        \caption{Distribución de predicciones}
-        \label{fig:calibrate-bestmoodel-adhoc-test}
-    \end{subfigure}
-    \begin{subfigure}[b]{\textwidth}
-        \centering
-        \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/NN_cm_test.png}
-        \caption{Matriz de confusión}
-        \label{fig:calibrate-bestmoodel-adhoc-test}
-    \end{subfigure}
-    \caption{Resultados en el conjunto de test para el modelo NN ad-hoc.}
-\end{figure}
 
 Nuevamente, lo que buscamos es que este modelo logre generalizar a problemas no
 instanciables. La figura \ref{fig:calibrate-bestmoodel-adhoc-test} muestra como
@@ -598,6 +611,22 @@ heurístico pero que es determinante en la elección del modelo de aprendizaje.
 
 Por ejemplo, para un umbral de 0.1, podemos ver que el modelo se comporta de
 manera similar al de \emph{take\_image}.
+
+\begin{figure}[h!]
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate_test.png}
+        \caption{Distribución de predicciones}
+        \label{fig:calibrate-bestmoodel-adhoc-test}
+    \end{subfigure}
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/NN_cm_test.png}
+        \caption{Matriz de confusión}
+        \label{fig:calibrate-bestmoodel-adhoc-test}
+    \end{subfigure}
+    \caption{Resultados en el conjunto de test para el modelo NN ad-hoc.}
+\end{figure}
 
 \section{Otros experimentos}
 

@@ -57,21 +57,21 @@ those tasks in which the grounding process cannot be done due to computational
 resources, the planner cannot start searching for a solution since it can't
 generate the grounded task. On the other hand, the search carried out by
 planners is guided by a heuristic function that is obtained from task
-information. In particular, the Fast Downward (FD) system, the framework to
-solve planning tasks most famous and used by the community of planning,
-implements a guided search from plans of a simplified task. These solutions are
-called relaxed plans. Since relaxed plans have been shown to contain the
-information necessary to guide the search process, then it is also possible that
-they can guide the grounding process. In this thesis, we show an alternative
-approach called heuristic grounding that consists of generating only a
-projection of the task when total grounding is not feasible. This process is a
-guided mechanism where We identify the actions that are relevant to find a plan
-using methods of machine learning. As the features of the models, relaxed plans
-were used in the motivation to the heuristic search of FD. Finally, two
-encodings were proposed for the input data of the learning models, ad-hoc
-encoding based on one-hot encodings methods, and word embeddings from the
-natural language processing. The results obtained justify the use of relaxed
-plans to guide the process of grounding.
+information. In particular, the Fast Downward (FD) system, the most famous
+framework in the community of planning to solve planning tasks, implements
+a guided search from plans of a simplified task. These solutions are called
+relaxed plans. Since relaxed plans have been shown to contain the necessary
+information to guide the search process, then it is also possible that they can
+guide the grounding process. In this thesis, we show an alternative approach
+called heuristic grounding that consists of generating only a projection of the
+task when total grounding is not feasible. This process is a guided mechanism
+where we identify the actions that are relevant to find a plan using methods of
+machine learning. As the features of the models, relaxed plans were used in the
+motivation to the heuristic search of FD. Finally, two encodings were proposed
+for the input data of the learning models, ad-hoc encoding based on one-hot
+encodings methods, and word embeddings from the natural language processing. The
+results obtained justify the use of relaxed plans to guide the process of
+grounding.
 
 \textbf{Keywords:} Planning, machine learning, grounding process, linear models, logistic
 regression, XGBoost, neural networks, word embeddings.

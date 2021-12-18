@@ -235,13 +235,8 @@ siguientes definiciones:
     \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$  donde $\mathcal{P}$ es un
     conjunto de predicados, $\mathcal{A}$ es un conjunto de esquemas de acción,
     $\Sigma^{C}$ es un conjunto de símbolos constantes, $\Sigma^{O}$ es un
-    conjunto de variables, $I \subseteq \mathcal{P}$ es el estado inicial, y
-    $G \subseteq \mathcal{P}$ es la meta.
-\end{mydef}
-
-\begin{mydef}
-    Sea $(\mathcal{P}, \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$ una
-    especificación de una tarea STRIPS.
+    conjunto de variables, $I \subseteq \mathcal{P}^{\Sigma^{C}}$ es el estado inicial, y
+    $G \subseteq \mathcal{P}^{\Sigma^{c}}$ es la meta.
 
     \begin{itemize}
         \item Un esquema de acción es una 3-upla $a[X] = (pre(a), add(a),
@@ -251,6 +246,12 @@ siguientes definiciones:
         \item Un predicado es un símbolo atómico de $\mathcal{P}$ de la forma
         $p[X]$ con $X$ un conjunto de variables que ocurren en su interfaz y que
         son parte de $\Sigma^{O}$.
+        \item $\mathcal{P}^{\Sigma^{C}}$ es el conjunto de todos los posibles
+        facts que se pueden instanciar con los predicados en $\mathcal{P}$ a
+        partir de los símbolos en $\Sigma^C$, es decir, el fact $\hat{p} \in
+        \mathcal{P}^{\Sigma^{C}}$ si $\hat{p}$ se obtiene a partir de reemplazar
+        todas las variables en $p[X]$ por objetos concretos de $\Sigma^{C}$,
+        para algún $p[X] \in \mathcal{P}$.
     \end{itemize}
 \end{mydef}
 
@@ -327,10 +328,9 @@ Una especificación en PDDL consiste de dos archivos, la definición del dominio
 donde se aclaran los predicados y esquemas de acción disponibles; y la
 definición de la tarea donde se mencionan los objetos concretos a modelar, el
 estado inicial, y la meta. Esta separación resulta importante, ya que diferentes
-tareas de un mismo dominio comparten una estructura común.
-
-Los listing \ref{lst:agent-domain} y \ref{lst:agent-task} muestran los archivos
-de dominio y tarea del ejemplo del agente escrita en PDDL.
+tareas de un mismo dominio comparten una estructura común. Los listing
+\ref{lst:agent-domain} y \ref{lst:agent-task} muestran los archivos de dominio y
+tarea del ejemplo del agente escrita en PDDL.
 
 \begin{lstlisting}[
     float=!htb,
@@ -515,7 +515,7 @@ llevó a utilizarlo en esta tesis en comparación a otros sistemas.
     Sea $\Pi = (F, A, I, G)$ una tarea STRIPS.    
     \begin{itemize}
         \item Un estado $s \subseteq F$ es alcanzable en $\Pi$ si existe una
-        secuencia $\vec{a}$ en $A^{*}$ tal que $I \xrightarrow{\vec{a}} s$.
+        secuencia $\vec{a} \in A^{*}$ tal que $I \xrightarrow{\vec{a}} s$.
     
         \item Una proposición $p \in F$ es alcanzable en $\Pi$ si existe un
         estado $s$ alcanzable en $\Pi$ tal que $p \in s$.

@@ -7,7 +7,7 @@ tipo one-hot, word embeddings, conceptos de aprendizaje supervisado y no
 supervisado, modelos de clasificación, y métricas. Este capítulo se basó en
 mayor parte del contenido en \citep{Bishop-2006}, y \citep{Tianqi-2016} para la
 explicación de conceptos de aprendizaje supervisado, y
-\citep{Bojanowski-Grave-Joulin-Mikolov-2016, bojanowski-2017, Mikolov-2013} para
+\citep{Bojanowski-Grave-Joulin-Mikolov-2016, Mikolov-2013} para
 representación de palabras.
 
 \section{Orígenes y evolución}
@@ -585,7 +585,7 @@ una dimensión por sobre otra.
 \label{alg:xgboost}
 
 El último modelo de aprendizaje que veremos es \emph{XGBoost} (eXtreme Gradient
-Boosting en inglés) \citep{Chen-2016}, un modelo de \emph{ensemble} que consiste
+Boosting en inglés) \citep{Tianqi-2016}, un modelo de \emph{ensemble} que consiste
 en combinar la respuesta de varios modelos para obtener una final. Es decir, en
 lugar de consultar la predicción de un modelo, $K$ de ellos son utilizados. Este
 tipo de heurísticas y en particular la de XGBoost han sido enormemente
@@ -1020,14 +1020,15 @@ las representaciones finales.
 
 El modelo de skipgrams al usar vectores representación por cada palabra se
 ignora su estructura interna. Esto fue lo que inspiró el estudio de modelos a
-nivel de subpalabra en \citep{bojanowski-2017}. La principal característica de
-estos modelos radica en la función de score $s$. En lugar de considerar una
-palabra $w$ en su totalidad, esta es dividida en $n$-gramas de caracteres. Para
-delimitar inicio y fin de una palabra se agregan símbolos especiales \verb|<| y
-\verb|>| respectivamente. Esto a su vez permite distinguir prefijos y sufijos de
-otras secuencias de caracteres. Por último la palabra $w$ también es incluida
-como un $n$-grama o secuencia especial. Por ejemplo, la palabra \emph{color} y
-$n=4$ estaría representada por los $4$-gramas:
+nivel de subpalabra en \citep{Bojanowski-Grave-Joulin-Mikolov-2016}. La
+principal característica de estos modelos radica en la función de score $s$. En
+lugar de considerar una palabra $w$ en su totalidad, esta es dividida en
+$n$-gramas de caracteres. Para delimitar inicio y fin de una palabra se agregan
+símbolos especiales \verb|<| y \verb|>| respectivamente. Esto a su vez permite
+distinguir prefijos y sufijos de otras secuencias de caracteres. Por último la
+palabra $w$ también es incluida como un $n$-grama o secuencia especial. Por
+ejemplo, la palabra \emph{color} y $n=4$ estaría representada por los
+$4$-gramas:
 
 \begin{center}
     \verb|<col|, \verb|colo|, \verb|olor|, \verb|lor>|

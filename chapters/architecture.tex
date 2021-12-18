@@ -563,15 +563,6 @@ lenguaje? Las propiedades que nos interesan capturar son:
     proyecten cerca en el espacio. Es decir, si consideramos el tipo
     \verb|instrument|, entonces para toda numeración \verb|X|, los vectores
     representación de \verb|instrumentX| están cerca.
-    %Usualmente la numeración de los objetos en los problemas de test es mucho
-    %mayor que en la de los de entrenamiento. Nos gustaría que el modelo de
-    %lenguaje sea capaz de proyectar la numeración de los objetos en los planes
-    %relajados de longitud más grande, a las vistas en los planes relajados de
-    %entrenamiento. Ya que por lo general, a pesar de la cantidad de objetos en
-    %los problemas de test, estos se suelen resolverse de manera similar a los
-    %de entrenamiento. \textbf{TODO}: Consultar. Que buscamos que aprenda de la
-    %numeración de los objetos? que dos palabras intrumentX, intrumentY esten
-    %cerca para todo X, Y?
 \end{enumerate}
 
 Para capturar las propiedades 1 y 2 decidimos utilizar un modelo de lenguaje a
@@ -581,13 +572,13 @@ suposiciones se cumplen para una parametrización concreta del modelo de
 lenguaje.
 
 La implementación utilizada del modelo de la sección \ref{method:wb_subwords} es
-la de \emph{FastText} \citep{bojanowski-2017} desarrollada por \emph{Facebook}.
+la de \emph{FastText} \citep{Bojanowski-Grave-Joulin-Mikolov-2016} desarrollada por \emph{Facebook}.
 Para el entrenamiento, la implementación requiere como entrada un conjunto de
 oraciones, en nuestro caso los planes relajados, separados por espacios para
 distinguir sus palabras. Para distinguir una acción por sobre otra en la
 secuencia, agregamos además 2 símbolos especiales, \verb|(| y \verb|)| al
 comienzo y cierre de una acción. Por ejemplo para el plan relajado que mostramos
-en la codificación ad-hoc
+en la codificación ad-hoc:
 
 \begin{center}
     \verb|( calibrate satellite0 instrument1 groundstation0 )| \\

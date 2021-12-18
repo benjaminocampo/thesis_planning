@@ -509,7 +509,7 @@ heurístico el modelo seguiría desempeñándose correctamente.
 
 
 Nuevamente, lo que buscamos es que este modelo logre generalizar a problemas no
-instanciables. La figura \ref{fig:calibrate-bestmoodel-adhoc-test} muestra como
+instanciables. La figura \ref{fig:calibrate-bestmoodel-adhoc-test-dist} muestra como
 se distribuyen las probabilidades que el modelo asigna a las acciones partícipes
 del conjunto de test. Se puede observar un comportamiento muy distinto al que
 ocurrió en validación cruzada. El umbral de predicción promedio obtenido en
@@ -529,20 +529,21 @@ manera de cuantificar esta idea más cualitativa que buscamos en grounding
 heurístico, pero que es determinante en la elección del modelo de aprendizaje.
 
 Por ejemplo, para un umbral de 0.1, podemos ver que el modelo se comporta de
-manera similar al de \emph{take\_image}.
+manera similar al de \emph{take\_image} como muestra la figura
+\ref{fig:calibrate-bestmoodel-adhoc-test-cm}.
 
 \begin{figure}[h!]
     \begin{subfigure}[b]{\textwidth}
         \centering
         \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/nn_adhoc_calibrate_test.png}
         \caption{Distribución de predicciones}
-        \label{fig:calibrate-bestmoodel-adhoc-test}
+        \label{fig:calibrate-bestmoodel-adhoc-test-dist}
     \end{subfigure}
     \begin{subfigure}[b]{\textwidth}
         \centering
         \includegraphics[width=0.7\linewidth]{figures/results/ad-hoc/nn/calibrate/NN_cm_test.png}
         \caption{Matriz de confusión}
-        \label{fig:calibrate-bestmoodel-adhoc-test}
+        \label{fig:calibrate-bestmoodel-adhoc-test-cm}
     \end{subfigure}
     \caption{Resultados en el conjunto de test para el modelo NN ad-hoc.}
 \end{figure}

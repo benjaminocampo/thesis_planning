@@ -1,12 +1,12 @@
-%Two resources useful for abstract writing.
-% Guidance of how to write an abstract/summary provided by Nature:
+%Two resources useful for abstract writing. Guidance of how to write an
+% abstract/summary provided by Nature:
 % https://cbs.umn.edu/sites/cbs.umn.edu/files/public/downloads/Annotated_Nature_abstract.pdf
 % https://writingcenter.gmu.edu/guides/writing-an-abstract
 \chapter*{Resumen}
 
-La planificación automática, o simplemente \emph{Planning}, es una de las área
+La planificación automática, o simplemente \emph{Planning}, es una de las áreas
 más antiguas y centrales de la Inteligencia Artificial. Estudia la generación
-automática de acciones por parte de agentes inteligentes con el proposito de
+automática de acciones por parte de agentes inteligentes con el propósito de
 resolver una tarea que especifique una meta y una situación inicial. Esta
 secuencia de acciones es denominada un \emph{plan} de la tarea. Los
 planificadores son los encargados de encontrar un plan a partir de una
@@ -15,7 +15,7 @@ realizan una etapa de preprocesamiento sobre la especificación para obtener una
 representación de mucho más bajo nivel de abstracción. Este proceso se conoce
 como \emph{proceso de grounding}, el cual se realiza previamente a la búsqueda
 de un plan. Para aquellas tareas en las que el proceso de grounding no puede
-realizarse debido al agotamiento de recursos computacionales, el planificador no
+llevarse a cabo debido al agotamiento de recursos computacionales, el planificador no
 puede empezar la búsqueda de una solución al no poder generar la tarea
 groundeada. Por otro lado, la búsqueda que realizan los planificadores es guiada
 a partir de una función heurística que se obtiene a partir de información de la
@@ -29,18 +29,18 @@ grounding. En este trabajo mostramos un proceso alternativo denominado
 \emph{grounding heurístico} que consiste en generar solamente una proyección de
 la tarea cuando grounding total no es factible. Este proceso es un mecanismo
 guiado en donde identificamos las acciones que son relevantes para encontrar un
-plan utilizando métodos de aprendizaje automático. Como características de los
-modelos se utilizaron planes relajados en motivación al método de búsqueda de
+plan usando métodos de aprendizaje automático. Como características de los
+modelos se usaron planes relajados en motivación al método de búsqueda de
 FD. Por último, se propusieron dos codificaciones para los datos de entrada de
-los modelos de aprendizaje, una codificación ad-hoc basada en las
-codificaciones de tipo one-hot, y otra a partir de word embeddings provenientes
-del lenguaje natural. Los resultados obtenidos justifican el uso de planes
-relajados para guiar el proceso de grounding.
+los modelos de aprendizaje, una codificación ad-hoc basada en las codificaciones
+de tipo one-hot, y otra a partir de word embeddings provenientes del lenguaje
+natural. Los resultados obtenidos justifican el uso de planes relajados para
+guiar el proceso de grounding.
 
 
 \noindent % Provide your key words
 \textbf{Palabras claves:} Planning, aprendizaje automático, proceso de
-grounding, modelos lineales, regresión logística, XGBoost, redes neuronales,
+grounding, modelos lineales, regresión logística, boosting, XGBoost, redes neuronales,
 word embeddings.
 
 \section*{Abstract}
@@ -58,8 +58,8 @@ resources, the planner cannot start searching for a solution since it can't
 generate the grounded task. On the other hand, the search carried out by
 planners is guided by a heuristic function that is obtained from task
 information. In particular, the Fast Downward (FD) system, the most famous
-framework in the community of planning to solve planning tasks, implements
-a guided search from plans of a simplified task. These solutions are called
+framework in the community of planning to solve planning tasks, implements a
+guided search from plans of a simplified task. These solutions are called
 relaxed plans. Since relaxed plans have been shown to contain the necessary
 information to guide the search process, then it is also possible that they can
 guide the grounding process. In this thesis, we show an alternative approach
@@ -67,11 +67,11 @@ called heuristic grounding that consists of generating only a projection of the
 task when total grounding is not feasible. This process is a guided mechanism
 where we identify the actions that are relevant to find a plan using methods of
 machine learning. As the features of the models, relaxed plans were used in the
-motivation to the heuristic search of FD. Finally, two encodings were proposed
+motivation to the heuristic search of FD. Finally, two encoding were proposed
 for the input data of the learning models, ad-hoc encoding based on one-hot
-encodings methods, and word embeddings from the natural language processing. The
+encoding methods, and word embeddings from the natural language processing. The
 results obtained justify the use of relaxed plans to guide the process of
 grounding.
 
-\textbf{Keywords:} Planning, machine learning, grounding process, linear models, logistic
-regression, XGBoost, neural networks, word embeddings.
+\textbf{Keywords:} Planning, machine learning, grounding process, linear models,
+logistic regression, boosting, XGBoost, neural networks, word embeddings.

@@ -14,7 +14,7 @@ capítulo \ref{ch:lit_ml}, \emph{XGBoost}, \emph{regresión logística}, y
 \emph{perceptrón multicapa}. Los conjuntos de entrenamiento y de test son
 divididos por esquemas de acción, entrenando un modelo por cada uno. Esto con el
 fin de capturar la información significativa de un solo esquema por modelo. Por
-lo tanto la estructura de nuestros experimentos para ambos grupos es la
+lo tanto, la estructura de nuestros experimentos para ambos grupos es la
 siguiente:
 
 \begin{itemize}
@@ -55,7 +55,7 @@ y la importancia que tuvieron para guiar futuros experimentos.
 
 \subsection{Configuración del experimento}
 
-En primer lugar, se necesito asignar la configuración para la construcción de
+En primer lugar, se necesitó asignar la configuración para la construcción de
 las ventanas y planes relajados.  Observamos que por lo general los planes
 relajados del conjunto de entrenamiento tienen entre $3$ y $10$ acciones.
 Nuestro algoritmo debe ser capaz de generalizar para ejemplos de entrenamientos
@@ -68,7 +68,7 @@ problemas de entrenamiento. Es por ello, que optamos por un paso y tamaño de
 ventana de $3$.
 
 Para el entrenamiento de los clasificadores, se realizó una búsqueda de
-hiper-parámetros cuya métrica a optimizar es $H_{\beta}$ con $\beta = 1.5$. Dado
+hiperparámetros cuya métrica a optimizar es $H_{\beta}$ con $\beta = 1.5$. Dado
 que en nuestro problema es más importante predecir correctamente todas las
 acciones relevantes, optamos por priorizar la taza de verdaderos positivos sobre
 la taza de verdaderos negativos. Es decir, buscamos que el clasificador sea
@@ -78,7 +78,7 @@ plan, y si no logra filtrar una cantidad aceptable de acciones no relevantes.
 Recordemos que para evaluar los modelos, generamos las predicciones a nivel de
 ventana de plan relajado y acción. Pero, buscamos predecir si una acción
 es relevante dada la información del plan relajado completo, por lo que es
-necesario agrupar las predicciones que cada ventana realizó sobre esa acción.
+necesario agrupar las predicciones que cada ventana hizo sobre esa acción.
 Por ejemplo, supongamos que tenemos $M$ ventanas de un plan relajado $\vec{a}$
 de una tarea $\Pi$ y se busca determinar la probabilidad de una acción $a'$ dado
 $\vec{a}$. El modelo de aprendizaje automático propuesto realiza $M$
@@ -162,7 +162,7 @@ de la función de costo. \emph{max\_iter} es el número de iteraciones que
 requiere el algoritmo para converger. Por último, \emph{class\_weight} permite
 configurar el modelo de tal manera que balancee la cantidad de ejemplares
 positivos y negativos del material de entrenamiento. Este último es importante
-para nosotros ya que nuestro conjunto de entrenamiento está desbalanceado,
+para nosotros, ya que nuestro conjunto de entrenamiento está desbalanceado,
 teniendo una mayor cantidad de bad operators que de good operators por problema.
 
 XGBoost requiere que se le especifiquen la cantidad de árboles a ensamblar con
@@ -173,11 +173,11 @@ regresión logística. \emph{booster} permite seleccionar variantes del método
 iterativo de boosting explicado en el capítulo \ref{alg:xgboost}. Por último
 \emph{colsample\_bytree} y \emph{subsample} permiten tomar una muestra con
 reposición de las filas o columnas en la confección de un árbol en el ensemble
-con el proposito de reducir el sobreajuste.
+con el propósito de reducir el sobreajuste.
 
 La red neuronal necesita del número de neuronas para todas las capas
 \emph{h\_size}, la cantidad de capas ocultas \emph{n\_layers}, si los vectores
-de entrada son normalizados \emph{bn\_bool}, y la probabilidad  \emph{p} de
+de entrada son normalizados \emph{bn\_bool}, y la probabilidad \emph{p} de
 apagar momentáneamente neuronas de la red de manera aleatoria.
 
 Por cada posible asignación obtenemos aquella que mejor se comporte con el
@@ -228,7 +228,7 @@ LGR.
     \label{fig:takeimage-bestmodel-cm}
 \end{figure}
 
-Para cada particiòn, se muestran dos histogramas independientes, el de la clase
+Para cada partición, se muestran dos histogramas independientes, el de la clase
 positiva, y el de la clase negativa. Cada punto en el gráfico representa la
 probabilidad de una acción dado su plan relajado (completo). En ambos
 histogramas se genera una cantidad $N$ de bins equidistantes en el rango
@@ -328,11 +328,11 @@ final la realizamos sobre el conjunto de test.
 La figura \ref{fig:takeimage-bestmodel-distplot-test} muestra nuevamente un
 histograma de la probabilidad de una acción dado su plan relajado. Para el caso
 de las acciones relevantes, se sigue manteniendo el comportamiento que vimos en
-validación cruzada lo cual es un buen indicio ya que estarán en las primeras
+validación cruzada lo cual es un buen indicio, ya que estarán en las primeras
 posiciones en la cola de prioridades en grounding heurístico. Sin embargo, si
 observamos el histograma de acciones no relevantes, se tiene que ahora a una
 gran parte de ellas se le asigna una alta probabilidad. Estas acciones también
-serían ubicadas al comienzo de la cola de prioridades y por lo tanto
+serían ubicadas al comienzo de la cola de prioridades y, por lo tanto,
 instanciadas. Si observamos la matriz de confusión en la figura
 \ref{fig:takeimage-bestmodel-cm-test}, la proporción de acciones relevantes se
 mantiene en un 91\%, mientras que esta vez solo un 33\% de las negativas se
@@ -340,9 +340,9 @@ predicen como negativas. Cabe recalcar que esta vez, el umbral de decisión en
 test es el promedio de los umbrales obtenidos en validación cruzada. El objetivo
 era aprender un umbral que sea lo más óptimo para predecir nuevos ejemplos,
 utilizando únicamente información de los datos de entrenamiento. Por lo que se
-utilizó el promedio de los umbrales de validación cruzada siendo este un valor
+usó el promedio de los umbrales de validación cruzada siendo este un valor
 que toma en cuenta los umbrales de las 5 particiones. Podríamos haber
-utilizado un umbral de decisión a partir de las etiquetas de test, pero
+empleado un umbral de decisión a partir de las etiquetas de test, pero
 tal predicción representaría la performance máxima o ideal que podríamos obtener
 en test, y no la que realmente estamos obteniendo con información del conjunto
 de entrenamiento.
@@ -360,7 +360,7 @@ test son de mayor tamaño que los de entrenamiento, surgió este desbalance haci
 la clase positiva. No obstante, en una situación real, la cantidad de bad
 operators sería nuevamente superior a la de good operators. Otro aspecto
 importante sobre la generación de los bad operators es que podrían no ser
-alcanzables relajadamente, y por lo tanto tener una distribución distinta a la
+alcanzables relajadamente y, por ende, tener una distribución distinta a la
 que tenemos en el conjunto de entrenamiento siendo una de las posibles causas
 del desempeño de LGR para la clase negativa. Es decir, LGR fue entrenado para
 predecir, sobre acciones alcanzables relajadamente, pero lo estamos evaluando
@@ -373,7 +373,7 @@ obtendriamos una performance de 0.8826 para LGR. Sin embargo, no es un buen
 indicio de la correctitud del modelo en la clase negativa. En contraparte, si en
 lugar de considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.589
 debido a que esta métrica penaliza si se tiene un baja en la taza de verdaderos
-negativos. Esto se debe a que 
+negativos.
 
 
 \begin{table}[t!]
@@ -390,87 +390,6 @@ negativos. Esto se debe a que
  \caption{Métricas sobre el conjunto de test del modelo de LGR con word embeddings.}
  \label{results:lgr-wb-calibrate}
 \end{table}
-
-
-% Por otro lado, el modelo de redes neuronales se comportó mucho mejor en
-% validaciòn cruzada, como lo muestra la figura
-% \ref{fig:nn-distplot-takeimage-wb}. Sin embargo el conjunto de test
-%
-% \begin{figure}[b!] \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot.png}
-%     \caption{Distribución de predicciones en validación cruzada y el conjunto
-%     de test en take\_image para el modelo de redes neuronales.}
-%     \label{fig:nn-distplot-takeimage-wb} \end{figure} \begin{figure}
-%     \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/calibrate/calibrate__distplot.png}
-%     \end{subfigure} \hfill \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/calibrate/calibrate__distplot.png}
-%     \end{subfigure} \hfill \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate__distplot.png}
-%     \end{subfigure} \caption{Word embeddings calibrate} \end{figure}
-%
-% \begin{figure} \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/take_image/lgr__distplot.png}
-%     \end{subfigure} \hfill \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/take_image/take_image__distplot.png}
-%     \end{subfigure} \hfill \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/take_image/take_image__distplot
-%     (1).png} \end{subfigure} \caption{Word embeddings take\_image}
-%     \end{figure}
-%
-% \begin{figure} \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/lgr/switch_on/switch_on__distplot.png}
-%     \end{subfigure} \hfill \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/xgboost/switch_on/xgb__distplot.png}
-%     \end{subfigure} \hfill \centering \begin{subfigure}[b]{0.83\textwidth}
-%     \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/switch_on/switch_on__distplot
-%     (1).png} \end{subfigure} \caption{Word embeddings switch\_on} \end{figure}
-%
-%
-% \begin{figure} \begin{subfigure}[b]{\textwidth} \centering
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate__distplot.png}
-%     \caption{Distribución de predicciones en validación cruzada y el conjunto
-%     de test.} \label{fig:my_label} \end{subfigure} \hfill
-%     \begin{subfigure}[b]{\textwidth} \minipage{0.32\textwidth}
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_1_confusion_matrix_percent.png}
-%     \endminipage\hfill \minipage{0.32\textwidth}
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_2_confusion_matrix_percent.png}
-%     \endminipage\hfill \minipage{0.32\textwidth}%
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate+_set_3_confusion_matrix_percent.png}
-%     \endminipage
-%
-%     \medskip
-%
-%     \minipage{0.32\textwidth}
-%       \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_4_confusion_matrix_percent.png}
-%     \endminipage\hfill
-%     \minipage{0.32\textwidth}
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_5_confusion_matrix_percent.png}
-%     \endminipage\hfill \minipage{0.32\textwidth}%
-%     \includegraphics[width=\linewidth]{figures/results/word_embeddings/nn/calibrate/calibrate_set_6_confusion_matrix_percent.png}
-%     \endminipage
-%     \caption{Matrices de confusión en validación cruzada y el conjunto de test}
-%     \end{subfigure}
-%     \caption{Resultados del modelo de redes neuronales con codificación por word embeddings y esquema de acción calibrate.}
-% \end{figure}
-
-% \begin{table}[h!] \centering \scalebox{0.9}{ \begin{tabular}{|c || c | c | c |
-% c | c | c |} \hline Esquemas & Precisión & Recall & $H_{1.5}$ & $F_{1.5}$ &
-% Umbral de decisión & Modelo \\
-%  \hline take\_image & 0.8088 & 0.997 & 0.4351 & 0.997 & 0.61 & LGR \\
-%  calibrate & 0.0467 & 0.4743 & 0.5083 & 0.1242 & 0.728 & NN\\
-%  switch\_on  & 0.0405 & 0.4567 & 0.5106 & 0.1097 & 0.576 & NN\\
-%  switch\_off & 0.0476 & 0.1818 & 0.2422 & 0.0876 & 0.034 & NN \\
-%  turn\_to  & - & - & - & - & - & -\\[1ex] \hline \end{tabular}}
-%  \caption{Resultados por esquema de acción del mejor modelo con codificación
-%  por word embeddings.} \label{results:ad-hoc-calibrate} \end{table}
-
 
 \section{Modelos predictivos ad-hoc}
 \label{exp:wb}
@@ -494,9 +413,9 @@ predicciones en validación cruzada para la mejor configuración de parámetros 
 NN. Si observamos los histogramas de la clase positiva, tenemos que
 aproximadamente el 90\% de las acciones etiquetadas como positivas se agrupan en
 el intervalo $r = [0.8; 1]$ mientras que de las negativas solo un 10\% al 20\%
-se encuentra en $r$. Además, la mayoria de acciones negativas tienen
+se encuentra en $r$. Además, la mayoría de acciones negativas tienen
 probabilidades en el rango del $[0;0.4]$ lo cual nuevamente estamos ante un muy
-buen desempeño en validación cruzada en terminos de grounding heurístico.
+buen desempeño en validación cruzada en términos de grounding heurístico.
 
 \begin{figure}[b!]
     \centering
@@ -540,19 +459,19 @@ umbral, los resultados en \emph{precision} no fueron muy altos para la clase
 positiva. Recordemos que \emph{precision} en clase positiva penaliza los falsos
 positivos (FPs). Observando el gráfico de distribuciones, el umbral estaría
 separando adecuadamente las clases relevantes de las irrelevantes por lo cual no
-se logra observar el porque de estos resultados en \emph{precision} con este
+se logra observar el porqué de estos resultados en \emph{precision} con este
 gráfico.
 
 Sin embargo, si en lugar de considerar las distribuciones revisamos las matrices
 de confusión sin normalizar (Figura \ref{fig:calibrate-bestmodel-cm}),
 observamos que los datos se encuentran desbalanceados para la clase 0.
-Asemejandose a lo que usualmente ocurre con los problemas de planning donde los
+Asemejándose a lo que usualmente ocurre con los problemas de planning donde los
 good operators suelen ser menor en cantidad a los bad operators. En particular,
 esto puede ser un problema para \emph{precision} dado que penaliza por la
 cantidad de FPs. Por ejemplo, si observamos el primer fold de la validación
 cruzada, se logra predecir correctamente por encima del 70\% de las acciones no
 relevantes. Sin embargo, esto es relativo a la cantidad de acciones que tengamos
-de la clase 0. Si tenemos en cuenta la formula de \emph{precision}:
+de la clase 0. Si tenemos en cuenta la fórmula de \emph{precision}:
 
 \begin{align*}
     precision = \frac{TP}{TP + FP}
@@ -561,8 +480,8 @@ de la clase 0. Si tenemos en cuenta la formula de \emph{precision}:
 Se logra observar que al depender de los FPs, entonces también depende de la
 cantidad de desbalance que tenga el conjunto de datos. De hecho, si se
 incrementa la cantidad de bad operators, pero las proporciones 70-30\% se
-mantienen, la métrica disminuiria. Sin embargo, en términos de grounding
-heurístico el modelo seguiría desempeñandose correctamente.
+mantienen, la métrica disminuiría. Sin embargo, en términos de grounding
+heurístico el modelo seguiría desempeñándose correctamente.
 
 \begin{figure}[h!]
     \minipage{0.50\textwidth}
@@ -591,23 +510,23 @@ heurístico el modelo seguiría desempeñandose correctamente.
 
 Nuevamente, lo que buscamos es que este modelo logre generalizar a problemas no
 instanciables. La figura \ref{fig:calibrate-bestmoodel-adhoc-test} muestra como
-se distribuyen las probabilidades que el modelo asigna a las acciones participes
+se distribuyen las probabilidades que el modelo asigna a las acciones partícipes
 del conjunto de test. Se puede observar un comportamiento muy distinto al que
 ocurrió en validación cruzada. El umbral de predicción promedio obtenido en
 validación cruzada es de 0.702. Bajo ese umbral, el modelo predice que todas las
-acciones son irrelevantes obteniendo una performance practicamente nula. Por lo
+acciones son irrelevantes obteniendo una performance prácticamente nula. Por lo
 que a primera impresión parecería que no es un modelo que podamos utilizar en
 grounding heurístico. De hecho, un resultado como este para un problema clásico
 de aprendizaje automático llevaría a descartar la solución y probar con otra
-configuración. No obstante, en el contexto de grounding heúrstico, buscamos que
+configuración. No obstante, en el contexto de grounding heurístico, buscamos que
 las acciones relevantes para encontrar un plan tengan una probabilidad superior
 a las que no lo son. Sin importar en que parte del intervalo $[0;1]$ se asignen
 las probabilidades. Mientras se respete el orden que necesitamos para ubicar las
 acciones en la cola de prioridades, entonces podemos considerarlo como un buen
 modelo. Es por eso la razón por la que el umbral de decisión tampoco se mantiene
-fijo, y varia de acuerdo a $H_{\beta}$. Para este problema el umbral es una
+fijo, y varía de acuerdo a $H_{\beta}$. Para este problema el umbral es una
 manera de cuantificar esta idea más cualitativa que buscamos en grounding
-heurístico pero que es determinante en la elección del modelo de aprendizaje.
+heurístico, pero que es determinante en la elección del modelo de aprendizaje.
 
 Por ejemplo, para un umbral de 0.1, podemos ver que el modelo se comporta de
 manera similar al de \emph{take\_image}.
@@ -655,10 +574,10 @@ es quizás una tarea interesante para trabajo futuro revisitar esta idea.
 
 \subsection{El problema de inclusión sobre planes relajados}
 
-Otra estrategía que utilizamos durante el análisis en la generación de ventanas
+Otra estrategia que utilizamos durante el análisis en la generación de ventanas
 de planes relajados, fue plantear el problema de clasificación binaria como uno
 multiclase. En lugar de sólo 2 clases, manteníamos 4 que representaban la noción
-de si una acción pertenecía al plan relajado, y si era parte de los good
+de sí una acción pertenecía al plan relajado, y si era parte de los good
 operators del problema. Es decir, una ventana de plan relajado $w$ y acción $a$
 es etiquetada como:
 
@@ -674,7 +593,7 @@ clase $3$ si al menos una de las ventanas predijo $3$. Caso contrario, si para
 alguna ventana la predicción fue $2$, la predicción del agrupamiento es $2$. Y así
 sucesivamente hasta la clase $0$.
 
-De esta manera obteniamos un resultado similar a la agregación por el máximo que
+De esta manera obteníamos un resultado similar a la agregación por el máximo que
 realizamos en los experimentos. Es decir, si una acción es relevante dada una
 ventana del plan relajado, entonces debe serlo dado el plan completo.
 
@@ -687,11 +606,11 @@ buena performance.
 
 La repetición de ejemplos con etiquetas diferentes puede dificultar el
 aprendizaje de un modelo, si no son preprocesadas con alguna técnica de
-mayorización. Es decir, de entre todas las repeticiones del mismo ejemplo pero
+mayorización. Es decir, de entre todas las repeticiones del mismo ejemplo, pero
 con distintas clases, mantener una sola replica preservando la etiqueta que haya
 ocurrido en mayor cantidad. Esta técnica fue aplicada para la codificación por
 word embeddings, donde una hipótesis para mejorar la separación de los ejemplos
-de entrenamiento fue asignar la etiqueta mayoritaria para todo los vector de
+de entrenamiento fue asignar la etiqueta mayoritaria para todo los vectores de
 dimensión $D$ (plan relajado, acción) que estén cerca en un rango en
 $\mathbb{R}^{D}$.
 
@@ -699,7 +618,7 @@ $\mathbb{R}^{D}$.
 
 Por último, otra implementación que se agregó al sistema, y que es un patrón
 configurable de las etapas de ejecución, es la posibilidad de mantener el orden
-en que ocurren las ventanas. Es decir, se agrega un indice en la matriz de
+en que ocurren las ventanas. Es decir, se agrega un índice en la matriz de
 características indicando la posición en el plan relajado como se muestra en el
 cuadro \ref{tb:window_order}.
 
@@ -716,12 +635,11 @@ cuadro \ref{tb:window_order}.
  ... & ... & ... & ...\\ [1ex] 
  \hline
  \end{tabular}}
- \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
+ \caption{Ejemplos etiquetados a partir de un plan relajado y una acción.}
  \label{tb:window_order}
 \end{table}
 
 El objetivo de este experimento fue agregado con el fin de evitar perder la
 información del orden durante la creación de las ventanas de un plan relajado y
-se buscaba analizar si es un factor relevante para el entrenamiento. Para este
-experimento se había analizado si era un factor relevante durante la evaluación
-de un modelo.
+se buscaba analizar si es un factor importante para el entrenamiento y posterior
+evaluación del modelo.

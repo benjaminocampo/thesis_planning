@@ -6,14 +6,14 @@
 La motivación de grounding heurístico surgió tras observar que gran parte de los
 problemas de planning solo utilizan una pequeña fracción del total de posibles
 acciones para resolver una tarea. Es común en el área trabajar sobre tareas de
-tan con cientos de miles de acciones pero que resultan en planes de tan solo
-unos cientos de ellas. Aún así, los planificadores para encontrar una solución
-de la tarea, deben realizar una búsqueda exhaustiva sobre el total de acciones.
-Esta búsqueda es guiada a partir de una función heúristica definida en base a
+con cientos de miles de acciones, pero que resultan en planes de solamente
+cientos de ellas. Aun así, los planificadores para encontrar una solución de la
+tarea, deben realizar una búsqueda exhaustiva sobre el total de acciones. Esta
+búsqueda es guiada a partir de una función heurística definida según
 información que se puede extraer de la tarea. En el caso de Fast Downward, el
 framework de planning más utilizado por la comunidad para la resolución de
 problemas de planning, implementa un algoritmo genérico de búsqueda cuya función
-heúristica se basa en el uso de planes relajados. Esto motivó el uso de planes
+heurística se basa en el uso de planes relajados. Esto motivó el uso de planes
 relajados en grounding heurístico. Si los planes relajados tienen la información
 para guiar el proceso de búsqueda, entonces también pueden guiar el proceso de
 grounding.
@@ -26,11 +26,11 @@ relajados, acciones, y planes reales. Nuestro objetivo fue encontrar un modelo
 que permita estimar la probabilidad de que una acción sea relevante para algún
 plan real, dado su plan relajado.
 
-A partir de esto, surgió una etapa de pruebas de concepto donde verificabamos de
+A partir de esto, surgió una etapa de pruebas de concepto donde verificábamos de
 que manera disponer el material de entrenamiento y test para los modelos de
 aprendizaje automático y de que forma codificar los planes relajados y las
 acciones. A la par de estas pruebas de concepto, se desarrolló la arquitectura
-del sistema que utilizariamos para ejecutar futuros experimentos.
+del sistema que utilizaríamos para ejecutar futuros experimentos.
 
 El algoritmo final estuvo constituido por una etapa de extracción de los datos a
 partir del generador de tareas, su preservación de datos, selección de problemas
@@ -79,19 +79,19 @@ ser utilizado en el algoritmo de grounding heurístico.
 Una de los experimentos principales como trabajo a futuro es agregar los modelos
 obtenidos en la implementación de grounding heurístico en el framework de Fast
 Downward y corroborar que tales modelos de aprendizaje, efectivamente permiten
-resolver los problemas de test que un principio no son instanciables y por lo
-tanto no tienen solución bajo la implementación vanilla de Fast Downward.
+resolver los problemas de test que un principio no son instanciables y, por
+ende, no tienen solución bajo la implementación vanilla de Fast Downward.
 
 Otro experimento posible es mantener un registro de los tiempos de predicción de
 cada modelo a nivel de acción o a nivel de batch de acciones. Recordemos que
 para realizar la predicción de una acción se debe primero realizar su
 preprocesamiento, construir las ventanas del plan relajado, realizar la
-predicción de cada ventana, y finalmente agrupar las predcciones para determinar
+predicción de cada ventana, y finalmente agrupar las predicciones para determinar
 su probabilidad. Este preprocesamiento podría ser un cuello de botella si no es
 implementado y optimizado de manera adecuada en el algoritmo de grounding
 heurístico, teniendo en cuenta que además los planificadores deben encontrar la
 solución del problema en un tiempo limitado. Por lo tanto, un debido análisis
-del tiempo necesario para llevar acabo el preprocesamiento y predicción de los
+del tiempo necesario para llevar a cabo el preprocesamiento y predicción de los
 modelos es requerido antes de ser incluidos en el algoritmo de Fast Downward.
 
 Para el caso de la codificación por word embeddings, se puede tomar ventaja de
@@ -100,7 +100,7 @@ la codificación por promedio normalizado desarrollada en la sección
 los datos de entrenamiento y de test. Por ejemplo, mantener un tamaño de ventana
 de $3$ para los planes relajados del conjunto de entrenamiento, y otro de $5$
 para los planes relajados del conjunto de test. Resolviendo los problemas de
-dimensiónes en las matrices promediando las representaciones de las palabras que
+dimensiones en las matrices promediando las representaciones de las palabras que
 componen cada ventana. Como los embeddings mantienen la misma dimensión de
 salida para todas las palabras, entonces las matrices de entrenamiento y de test
 mantendrían la misma estructura y dimensión. Este método puede ser una solución
@@ -114,7 +114,7 @@ En virtud de mejorar el sistema de experimentación desarrollado en el capítulo
 \ref{ch:method} se puede sincronizar la plataforma de \emph{MLFlow} con la base
 de datos SQL para que se mantengan registro de los modelos. Mantener
 persistencia organizada de modelos en la nube. Otra opción es generar tareas en
-\emph{Jenkins}, un sistema de gestion de pipelines de ejecución, que permitan
+\emph{Jenkins}, un sistema de gestión de pipelines de ejecución, que permitan
 entrenar, evaluar, registrar, y almacenar los resultados de manera
 independiente, sin necesidad de conocer su implementación. También se puede
 optimizar algunos procesos de manera que aprovechen el hardware disponible de la

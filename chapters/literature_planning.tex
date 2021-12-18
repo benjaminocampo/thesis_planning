@@ -37,7 +37,7 @@ son la principal motivación de \emph{Automated Planning}.
 Automated Planning es el área de la inteligencia artificial que busca
 automatizar tareas de planificación, en particular, tareas que resulta inviable
 ser planificadas por un humano, ya sea, por razones de costos, riesgos, o
-recursos. Esto se logra en base al razonamiento sobre representaciones
+recursos. Esto se logra basándose en el razonamiento sobre representaciones
 abstractas y formales del dominio, configuración inicial, combinación de
 acciones, y objetivos a ser cumplidos. El modelo conceptual del dominio en el
 cual las acciones son ejecutadas es llamado \emph{dominio de planning}, y los
@@ -48,13 +48,13 @@ objetivo es encontrar alguna combinación de acciones que determinen un
 
 \section{Estados y acciones}
 
-Un mundo o estado  posible de una tarea de \emph{planning} se representa a
-partir de un conjunto de símbolos proposicionales que modelan aspectos del
-entorno. Por ejemplo, el símbolo proposicional $p$ puede modelar la situación
-``el agente $a_1$ se encuentra en la ubicación $l_1$``. Aquellos símbolos  que
-no están mencionados en un estado, se asumen como falsos en dicho mundo. De esta
-manera, si se tienen los símbolos proposicionales $p,q,r$, $\{p, q\}$ representa
-el estado en el que $p$ y $q$ son verdaderos, pero no $r$.
+Un estado posible de una tarea de \emph{planning} se representa a partir de un
+conjunto de símbolos proposicionales que modelan aspectos del entorno. Por
+ejemplo, el símbolo proposicional $p$ puede modelar la situación ``el agente
+$a_1$ se encuentra en la ubicación $l_1$``. Aquellos símbolos que no están
+mencionados en un estado, se asumen como falsos en dicho mundo. De esta manera,
+si se tienen los símbolos proposicionales $p,q,r$, $\{p, q\}$ representa el
+estado en el que $p$ y $q$ son verdaderos, pero no $r$.
 
 Las acciones son representadas en términos de una precondición y un efecto. La
 precondición es una fórmula proposicional que representa la condición necesaria
@@ -121,7 +121,7 @@ estado aplicable de $A$ optaremos por primero eliminar los símbolos que sean
 verdaderos a partir de su lista $del$ para luego agregar los de la lista $add$.
 Esto con el fin de garantizar de que el estado resultante contenga todos los
 símbolos de esta última lista. Para ejemplificar esto, supongamos que tenemos la
-siguiente acción $A'$ pero eligiendo está vez el orden contrario de aplicación.
+siguiente acción $A'$, pero eligiendo está vez el orden contrario de aplicación.
 
 \begin{align*}
     & Action : A' \\
@@ -157,11 +157,11 @@ agrega $A'$ efectivamente pertenezcan al estado resultante de su ejecución.
         \item Una acción $a$ es aplicable en un estado $s$ si $pre(a) \subseteq
         s$, en tal caso, el estado resultante es $s' = (s - del(a)) \cup
         add(a)$. Escribimos $s \xrightarrow{a} s'$ para la transición de $s$ a
-        $s'$ vía $a$. Para una secuencia de acciones $\vec{a}$, escribimos $s
+        $s'$ vía $a$. Para una secuencia de acciones $\vec{a} \in A^{*}$, escribimos $s
         \xrightarrow{\vec{a}} t$ si estos pueden ser iterativamente aplicados a
         $s$, resultando en $t$.
 
-        \item Un plan para $\Pi$ es una secuencia $\vec{a}$ en $A^{*}$ con $I
+        \item Un plan para $\Pi$ es una secuencia $\vec{a} \in A^{*}$ con $I
         \xrightarrow{\vec{a}} s_G$ si $G \subseteq s_G$.
         
         \item Una tarea $\Pi$ es satisfacible si un plan para $\Pi$ existe. El
@@ -235,8 +235,8 @@ siguientes definiciones:
     \mathcal{A}, \Sigma^{C}, \Sigma^{O}, I, G)$  donde $\mathcal{P}$ es un
     conjunto de predicados, $\mathcal{A}$ es un conjunto de esquemas de acción,
     $\Sigma^{C}$ es un conjunto de símbolos constantes, $\Sigma^{O}$ es un
-    conjunto de variables, $I \subseteq 2^{\mathcal{P}}$ es el estado inicial, y
-    $G \subseteq 2^{\mathcal{P}}$ es la meta.
+    conjunto de variables, $I \subseteq \mathcal{P}$ es el estado inicial, y
+    $G \subseteq \mathcal{P}$ es la meta.
 \end{mydef}
 
 \begin{mydef}
@@ -406,7 +406,7 @@ de dominio y tarea del ejemplo del agente escrita en PDDL.
 Observar que tanto los predicados como las acciones están parametrizados con
 variables de un cierto tipo. Por ejemplo para el predicato $at(x, y)$, $x$ es de
 tipo \emph{AGENT} e $y$ del tipo \emph{LOCATION} ambos previamente listados en
-la linea 6 del listing \ref{lst:agent-domain}. Luego en la linea 7 del listing
+la línea 6 del listing \ref{lst:agent-domain}. Luego en la línea 7 del listing
 \ref{lst:agent-task} se especifican todos los objetos disponibles y el tipo al
 cual corresponden.
 
@@ -435,7 +435,7 @@ subyace en la siguiente propiedad: en la \emph{relajación por deletes} si un
 secuencia de acciones $\vec{a} \in A^{*}$ aplicables en $s$, el estado
 resultante también hará verdadero $p$. Por ejemplo, en el problema del agente,
 si este se desplazó por varias ubicaciones, tendríamos que se encuentra en más
-de un lugar al mismo tiempo ya que la proposición que indicaba su ubicación
+de un lugar al mismo tiempo, ya que la proposición que indicaba su ubicación
 anterior no puede ser borrada. Esta propiedad es la que permite que computar un
 plan en el dominio relajado sea polinomial en comparación al dominio original.
 
@@ -476,10 +476,10 @@ Sea $\Pi = (F, A, I, G)$ Una tarea STRIPS
 Estas propiedades serán muy relevantes al introducir los algoritmos de grounding
 en las secciones \ref{lit:relaxed_grounding}, y \ref{lit:heuristic_grounding}.
 La primera de ellas nos dice que un plan de una tarea STRIPS, es a la vez un
-plan de la tarea relajada. No obstante el reciproco no se cumple. Por lo
+plan de la tarea relajada. No obstante el recíproco no se cumple. Por lo
 general, un plan en la tarea relajada no es un plan de la tarea original. La
 segunda de ellas menciona que si no existe un plan para la tarea relajada,
-entonces no hay un plan para la tarea original. Esto también es importante ya
+entonces no hay un plan para la tarea original. Esto también es importante, ya
 que todo plan en la tarea relajada puede encontrarse con solo instanciar
 aquellas acciones que sean alcanzables. Si no se encuentra un plan de la tarea
 relajada para ese conjunto de acciones, entonces sabremos que no existirá
@@ -500,11 +500,11 @@ cartesiano}.
 
 No obstante, en la práctica los planificadores no instancian todas las posibles
 acciones y proposiciones, sino aquellas que son alcanzables relajadamente desde
-el estado inicial debido al lemma \ref{lit:delete_relaxed_property}. 
+el estado inicial debido al lemma \ref{lit:delete_relaxed_property}.
 
 Este proceso de grounding es el implementado por \emph{Fast Downward}
 \citep{Helmert-2011}, el sistema de planning clásico basado en búsqueda
-heúristica más popular por la comunidad debido a su excelente desempeño en
+heurística más popular por la comunidad debido a su excelente desempeño en
 benchmarks, competencias internacionales de planning, e implementaciones
 eficientes de algoritmos genéricos de búsqueda. Estas implementaciones son
 altamente configurables por Fast Downward permitiendo ajustarse a distintos
@@ -517,13 +517,13 @@ llevó a utilizarlo en esta tesis en comparación a otros sistemas.
         \item Un estado $s \subseteq F$ es alcanzable en $\Pi$ si existe una
         secuencia $\vec{a}$ en $A^{*}$ tal que $I \xrightarrow{\vec{a}} s$.
     
-        \item Un proposición $p \in F$ es alcanzable en $\Pi$ si existe un
+        \item Una proposición $p \in F$ es alcanzable en $\Pi$ si existe un
         estado $s$ alcanzable en $\Pi$ tal que $p \in s$.
 
-        \item Una acción $a \in A$ es alcanzable en $\Pi$ si existe una estado
+        \item Una acción $a \in A$ es alcanzable en $\Pi$ si existe un estado
         $s$ alcanzable en $\Pi$ tal que $a$ es aplicable en $s$.
 
-        \item Un proposición $p \in F$ es alcanzable relajadamente en $\Pi$ si
+        \item Una proposición $p \in F$ es alcanzable relajadamente en $\Pi$ si
         $p$ es alcanzable en $\Pi^{+}$.
 
         \item Una acción $a \in A$ es alcanzable relajadamente en $\Pi$ si
@@ -566,12 +566,12 @@ esta manera todas las acciones y facts alcanzables relajadamente.
 \label{lit:heuristic_grounding}
 
 Mencionamos que un plan de una tarea es también un plan relajado de la misma.
-Sin embargo, el reciproco no se cumple. Es más, un hecho o una acción que es
+Sin embargo, el recíproco no se cumple. Es más, un hecho o una acción que es
 relajadamente alcanzable, puede no ser alcanzable en la tarea original o ser
 irrelevante al no pertenecer a ningún plan que la resuelva. Es justamente esta
 pérdida de información la que origina que computar en el mundo relajado sea
 polinomial. Es aquí donde surge el foco de este trabajo donde se intentará
-predecir cual de estos hechos y acciones son verdaderamente relevantes para
+predecir cuál de estos hechos y acciones son verdaderamente relevantes para
 alcanzar la meta, priorizando su instanciación por sobre el resto.
 
 \begin{algorithm}
@@ -601,7 +601,7 @@ garantiza que todos los facts que se encuentran en los efectos de las acciones
 ya procesadas están en $F$, siendo el algoritmo \emph{fact consistente}.
 
 \begin{mydef}
-    Sean $F$ y $A$ el conjunto de facts y acciones retornados por un algoritmo
+    Sean $F$ y $A$ el conjunto de facts y acciones retornadas por un algoritmo
     de grounding. Decimos que este es fact consistente si para todo $a \in A$ se
     cumple que, si $p \in pre(a) \cup add(a) \cup del(a)$ entonces $p \in F$.
 \end{mydef}

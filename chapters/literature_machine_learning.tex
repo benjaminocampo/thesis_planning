@@ -4,7 +4,7 @@
 En este capítulo se profundizará en el área de \emph{aprendizaje automático}
 abarcando la representación de palabras y oraciones dadas por codificaciones del
 tipo one-hot, word embeddings, conceptos de aprendizaje supervisado y no
-supervisado, modelos de clasificación, y métricas. Este capítulo se baso en
+supervisado, modelos de clasificación, y métricas. Este capítulo se basó en
 mayor parte del contenido en \citep{Bishop-2006}, y \citep{Tianqi-2016} para la
 explicación de conceptos de aprendizaje supervisado, y
 \citep{Bojanowski-Grave-Joulin-Mikolov-2016, bojanowski-2017, Mikolov-2013} para
@@ -20,17 +20,17 @@ algoritmos de computación que tomen acción sobre datos no aprendidos.
 Por moderno que pueda parecer este campo, tuvo sus comienzos en los años 50 a
 partir del famoso \emph{Test de Turing}, una máquina cuyo objetivo era engañar a
 un humano haciéndole creer que se encontraba delante de otra persona en lugar de
-un ordenador, llegando  a la conclusión de que los computadores de propósito
+un ordenador, llegando a la conclusión de que los computadores de propósito
 general, podrían ser capaces de aprender y ser de alguna manera originales.
 \citep{test-turing-website}
 
-En los últimos años varias aplicaciones se han beneficiado de esta área, desde
+En los últimos años, varias aplicaciones se han beneficiado de esta área, desde
 programas relacionados con la detección fraudulenta de transacciones con tarjeta
 de crédito \citep{Fang-2021}, sistemas de recomendación que guían usuarios en un
 servicio de acuerdo a sus preferencias \citep{Burke-2007}, o incluso vehículos
 que se manejan sin necesidad de la intervención del conductor
-\citep{Sorin-2019}. Incluso en algúnas tareas de reconocimiento de patrones el
-aprendizaje automático ha logrado obtener tazas menores al error húmano
+\citep{Sorin-2019}. Incluso en algunas tareas de reconocimiento de patrones el
+aprendizaje automático ha logrado obtener tazas menores al error humano
 \citep{niklas-et-al-2020}. Al mismo tiempo, una importante cantidad de avances
 teóricos y algorítmicos se fueron realizando formando las bases de este campo. 
 
@@ -58,7 +58,7 @@ La forma precisa de $f$ es determinada durante la fase de entrenamiento. Una vez
 transcurrida, se puede estimar la etiqueta de nuevos datos que no pertenezcan al
 conjunto de entrenamiento. En particular, se suele medir la performance del
 modelo comparando las predicciones con la etiqueta real de nuevos datos que no
-fueron parte utilizados en la fase de entrenamiento. En el caso que la
+fueron utilizados en la fase de entrenamiento. En el caso que la
 predicción se aproxime a la esperada para estas nuevas entradas, entonces el
 modelo habría logrado generalizar la tarea.
 
@@ -67,7 +67,7 @@ disponibilidad de las anotaciones y la dificultad para obtenerlas. Algunas
 tareas son relativamente sencillas de etiquetar por cualquier persona, (e.g.,
 como determinar si en una foto aparece un gato), mientras que en otros puede
 llegar a requerir humanos que sean expertos de dominio (e.g., abogados, médicos,
-lingüistas, etc).
+lingüistas, etc.).
 
 \section{Aprendizaje no supervisado}
 
@@ -75,7 +75,7 @@ En contraste al método anterior, el aprendizaje no supervisado consiste en
 descubrir automáticamente patrones sobre los datos de entrenamiento que permitan
 explicarlos sin depender de datos anotados. Es considerada como parte del área
 del análisis y exploración. Es por eso que no pueden ser evaluados basándose en
-exactitud o precisión, si no más bien en la cantidad de información que podamos
+exactitud o precisión, sino más bien en la cantidad de información que podamos
 extraer de los datos a partir del uso de estas técnicas. Algo a considerar es la
 facilidad para disponer de estos datos (en comparación a los no supervisados) al
 no requerir ningún tipo de anotación previa.
@@ -95,19 +95,19 @@ Comenzaremos estudiando algunos métodos de aprendizaje supervisado sin
 preocuparnos inicialmente por la manera en que los ejemplares están codificados
 con excepción de las etiquetas. Es decir para un conjunto de entrenamiento
 $\{(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)\}$ la codificación de los
-$\vect{x}_i's$ será irrelevante por el momento. La únicas restricciones que se
+$\vect{x}_i's$ será irrelevante por el momento. Las únicas restricciones que se
 pedirán es que sean vectores numéricos. Los $y_i's$ aparte de ser numéricos, deben
 ser categóricos, dado que trataremos con algoritmos de clasificación.
 
 El objetivo principal de un clasificador es aproximar una función no conocida
-$f$ a partir de un modelo $h: \mathbb{R}^D \rightarrow \{c_1,.., c_k\}$ la cual
+$f$ a partir de un modelo $h: \mathbb{R}^D \rightarrow \{c_1,..., c_k\}$ la cual
 mapea ejemplos de entrada a una categoría $c_j$. En particular, nos enfocaremos
 en clasificadores binarios $k = 2$ que fueron los utilizados para la realización
 de este trabajo.
 
 \subsection{Modelos lineales}
 
-La forma más sencilla de representar un función que discrimine datos de entrada
+La forma más sencilla de representar una función que discrimine datos de entrada
 en dos clases es a partir de una función lineal que dependa de estos datos:
 
 \begin{align}
@@ -122,8 +122,8 @@ tales ejemplos. Las dimensiones de los vectores $\vect{x}$, y $\vect{w}$ son
 ambas $(D \times 1)$ a diferencia del sesgo que es un escalar. La expresión
 $\vect{w}^{\top} \vect{x}$ es el producto interno entre $\vect{w}$ y $\vect{x}$.
 Por lo que el resultado de $\vect{w}^{\top} \vect{x} + b$ es también un escalar.
-Dado que nos interesa asignar a $\vect{x}$ una categoría, se debe decidir a cual
-pertenece en base al resultado obtenido por el producto interno. Es por eso que
+Dado que nos interesa asignar a $\vect{x}$ una categoría, se debe decidir a cuál
+pertenece basándose en el resultado obtenido por el producto interno. Es por eso que
 surge la necesidad de agregar una nueva operación que discrimine un valor de
 entrada en una clase. Para ello definimos una \emph{función de decisión} $d:
 \mathbb{R} \rightarrow \{c_1, c_2\}$ tal que mapea valores a una clase $c_1$, o
@@ -208,13 +208,13 @@ Se puede generalizar esta ecuación para el caso $k > 2$ de la siguiente manera:
 
 Donde $a_k = \ln p\left( \vect{x} | c_k \right) p\left( c_k \right)$. La función
 $\frac{\exp\left( a_k \right)}{\sum_{j=1}^{k} a_j}$ es conocida como la función
-\emph{softmax} ya que es una versión suavizada de la función $max$ en el sentido
-de si $a_k >> a_j$ para todo $j \neq k$ entonces $p(c_k | \vect{x}) \approx 1$ y
+\emph{softmax}, ya que es una versión suavizada de la función $max$ en el sentido
+de sí $a_k >> a_j$ para todo $j \neq k$ entonces $p(c_k | \vect{x}) \approx 1$ y
 $p(c_j | \vect{x}) \approx 0$.
 
 \subsection{Función de costo}
 
-Varios de los métodos de machine learning existentes no pueden obtener los pesos
+Varios de los métodos de aprendizaje automático existentes no pueden obtener los pesos
 $W$ de manera analítica. Es por eso que se hacen uso de métodos iterativos en
 base a una \emph{función de costo} que mide la precisión de su predicción en
 comparación con la etiqueta. Si tenemos ejemplos de entrenamiento
@@ -230,7 +230,7 @@ Un ejemplo clásico de función de costo es el error cuadrático medio:
 Por lo tanto, al minimizar $J$ se estará reduciendo el error de estimación de
 $h$ obteniendo que $h_{\vect{w}}\left( \vect{x}_{i} \right) \approx
 f(\vect{x}_{i})$. Para lograr tal minimización, existe una técnica denominada
-\emph{descenso por el gradiente}. la cual actualiza de manera iterativa el
+\emph{descenso por el gradiente} que actualiza de manera iterativa el
 vector $\vect{w}$ logrando la convergencia de la función de costo $J$ a un
 mínimo valor.
 
@@ -243,7 +243,7 @@ J(\vect{w})}{\partial w_1}, ..., \frac{\partial J(\vect{w})}{\partial w_n}
 inicialización aleatoria de $\vect{w}$ y calcula $\vect{\Delta J\left( w
 \right)}$ por una cantidad de iteraciones. El negativo del gradiente indica la
 dirección de mayor descenso en el cual la función $J(\vect{w})$ disminuye. Por
-lo tanto si al vector $\vect{w}$ se le suma el negativo del gradiente se estaría
+lo tanto, si al vector $\vect{w}$ se le suma el negativo del gradiente se estaría
 dirigiéndolo en torno a un mínimo local de la función de costo. La magnitud del
 desplazamiento vectorial en cada iteración está determinado por una constante
 $\alpha$ conocida como la \emph{taza de aprendizaje}.
@@ -260,7 +260,7 @@ $\alpha$ conocida como la \emph{taza de aprendizaje}.
 \end{figure}
 
 En cada iteración se realiza la operación de la ecuación actualizando
-$\vect{w}$. Dado a que $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$
+$\vect{w}$. Dado que $\alpha$ > 0, el valor de cada parámetro en $\vect{w}$
 disminuirá y eventualmente la función de costo $J$ convergerá a su valor mínimo
 en $T$ iteraciones. Algo a notar es que en la ecuación \ref{eq:gradient_descent},
 al ser una operación vectorial, cada componente se actualiza simultáneamente. La
@@ -278,7 +278,7 @@ el gradiente estocástico}\citep{Kiefer-1952}, \emph{Adam} \citep{kingma-adam-20
 Una vez optimizado la función de costo y haber encontrado la configuración de
 pesos $\vect{w}$, se pueden utilizar estos pesos aprendidos para hacer
 predicciones de ejemplos no antes vistos en el proceso de entrenamiento. Sin
-embargo, algo que suele ocurrir al utilizar solamente la función de costo para
+embargo, algo que suele ocurrir al usar solamente la función de costo para
 optimizar modelos de aprendizaje automático, es que tienden a sobreajustar los
 datos de entrenamiento reduciendo su error pero obteniendo malas predicciones en
 estos nuevos ejemplares. Por lo general, suele asociarse con la magnitud de los
@@ -286,7 +286,7 @@ coeficientes en $\vect{w}$ siendo muy alta para estos casos. Otras razones de
 esto suele ser la dimensión de $\vect{w}$. En cuanto mayor la cantidad de
 parámetros de ajuste, existen más chances de que el modelo de aprendizaje
 automático memorice los datos de entrenamiento. Para solucionar esto se suele
-recurrir a varias técnicas con el fin de obtener modelos sencillos pero que
+recurrir a varias técnicas con el fin de obtener modelos sencillos, pero que
 logren generalizar la tarea que se está queriendo clasificar. Uno de ellos es
 agregar a la función de costo un \emph{término de regularización} sobre las
 componentes de $\vect{w}$ para penalizar el modelo si la magnitud $\vect{w}$
@@ -307,7 +307,7 @@ los experimentos.
 
 \subsection{Regresión logística}
 
-El primer modelo de clasificación que veremos es la \emph{regresión logistica}.
+El primer modelo de clasificación que veremos es la \emph{regresión logística}.
 Es un clasificador binario que busca modelar la probabilidad a posterior de
 $c_1$ a partir de una función sigmoide actuando sobre los vectores de entrada:
 
@@ -373,7 +373,7 @@ Para el caso $y = 1$. La función de costo a nivel de ejemplo es la curva que se
 marca en color azul de la figura \ref{fig:lgr_loss}. En ella se puede ver que si
 $h_{\vect{w}}\left( \vect{x} \right) \rightarrow 0$ (la función de predicción
 asigna a $\vect{x}$ una probabilidad cercana a $0$), entonces el costo
-incrementa y por lo tanto $\ell(\vect{x}, y) \rightarrow \infty$. Si
+incrementa y por lo tanto, $\ell(\vect{x}, y) \rightarrow \infty$. Si
 $h_{\vect{x}}\left( \vect{x} \right) \rightarrow 1$, entonces el costo disminuye
 y $\ell(\vect{x}, y) \rightarrow 0$. De manera similar ocurre para el caso $y =
 0$ y la curva marcada en rojo.
@@ -382,14 +382,14 @@ y $\ell(\vect{x}, y) \rightarrow 0$. De manera similar ocurre para el caso $y =
 
 Una red neuronal artificial es un modelo computacional que en los últimos
 tiempos se ha convertido en el estado del arte y el enfoque más utilizado en la
-mayoría de las áreas relacionadas al diseño e implementación de sistemas
+mayoría de las áreas relacionadas con el diseño e implementación de sistemas
 predictivos. Estas áreas incluyen, entre otras el procesamiento del habla, la
 visión por computadoras, el procesamiento del lenguaje natural y la toma de
 decisiones y control en agentes situados.
 
 El término surge bajo de los intentos de definir un modelo matemático de una red
 neuronal biológica \citep{McCulloch-Pitts-1990}. No obstante, enfocaremos
-nuestra atención en un tipo especifico de red neuronal reconocida por su alto
+nuestra atención en un tipo específico de red neuronal reconocida por su alto
 valor práctico, denominado \emph{perceptrón multicapa}.
 
 Las redes neuronales surgen de la necesidad de aprender la representación de los
@@ -443,7 +443,7 @@ neuronas de salida.
 \end{equation}
 
 Donde $k= 1,..., K$. Esta transformación corresponde con la segunda capa de la
-red, como lo indica el supra-índice $(2)$. Finalmente los unidades de salidas
+red, como lo indica el supra-índice $(2)$. Finalmente, las unidades de salidas
 realizan su predicción $y_k$ activando los datos por última vez con otra función
 de activación. Esta última depende de la codificación de la variable objetivo, y
 si se está trabajando sobre un problema de regresión o clasificación. Para el
@@ -466,12 +466,12 @@ en función de $\vect{x}$ y $\vect{w}$.
             \right)
 \end{equation}
 
-Por lo tanto un modelo neuronal es simplemente una función no lineal que depende
+Por lo tanto, un modelo neuronal es simplemente una función no lineal que depende
 de un ejemplo $\vect{x}$, que retorna un vector de salida $\vect{y}$, y que es
 controlado por un vector de parámetros $\vect{w}$, donde las dimensiones de
 estos vectores son $D + 1$, $K$, y $(D + 1 \times M + 1)$ respectivamente. Esta
 función también puede representarse a partir de un gráfico de red como el que se
-vé en la figura \ref{fig:nn_multilayer_perceptron} . El proceso de evaluar un
+vé en la figura \ref{fig:nn_multilayer_perceptron}. El proceso de evaluar un
 ejemplo puede interpretarse como una propagación hacia adelante (\emph{forward
 propagation} en inglés), que transmite la información a través de la red. Por
 último, algo a notar son las componentes $w_{j0}^{(1)}$ y $w_{k0}^{(2)}$ que se
@@ -584,7 +584,7 @@ una dimensión por sobre otra.
 \subsection{XGBoost}
 \label{alg:xgboost}
 
-El ultimo modelo de aprendizaje que veremos es \emph{XGBoost} (eXtreme Gradient
+El último modelo de aprendizaje que veremos es \emph{XGBoost} (eXtreme Gradient
 Boosting en inglés) \citep{Chen-2016}, un modelo de \emph{ensemble} que consiste
 en combinar la respuesta de varios modelos para obtener una final. Es decir, en
 lugar de consultar la predicción de un modelo, $K$ de ellos son utilizados. Este
@@ -629,7 +629,7 @@ en lugar de tener solo uno (figura \ref{fig:xgboost_two_tree}).
     \label{fig:xgboost_two_tree}
 \end{figure}
 
-Nuevamente consideremos un conjunto de datos etiquetados $\{(\vect{x}_1, y_1),
+Nuevamente, consideremos un conjunto de datos etiquetados $\{(\vect{x}_1, y_1),
 ..., (\vect{x}_n, y_n)\}$ donde cada $\vect{x}_i \in \mathbb{R}^{D}$. Un
 modelo de \emph{ensemble} del tipo \emph{boosting tree} puede escribirse
 matemáticamente como una suma de $K$ funciones que dependan de un ejemplo
@@ -640,8 +640,8 @@ $\vect{x}_i$.
 \end{equation}
 
 Donde cada $f_k \in \mathcal{F}$, siendo $\mathcal{F}$ la familia o espacio de
-todos los árboles. Ahora bien, ¿Como están definido cada uno de los árboles de
-decisión $f_k$?¿De qué forma son los elementos en $\mathcal{F}$? ¿Cuales son los
+todos los árboles. Ahora bien, ¿Cómo están definidos cada uno de los árboles de
+decisión $f_k$? ¿De qué forma son los elementos en $\mathcal{F}$? ¿Cuáles son los
 parámetros del modelo?.
 
 Debemos representar matemáticamente la estructura del árbol que asigne un
@@ -707,7 +707,7 @@ Donde $g_i$ y $h_i$ son definidas como:
 
 Algo a notar de la ecuación \ref{eq:xgboost-loss-taylor} es que $\sum_{i =
 1}^{n} \ell\left(y_i, \hat{y_{i}}^{(t-1)} \right)$ es una suma realizada hasta
-un paso anterior, estando ya calculado por el algoritmo y por lo tanto se
+un paso anterior, estando ya calculado por el algoritmo y, por lo tanto, se
 considera constante para el paso actual $(t)$. Omitiendo dicho término se
 obtiene:
 
@@ -745,7 +745,7 @@ performance son los de las ecuaciones \ref{eq:xgboost-best-w} y
 
 En resumen, para una estructura de árbol dada, cada ejemplo es evaluado
 asignándole una hoja. Se recopilan los ejemplos que pertenecen a cada una de
-ellas y se penaliza según los estadisticos $g_i$ y $h_i$ y finalmente obtener el
+ellas y se penaliza según los estadísticos $g_i$ y $h_i$ y finalmente obtener el
 error cometido por el árbol $\mathcal{L^{*}}$. Aquel árbol que tenga menor error
 es el mejor para ser incluido en la iteración actual.
 
@@ -767,7 +767,7 @@ desarrollando métodos del tipo \emph{one-hot} y \emph{word embeddings}.
 \label{method:ohe}
 
 A menudo los datos disponibles presentan características que no están dadas en
-un espacio continuo si no más bien categórico. Por ejemplo, se podría describir
+un espacio continuo sino más bien categórico. Por ejemplo, se podría describir
 el continente de un país por las clases \emph{enAsia}, \emph{enAfrica},
 \emph{enEurope}, \emph{enAmerica}, \emph{enOceanía}, \emph{enAntártida} siendo
 eficientemente representables con enteros $[0, 1, 2, 3, 4, 5]$. De esta manera,
@@ -787,7 +787,7 @@ conocida como \emph{ordinal encoder}.
 \end{equation*}
 
 Otra opción es usar un esquema \emph{one-of-K} que transforma una característica
-categórica con $N$ clases, en $N$ categorias binarias con una de ellas 1 y el
+categórica con $N$ clases, en $N$ categorías binarias con una de ellas 1 y el
 resto 0. Para el ejemplo anterior tendríamos:
 
 La misma técnica es válida si se quisiera representar oraciones o documentos del
@@ -799,7 +799,7 @@ lenguaje natural. Supongamos que tenemos los documentos.
 \end{center}
 
 Basado en  estos dos textos, un vocabulario de 10 palabras distintas es
-construido. Por lo tanto cada documento es representado como un vector de 10
+construido. Por lo tanto, cada documento es representado como un vector de 10
 dimensiones.
 
 \begin{table}[H]
@@ -830,7 +830,7 @@ representación vectorial compacta donde cada dimensión logre capturar las
 propiedades subyacentes y latentes de la palabra. De esta manera, los embeddings
 son superiores a una representación que permanece en un nivel poco profundo.
 
-Su principal característica  es que las expresiones relacionadas entre sı́ (ya
+Su principal característica es que las expresiones relacionadas entre sı́ (ya
 sea por contexto, semántica o sintaxis) se encuentren cercanas en el espacio
 vectorial al cual se proyectan. Por ejemplo, si tenemos las oraciones: ``Que
 tengas una buena mañana`` y ``Que tengas una buena tarde``. Difieren
@@ -847,9 +847,9 @@ se encuentra en la escala de $[-2, 2]$ y se le asigna el color de rojo para
 valores cercanos al extremo derecho, azul para las del extremo izquierdo, y
 blanco para las que se encuentren alrededor del 0.  Algo a notar es que
 \emph{man} y \emph{woman} son mucho más similares de lo que cada uno es con
-\emph{king} o \emph{queen}. Otro aspecto interesante son las franjas roja y azúl
+\emph{king} o \emph{queen}. Otro aspecto interesante son las franjas rojas y azul
 que se muestran para cada uno de los ejemplos, indicando que son parecidos en
-tal dimensión. Probablemente corresponda a alguna característica humana aunque
+tal dimensión. Probablemente, corresponda a alguna característica humana aunque
 se desconoce que puedan llegar a significar debido a la poca interpretabilidad
 del espacio al cual se proyectan.
 
@@ -858,7 +858,7 @@ una representación vectorial, se pueden sumar o restar obteniendo nuevos
 resultados que forman parte del espacio. Este es el caso del vector dado por
 \emph{king - man + woman}. No conocemos que dimensiones exactamente capturan que
 rey es utilizado para identificar al monarca de un reino, pero se puede
-substraer el caracter masculino del vector \emph{man} y agregar las de
+substraer el carácter masculino del vector \emph{man} y agregar las de
 \emph{woman} esperando que se aproximen a las de \emph{queen}.
 Sorprendentemente, de un total de 400000 palabras sobre las cuales se realizó el
 experimento, reina fue la palabra más cercana. Los detalles del mismo se pueden
@@ -882,7 +882,7 @@ Después de ver el potencial de los embeddings, surge la pregunta, ¿Cómo
 funcionan internamente? ¿De qué manera se obtienen estos vectores de palabras?
 En \citep{firth-57} se mostró que el significado de una palabra está determinado
 según sus palabras vecinas. Si contemplamos la oración ``Que tengas un buen`` y
-se quisiese averiguar cual es la expresión que le sigue, lo más probable es que
+se quisiese averiguar cuál es la expresión que le sigue, lo más probable es que
 las palabras días, tarde, noche, o semana, hayan sido las primeras candidatas.
 Este tipo de tareas en las que se intenta predecir información de la oración a
 partir del contexto o viceversa son denominadas tareas de pretexto y son
@@ -897,14 +897,14 @@ vocabulario de tamaño $W$ donde una palabra es identificada por su índice $w \
 representaciones son entrenadas para predecir palabras vecinas a partir de una
 actual. Es decir, dado un largo corpus de entrenamiento, considerarlo como una
 sola secuencia de palabras $w_1, ... w_T$ y maximizar la expresión en
-\ref{eq:skipgram-ideal}
+\ref{eq:skipgram-ideal}.
 
 \begin{equation} \label{eq:skipgram-ideal}
     \frac{1}{T} \sum_{n=1}^{T}
                     \sum_{c \in C_t} \log P(w_c | w_t)
 \end{equation}
 
-Donde $C_t$ es el conjunto de indices de palabras que rodean a $w_t$. La
+Donde $C_t$ es el conjunto de índices de palabras que rodean a $w_t$. La
 probabilidad de observar una palabra del contexto $w_c$ dado $w_t$ es modelada a
 partir de sus vectores representación. Por el momento, abstraeremos esto a
 partir de una función \emph{score} $s$ que mapea pares (palabra, contexto) a un
@@ -915,7 +915,7 @@ palabra en el contexto es por medio de la función \emph{softmax}.
     P(w_{c}|w_{t}) = \frac{e^{s(w_t, w_c)}}{\sum_{j=1}^{W} e^{s(w_t, j)}}
 \end{equation}
 
-No obstante, este calculo es bastante costoso computacionalmente siendo que al
+No obstante, este cálculo es bastante costoso computacionalmente siendo que al
 final solo es de interés predecir una palabra del contexto $w_c$ dado una
 palabra $w_t$. Es por eso que el problema puede ser visto como una tarea de
 clasificación binaria en lugar de una multiclase. El objetivo es predecir
@@ -931,7 +931,7 @@ logistic}, obteniendo la siguiente función de probabilidad:
 \end{equation}
 
 Donde $\mathcal{N}_{t, c}$ es una muestra aleatoria de ejemplares negativos
-tomadas del vocabulario. Si denotamos la función logística como $\ell: x \mapsto
+tomados del vocabulario. Si denotamos la función logística como $\ell: x \mapsto
 \log \left(1 + e^{-x} \right)$, podemos reescribir la función a optimizar del
 problema como:
 
@@ -961,7 +961,7 @@ compuesto por pares (palabra, palabra de contexto) donde etiquetamos con 1, si
 ambas son vecinas, y 0 en caso contrario. El resultado final para cada contexto
 se puede ver en la figura \ref{fig:wb_all_ones_matrix}. Esta es la
 simplificación del problema para trabajar sobre una tarea de clasificación
-binaria. En lugar de ser multiclase cuya  etiqueta sería la palabra de contexto,
+binaria. En lugar de ser multiclase cuya etiqueta sería la palabra de contexto,
 la incluimos como característica y reemplazamos las anotaciones por 1's y 0's.
 Ahora bien, con nuestros datos actuales solo tendríamos etiquetas con 1's. En
 tal caso, el modelo en lugar de aprender lo que necesitamos, estaría sesgado a
@@ -1043,7 +1043,7 @@ Junto a la secuencia completa \verb|<color>|. Notar que la secuencia
     s\left(w, c\right) = \sum_{g \in \mathcal{G}_w} \vect{z}_g^{\top}\vect{v}_c
 \end{equation}
 
-Donde, $\mathcal{G}_w \subset \{1, .. G\}$ es el conjunto de $n$-gramas de la
+Donde, $\mathcal{G}_w \subset \{1, ... G\}$ es el conjunto de $n$-gramas de la
 palabra $w$, $\vect{z}_g$ el vector representación del $n$-grama $g$, y $G$ la
 cantidad de $n$-gramas en total.
 
@@ -1065,11 +1065,11 @@ el problema evidente que surge es la representación de oraciones con distinto
 largo y el tamaño del vector resultante.
 
 \textbf{Promedio}. Como su nombre lo indica, este método computa el centroide de
-los embeddings de todas las palabras que conforman una oración. Usualmente esta
+los embeddings de todas las palabras que conforman una oración. Usualmente, esta
 codificación resulta ser adecuada siempre y cuando los vectores de las palabras
 se encuentren en la misma escala, lo cual no siempre suele ser el caso. Otro
 problema menos evidente es la posibilidad de ocurrencia de palabras poco
-representativas pero que tengan mucho peso en la suma debido a la frecuencia en
+representativas, pero que tengan mucho peso en la suma debido a la frecuencia en
 que ocurren. Si en la oración la palabra que buscamos ocurre pocas veces puede
 verse opacada.
 
@@ -1095,7 +1095,7 @@ clasificación binaria donde los positivos corresponden con la clase $1$, y los
 negativos con la $0$ dispusimos de las siguientes métricas.
 
 \textbf{Precisión}. Cociente entre verdaderos positivos y el total de
-predicciones positivas. 
+predicciones positivas.
 
 \begin{equation}
     precision = \frac{TP}{TP + FP}
@@ -1113,7 +1113,7 @@ predicen siempre la clase positiva obtienen un valor máximo en recall, mientras
 los que predicen siempre la clase negativa consiguen un valor máximo en
 precisión. La $F_{\beta}$ mide el desbalance entre las dos anteriores ponderando
 una por sobre la otra de acuerdo al valor de $\beta$ pero esta vez penalizando
-los modelos triviales. 
+los modelos triviales.
 
 \begin{equation}
     F_{\beta} = (1 + \beta^2) \frac{precision . recall}{\beta^2 precision + recall}
@@ -1183,13 +1183,13 @@ matriz de confusión normalizada de $C$, tal que $CN_{i,j} =
 Para el caso de la figura \ref{fig:cm_example_raw}, cada celda se dividió por la
 cantidad de elementos totales en una fila completa obteniendo la matriz de la
 \ref{fig:cm_example_percent}. De esta manera, podemos comparar los resultados en
-dos categorias distintas aún si estas se encuentran desbalanceadas. En este
+dos categorías distintas aun si estas se encuentran desbalanceadas. En este
 ejemplo observamos que un 57\% de los datos pertenecientes a la clase positiva
 se clasificaron correctamente como positivos, mientras que un 97\% de las
 negativas fueron clasificados como negativas.
 
-\textbf{Gráficos de distribución de predicciones.} Por úĺtimo, la métrica
-estrella de este trabajo son los gráfico de distribución de predicciones. Como
+\textbf{Gráficos de distribución de predicciones.} Por último, la métrica
+estrella de este trabajo son los gráficos de distribución de predicciones. Como
 el algoritmo de grounding heurístico utiliza las probabilidades asignadas a una
 acción dado su plan relajado, un histograma que refleje la distribución de las
 probabilidades asociadas a cada par es excelente para determinar si las clases
@@ -1206,6 +1206,6 @@ La figura \ref{fig:distplot-example} muestra el gráfico de distribución de
 predicciones para el mismo problema de clasificación binaria que utilizamos para
 explicar las matrices de confusión. Las barras azules representan la clase
 negativa, y las barras naranjas la clase positiva. Se busca que ambas barras
-esten lo más separadas posibles. En particular, que las predicciones cuya clase
+estén lo más separadas posibles. En particular, que las predicciones cuya clase
 es positiva, tengan asociada una probabilidad cercana a 1, y las predicciones
 cuya clase es negativa, tengan asociada una probabilidad cercana a 0.

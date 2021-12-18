@@ -122,6 +122,15 @@
 \newlist{abbrv}{itemize}{1}
 \setlist[abbrv,1]{label=,labelwidth=1in,align=parleft,itemsep=0.1\baselineskip,leftmargin=!}
 
+\newcommand{\frontpagetoday}{\ifcase \month \or Enero\or Febrero\or Marzo\or %
+Abril\or Mayo \or Junio\or Julio\or Agosto\or Septiembre\or Octubre\or Noviembre\or %
+Diciembre\fi, \number \year} 
+
+\usepackage[
+    type={CC},
+    modifier={by-sa},
+    version={4.0},
+]{doclicense}
 %%-------------------------------------
 %% Bibliography/References settings   - Harvard Style was used in this report
 %%-------------------------------------

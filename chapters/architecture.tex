@@ -51,7 +51,7 @@ capítulo \ref{ch:results}.
 \subsection{Descripción del dominio}
 
 Para la construcción del conjunto de datos nos centramos en el dominio de
-planning \emph{Satellite}, siendo parte del learninig track de la competencia
+planning \emph{Satellite}, siendo parte del learning track de la competencia
 internacional de planning (IPC) del año 2011. Este dominio es un modelo del
 problema de programación de observación satelital. Este implica el uso de uno o
 más satélites para hacer observaciones, recopilar datos, y descenderlos a una
@@ -85,16 +85,15 @@ su correspondiente tamaño de interfaz (Int), cantidad de precondiciones atómic
     switch\_off & 2 & 2 & 2 \\ [1ex] 
     \hline
     \end{tabular}}
-    \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
+    \caption{Cantidad de argumentos, precondiciones, y efectos por esquema de acción.}
     \label{tb:satellite_stats}
 \end{table}
 
 \begin{lstlisting}[
-    float=!htb,
+    float=h!,
     caption={Dominio Satellite en PDDL.},
     label={lst:satellite-domain},
     language=PDDL]
-
     (define (domain satellite)
     (:requirements :strips :equality :typing)
     (:types satellite direction instrument mode)
@@ -106,30 +105,26 @@ su correspondiente tamaño de interfaz (Int), cantidad de precondiciones atómic
              (power_on ?i - instrument)
              (calibrated ?i - instrument)
              (have_image ?d - direction ?m - mode)
-             (calibration_target ?i - instrument ?d - direction))
-  
+             (calibration_target ?i - instrument ?d - direction)) 
     (:action turn_to
      :parameters (?s - satellite ?d_new - direction ?d_prev - direction)
      :precondition (and (pointing ?s ?d_prev)
                         (not (= ?d_new ?d_prev)))
      :effect (and  (pointing ?s ?d_new)
-                   (not (pointing ?s ?d_prev))))
-   
+                   (not (pointing ?s ?d_prev))))   
     (:action switch_on
      :parameters (?i - instrument ?s - satellite)
      :precondition (and (on_board ?i ?s) 
                         (power_avail ?s))
      :effect (and (power_on ?i)
                   (not (calibrated ?i))
-                  (not (power_avail ?s))))
-   
+                  (not (power_avail ?s))))  
     (:action switch_off
      :parameters (?i - instrument ?s - satellite)
      :precondition (and (on_board ?i ?s)
                         (power_on ?i))
      :effect (and (not (power_on ?i))
-                  (power_avail ?s)))
-  
+                  (power_avail ?s))) 
     (:action calibrate
      :parameters (?s - satellite ?i - instrument ?d - direction)
      :precondition (and (on_board ?i ?s)
@@ -137,7 +132,6 @@ su correspondiente tamaño de interfaz (Int), cantidad de precondiciones atómic
                         (pointing ?s ?d)
                         (power_on ?i))
      :effect (calibrated ?i))
-
     (:action take_image
      :parameters (?s - satellite ?d - direction ?i - instrument ?m - mode)
      :precondition (and (calibrated ?i)
@@ -146,8 +140,7 @@ su correspondiente tamaño de interfaz (Int), cantidad de precondiciones atómic
                         (power_on ?i)
                         (pointing ?s ?d)
                         (power_on ?i))
-     :effect (have_image ?d ?m))
-    )
+     :effect (have_image ?d ?m)))
 \end{lstlisting}
 
 \section{Manejo de datos}
@@ -178,7 +171,7 @@ es:
     \item El conjunto de acciones instanciadas $A$ de $\Pi$.
 \end{enumerate}
 
-Los puntos 3, y 5 pueden obtenerse a partir de los archivos PDDL devueltos por
+El punto 3 puede obtenerse a partir de los archivos PDDL devueltos por
 el generador. En cambio, 1, 2, y 4 requieren resolver la tarea por medio del
 planificador de Fast Downward para ser obtenidos. Dado que $\Pi$ se obtiene a
 partir de Fast Downward, el conjunto $A$ de acciones instanciadas contiene
@@ -352,7 +345,7 @@ tarea obteniendo una matriz como se muestra en el cuadro \ref{tb:matrix_shape}.
 
 \begin{table}[h!]
 \centering
-\scalebox{0.9}{
+\scalebox{0.85}{
  \begin{tabular}{||c | c | c||} 
  \hline
  Plan relajado & Acción & Etiqueta \\ [0.5ex] \hline\hline
@@ -372,7 +365,7 @@ tarea obteniendo una matriz como se muestra en el cuadro \ref{tb:matrix_shape}.
  satellite1 & 0 \\ [1ex] 
  \hline
  \end{tabular}}
- \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
+ \caption{Ejemplos etiquetados a partir de un plan relajado y una acción.}
  \label{tb:matrix_shape}
 \end{table}
 
@@ -648,7 +641,7 @@ codificada de la siguiente manera:
  0.0793,  0.1258,  -0.0068,  0.0550] & 0 \\ [1ex] 
  \hline
  \end{tabular}}
- \caption{Ejemplos etiquetados a partir de un plan relajado y una acción}
+ \caption{Planes relajados y acciones etiquetadas usando codificación por word embeddings.}
  %\label{tb:matrix_shape}
 \end{table}
 
@@ -679,16 +672,16 @@ ventanas de plan relajado y acción.
     \begin{subfigure}[b]{\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/plan_length_distplot_train.png}
-        \caption{Planes relajados de entrenamiento}
+        \caption{Planes relajados de entrenamiento.}
         \label{fig:plan-length-distplot-train}
     \end{subfigure}
     \begin{subfigure}[b]{\textwidth}
         \centering
         \includegraphics[width=\linewidth]{figures/plan_length_distplot_test.png}
-        \caption{Planes relajados de test}
+        \caption{Planes relajados de test.}
         \label{fig:plan-length-distplot-test}
     \end{subfigure}
-    \caption{Distribución del largo de planes relajados}
+    \caption{Distribución del largo de planes relajados.}
     \label{fig:plan-length-distplot}
 \end{figure}
 
@@ -719,7 +712,7 @@ su etiqueta a su representación por partes.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=\linewidth]{figures/window_example.png}
-    \caption{Ejemplo de generación de ventanas para un plan relajado de largo 6.}
+    \caption{Ejemplo de generación de ventanas para un plan relajado de largo 6, ventana de tamaño 3 y paso de 2.}
     \label{fig:window_example}
 \end{figure}
 
@@ -734,7 +727,7 @@ de manera ad-hoc o por word embeddings igual a como describimos en la sección
 
 Una vez realizado el preprocesamiento estamos en condiciones de entrenar los
 clasificadores que estudiamos en la sección \ref{lit:algorithms}. Los pares de
-entrenamiento \{$(\vect{x}_1, y_1), ..., (\vect{x_n}, y_n)$\} para entrenar un
+entrenamiento \{$(\vect{x}_1, y_1), ..., (\vect{x}_n, y_n)$\} para entrenar un
 modelo de aprendizaje automático están compuestos por una representación de una
 ventana perteneciente al plan relajado de un problema, y la representación de
 una acción a estimar. Esto conforma el vector de características $\vect{x}_i$.
@@ -775,7 +768,7 @@ relajado completo es la que predijo esa ventana.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=\linewidth]{figures/aggregation_example.png}
-    \caption{Ejemplo de evaluación por ventanas}
+    \caption{Ejemplo de evaluación por ventanas.}
     \label{fig:window_example_evaluation}
 \end{figure}
 

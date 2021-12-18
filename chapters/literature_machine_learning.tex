@@ -30,7 +30,7 @@ de crédito \citep{Fang-2021}, sistemas de recomendación que guían usuarios en
 servicio de acuerdo a sus preferencias \citep{Burke-2007}, o incluso vehículos
 que se manejan sin necesidad de la intervención del conductor
 \citep{Sorin-2019}. Incluso en algunas tareas de reconocimiento de patrones el
-aprendizaje automático ha logrado obtener tazas menores al error humano
+aprendizaje automático ha logrado obtener tasas menores al error humano
 \citep{niklas-et-al-2020}. Al mismo tiempo, una importante cantidad de avances
 teóricos y algorítmicos se fueron realizando formando las bases de este campo. 
 
@@ -147,7 +147,7 @@ $\vect{x}$ para luego definir $\vect{w}' = (w_0, \vect{w})$ y $\vect{x}' = (x_0,
     \centering
     \includegraphics[scale=0.5]{figures/decision_boundary.png}
     \caption{Frontera de decisión de un modelo lineal separando los puntos que
-    tienen etiqueta $c_1$ = 1 y $c_2$ = -1}.
+    tienen etiqueta $c_1$ = 1 y $c_2$ = -1.}
     \label{fig:linear_model_boundary}
 \end{figure}
 
@@ -246,7 +246,7 @@ dirección de mayor descenso en el cual la función $J(\vect{w})$ disminuye. Por
 lo tanto, si al vector $\vect{w}$ se le suma el negativo del gradiente se estaría
 dirigiéndolo en torno a un mínimo local de la función de costo. La magnitud del
 desplazamiento vectorial en cada iteración está determinado por una constante
-$\alpha$ conocida como la \emph{taza de aprendizaje}.
+$\alpha$ conocida como la \emph{tasa de aprendizaje}.
 
 \begin{align} \label{eq:gradient_descent}
     \vect{w} \leftarrow \vect{w} - \alpha \vect{\Delta J\left( w \right)}
@@ -255,7 +255,7 @@ $\alpha$ conocida como la \emph{taza de aprendizaje}.
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{figures/gradient_descent_plot.png}
-    \caption{Intuición del método de descenso por el gradiente a partir del error cuadrático medio como función de costo $J$}
+    \caption{Intuición del método de descenso por el gradiente a partir del error cuadrático medio como función de costo $J$.}
     \label{fig:gradient_descent}
 \end{figure}
 
@@ -361,7 +361,7 @@ Donde $\ell$ es la penalización a nivel de ejemplo:
     \centering
     \includegraphics[scale=0.5]{figures/logistic_regression_loss.png}
     \caption{Gráfica de $h_{\vect{w}}(\vect{x})$ vs $\ell(\vect{x})$ separando
-    por etiqueta}
+    por etiqueta.}
     \label{fig:lgr_loss}
 \end{figure}
 
@@ -426,7 +426,7 @@ $a_j$ es transformado por una función de activación no lineal $g$.
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{figures/multilayer_perceptron.png}
-    \caption{Perceptrón multicapa de una sola capa oculta}
+    \caption{Perceptrón multicapa de una sola capa oculta.}
     \label{fig:nn_multilayer_perceptron}
 \end{figure}
 
@@ -528,7 +528,7 @@ Otras funciones muy usadas son la \emph{tanh} (tangente hiperbólica, figura
     ReLU\left( x \right) = \max(0, x)
 \end{equation}
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \begin{minipage}[b]{0.4\textwidth}
       \includegraphics[scale=0.5]{figures/relu.png}
@@ -616,7 +616,7 @@ en lugar de tener solo uno (figura \ref{fig:xgboost_two_tree}).
     \centering
     \includegraphics[scale=0.4]{figures/xgboost_tree.png}
     \caption{Árbol que decide por edad de las personas si le interesa un
-    videojuego de computadora. Imagen adaptada de \citep{Tianqi-2016}}
+    videojuego de computadora. Imagen adaptada de \citep{Tianqi-2016}.}
     \label{fig:xgboost_tree}
 \end{figure}
 
@@ -625,7 +625,7 @@ en lugar de tener solo uno (figura \ref{fig:xgboost_two_tree}).
     \includegraphics[scale=0.4]{figures/xgboost_two_tree.png}
     \caption{Dos arboles que en base a la edad y uso de la computadora deciden
     si una persona le interesa un videojuego. Imagen adaptada de
-    \citep{Tianqi-2016}}
+    \citep{Tianqi-2016}.}
     \label{fig:xgboost_two_tree}
 \end{figure}
 
@@ -867,7 +867,7 @@ ver desde \citep{jalammar-website}.
 \begin{figure}
     \centering
     \includegraphics[scale=0.68]{figures/king-analogy-viz.png}
-    \caption{Vectores de palabras para ``king``, ``man``, y ``woman``}
+    \caption{Vectores de palabras para ``king``, ``man``, y ``woman``.}
     \label{fig:king-queen-example}
 \end{figure}
 
@@ -1129,7 +1129,7 @@ datos desbalanceados. Si la cantidad de datos negativos es mucho mayor que la de
 positivos, la precisión puede verse más comprometida que la recall, al haber más
 oportunidades de cometer un falso positivo. Para resolver este problema, en vez
 de considerar precisión y recall en la ecuación de $F_{\beta}$, se utilizó la
-\emph{taza de verdaderos positivos y negativos} (TPR, y TNR).
+\emph{tasa de verdaderos positivos y negativos} (TPR, y TNR).
 
 \begin{align}
     TPR &= \frac{TP}{TP + FN} \\
@@ -1182,7 +1182,7 @@ matriz de confusión normalizada de $C$, tal que $CN_{i,j} =
 \end{figure}
 
 Para el caso de la figura \ref{fig:cm_example_raw}, cada celda se dividió por la
-cantidad de elementos totales en una fila completa obteniendo la matriz de la
+cantidad de elementos en una fila completa obteniendo la matriz de la figura
 \ref{fig:cm_example_percent}. De esta manera, podemos comparar los resultados en
 dos categorías distintas aun si estas se encuentran desbalanceadas. En este
 ejemplo observamos que un 57\% de los datos pertenecientes a la clase positiva

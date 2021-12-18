@@ -197,7 +197,7 @@ l_3)move(a_1, l_3, l_4)$.
     \centering
     \includegraphics[scale=0.5]{figures/agent_example.png}
     \caption{Ejemplo del problema del agente. Su posición inicial es la
-             ubicación $l1$ en azul queriendo llegar a la posición $l4$ marcada
+             ubicación $l_1$ en azul queriendo llegar a la posición $l_4$ marcada
              con rojo.}
     \label{fig:agent_example}
 \end{figure}
@@ -254,7 +254,6 @@ siguientes definiciones:
         para algún $p[X] \in \mathcal{P}$.
     \end{itemize}
 \end{mydef}
-
 Para la tarea STRIPS del problema del agente una primera especificación podría
 ser definida de la siguiente manera:
 
@@ -264,11 +263,9 @@ ser definida de la siguiente manera:
     \Sigma^{C} = \{&a_1, l_1, l_2, l_3, l_4\} \\
     \Sigma^{O} = \{&x, l, l'\} \\
     I = \{&at(a_1, l_1)\} \\
-    G = \{&at(a_1, l_4)\}
-\end{align*}
-\begin{align*}
-    move(x, l, l') &= (pre(move), add(move), del(move)) \\
-                   &= (\{at(x, l)\}, \{at(x, l')\},\{at(x, l)\})
+    G = \{&at(a_1, l_4)\} \\
+    move(x, l, l') = (&pre(move), add(move), del(move)) \\
+                   = (&\{at(x, l)\}, \{at(x, l')\},\{at(x, l)\})
 \end{align*}
 
 Una diferencia importante es que ahora $move(x, l, l')$ es un esquema de acción
@@ -298,11 +295,11 @@ cuando exista un camino entre $l$ y $l'$.
     G = \{& at(a_1, l_4), \\
           & is\_connected(l_1, l_2), is\_connected(l_2, l_1), \\
           & is\_connected(l_1, l_3), is\_connected(l_3, l_1), \\
-          & is\_connected(l_3, l_4), is\_connected(l_4, l_3)\}
+          & is\_connected(l_3, l_4), is\_connected(l_4, l_3)\} \\
+    move(x, l, l') = (&pre(move), add(move), del(move)) \\
+                   = (&\{at(x, l), is\_connected(l, l')\}, \{at(x, l')\},\{at(x, l)\})
 \end{align*}
 \begin{align*}
-    move(x, l, l') &= (pre(move), add(move), del(move)) \\
-                   &= (\{at(x, l), is\_connected(l, l')\}, \{at(x, l')\},\{at(x, l)\})
 \end{align*}
 
 Un detalle de esta especificación es que es no tipada. Por ejemplo $move(a_1,
@@ -574,7 +571,7 @@ polinomial. Es aquí donde surge el foco de este trabajo donde se intentará
 predecir cuál de estos hechos y acciones son verdaderamente relevantes para
 alcanzar la meta, priorizando su instanciación por sobre el resto.
 
-\begin{algorithm}
+\begin{algorithm}[h!]
     \caption{Grounding heurístico}\label{alg:grounding-heuristico}
     \begin{algorithmic}[1]
     \Require Especificación de una tarea STRIPS $(\mathcal{P}, \mathcal{A},

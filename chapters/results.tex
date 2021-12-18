@@ -70,8 +70,8 @@ ventana de $3$.
 Para el entrenamiento de los clasificadores, se realizó una búsqueda de
 hiperparámetros cuya métrica a optimizar es $H_{\beta}$ con $\beta = 1.5$. Dado
 que en nuestro problema es más importante predecir correctamente todas las
-acciones relevantes, optamos por priorizar la taza de verdaderos positivos sobre
-la taza de verdaderos negativos. Es decir, buscamos que el clasificador sea
+acciones relevantes, optamos por priorizar la tasa de verdaderos positivos sobre
+la tasa de verdaderos negativos. Es decir, buscamos que el clasificador sea
 penalizado si no logra predecir todas las acciones relevantes para obtener un
 plan, y si no logra filtrar una cantidad aceptable de acciones no relevantes.
 
@@ -372,7 +372,7 @@ respectivamente. Si calculamos la métrica $F_{1.5}$ priorizando recall,
 obtendriamos una performance de 0.8826 para LGR. Sin embargo, no es un buen
 indicio de la correctitud del modelo en la clase negativa. En contraparte, si en
 lugar de considerar $F_{1.5}$ utilizamos $H_{1.5}$ la performance es de 0.589
-debido a que esta métrica penaliza si se tiene un baja en la taza de verdaderos
+debido a que esta métrica penaliza si se tiene un baja en la tasa de verdaderos
 negativos.
 
 
@@ -448,7 +448,7 @@ buen desempeño en validación cruzada en términos de grounding heurístico.
      No relevante & 5 & 0.98 & 0.7 & 0.7446 & 0.76747 & 0.57 \\
      \hline
      \end{tabular}}
-     \caption{Métricas sobre el conjunto de test del modelo NN ad-hoc.}
+     \caption{Métricas sobre validación cruzada del modelo NN ad-hoc.}
      \label{results:nn-adhoc-calibrate}
 \end{table}
 
@@ -623,7 +623,7 @@ en que ocurren las ventanas. Es decir, se agrega un índice en la matriz de
 características indicando la posición en el plan relajado como se muestra en el
 cuadro \ref{tb:window_order}.
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \scalebox{0.9}{
  \begin{tabular}{||c | c | c | c||} 
@@ -636,7 +636,7 @@ cuadro \ref{tb:window_order}.
  ... & ... & ... & ...\\ [1ex] 
  \hline
  \end{tabular}}
- \caption{Ejemplos etiquetados a partir de un plan relajado y una acción.}
+ \caption{Ventanas de planes relajados y acciones etiquetadas manteniendo el orden de ventanas.}
  \label{tb:window_order}
 \end{table}
 
